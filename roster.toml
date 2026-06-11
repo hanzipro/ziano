@@ -39,3 +39,74 @@ asset           = "ShangguSansVF_TTFs.7z"
 member          = "ShangguSansTC-VF.ttf"
 license_member  = "LICENSE.txt"
 asset_sha256    = "31b207a05332196ff444114d66de1c7b622d3a7244ec15a2485e8d0844cb1984"
+
+# --- Plan 2: neutral-alt families (static per-weight, all ~7 Source Han weights) ---
+# GenYo 月版/TW (milder cut). Series = 源樣 GenYo (original strokes), not 源起 Genki.
+# Weights use the fonts' real usWeightClass. Serif has SB(600), sans has N(350)
+# — authentic Source Han weight sets (they differ). RFN gate passed → names kept.
+
+[[family]]
+id              = "genyo-min"
+font_family     = "GenYo Min"
+style           = "serif"
+format          = "static"
+repo            = "ButTaiwan/genyo-font"
+release_tag     = "v2.100"
+asset           = "GenYoMin2TW-otf.zip"
+license_member  = "SIL_Open_Font_License_1.1.txt"
+asset_sha256    = "64ed21a2ef3b42171bdded55a705b32cc105740436c9f61c3d6efec95a769718"
+
+  [[family.weights]]
+  weight = 250
+  member = "GenYoMin2TW-EL.otf"
+  [[family.weights]]
+  weight = 300
+  member = "GenYoMin2TW-L.otf"
+  [[family.weights]]
+  weight = 400
+  member = "GenYoMin2TW-R.otf"
+  [[family.weights]]
+  weight = 500
+  member = "GenYoMin2TW-M.otf"
+  [[family.weights]]
+  weight = 600
+  member = "GenYoMin2TW-SB.otf"
+  [[family.weights]]
+  weight = 700
+  member = "GenYoMin2TW-B.otf"
+  [[family.weights]]
+  weight = 900
+  member = "GenYoMin2TW-H.otf"
+
+[[family]]
+id              = "genyo-gothic"
+font_family     = "GenYo Gothic"
+style           = "sans"
+format          = "static"
+repo            = "ButTaiwan/genyog-font"
+release_tag     = "v2.100"
+asset           = "GenYoGothic2TW-otf.zip"
+license_member  = "SIL_Open_Font_License_1.1.txt"
+asset_sha256    = "616be26e3448b1396b342533d046d8bb0d5b1801d80b5a8ee882811bdc625d7c"
+
+  [[family.weights]]
+  weight = 250
+  member = "GenYoGothic2TW-EL.otf"
+  [[family.weights]]
+  weight = 300
+  member = "GenYoGothic2TW-L.otf"
+  [[family.weights]]
+  weight = 350
+  member = "GenYoGothic2TW-N.otf"
+  [[family.weights]]
+  weight = 400
+  member = "GenYoGothic2TW-R.otf"
+  [[family.weights]]
+  weight = 500
+  member = "GenYoGothic2TW-M.otf"
+  [[family.weights]]
+  weight = 700
+  member = "GenYoGothic2TW-B.otf"
+  [[family.weights]]
+  weight = 900
+  member = "GenYoGothic2TW-H.otf"
