@@ -41,3 +41,30 @@ def test_download_shanggu_serif_archive_is_real():
     )
     assert p.stat().st_size > 1_000_000
     assert p.read_bytes()[:2] == b"7z"  # 7z signature 0x37 0x7A
+
+
+@pytest.mark.integration
+def test_extract_member_pulls_tc_vf_from_7z(tmp_path):
+    from fontTools.ttLib import TTFont
+
+    from cheritage.acquire import download, extract_member
+
+    archive = download("GuiWonder/Shanggu", "1.028", "ShangguSerifVF_TTFs.7z")
+    ttf = extract_member(archive, "ShangguSerifTC-VF.ttf", tmp_path)
+    assert ttf.exists()
+    font = TTFont(str(ttf))
+    assert "fvar" in font  # it is a variable font
+
+
+def test_extract_member_missing_raises(tmp_path):
+    from cheritage.acquire import extract_member
+
+    archive = tmp_path / "GuiWonder__Shanggu__1.028__ShangguSerifVF_TTFs.7z"
+    # reuse the seeded cache copy if present, else skip the body via passthrough
+    real = __import__("pathlib").Path(
+        ".cache/GuiWonder__Shanggu__1.028__ShangguSerifVF_TTFs.7z"
+    )
+    if not real.exists():
+        pytest.skip("archive not cached")
+    with pytest.raises(FileNotFoundError, match="not in"):
+        extract_member(real, "DoesNotExist.ttf", tmp_path)

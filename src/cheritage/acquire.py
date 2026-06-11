@@ -1,6 +1,7 @@
 import hashlib
 import os
 import urllib.request
+import zipfile
 from pathlib import Path
 
 CACHE = Path(".cache")
@@ -37,3 +38,36 @@ def download(repo: str, tag: str, asset: str, *, expected_sha256: str | None = N
                 f"sha256 mismatch for {asset}: got {actual}, want {expected_sha256}"
             )
     return dest
+
+
+def extract_member(archive: Path, member: str, dest_dir: Path) -> Path:
+    """Extract one font file from a release asset into dest_dir, return its path.
+
+    Handles .7z (Shanggu) and .zip archives, plus bare .ttf/.otf passthrough.
+    """
+    archive = Path(archive)
+    dest_dir = Path(dest_dir)
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    suffix = archive.suffix.lower()
+
+    if suffix in (".ttf", ".otf"):
+        return archive
+
+    if suffix == ".7z":
+        import py7zr
+
+        with py7zr.SevenZipFile(archive) as z:
+            names = set(z.getnames())
+            if member not in names:
+                raise FileNotFoundError(f"{member!r} not in {archive.name}: {sorted(names)}")
+            z.extract(path=str(dest_dir), targets=[member])
+        return dest_dir / member
+
+    if zipfile.is_zipfile(archive):
+        with zipfile.ZipFile(archive) as z:
+            if member not in z.namelist():
+                raise FileNotFoundError(f"{member!r} not in {archive.name}: {z.namelist()}")
+            z.extract(member, dest_dir)
+        return dest_dir / member
+
+    raise ValueError(f"unsupported asset type: {archive.name}")
