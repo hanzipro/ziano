@@ -173,8 +173,12 @@ per-family npm package  ──publish──▶  npm  ──▶  jsDelivr CDN
 
 ## 9. Open questions
 
-1. **Coverage verdict** — result of §8 coverage analysis; confirm Shanggu is the
-   right *practical* default (not just VF-convenient). May reorder roster.
+1. ~~Coverage verdict~~ — **Decided 2026-06-12: Shanggu confirmed as practical
+   default.** Coverage analysis (`cheritage.coverage` vs `data/common-hard-tc.txt`)
+   on `ShangguSerifTC-VF.ttf` (1.028): **24/24 common-hard 傳承 chars covered, 0
+   missing**, out of 44,791 cmap glyphs. The "high raw count hoards rare chars but
+   misses common-hard" hypothesis did not materialize for the curated set; no roster
+   reorder. (Re-evaluate when GenYo lands in Plan 2 for a serif-vs-serif comparison.)
 2. ~~OFL naming~~ — **Decided: keep upstream names**, subject to the per-font
    Reserved-Font-Name check in §7 (rename only if an RFN is declared).
 3. ~~GenYo static weight set~~ — **Decided: ship all ~7 Source Han weights.**
