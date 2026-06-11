@@ -188,8 +188,13 @@ per-family npm package  ──publish──▶  npm  ──▶  jsDelivr CDN
 3. ~~GenYo static weight set~~ — **Decided: ship all ~7 Source Han weights.**
 4. **v1 stop line** — Shanggu + GenYo only, or also ship I.Ming as a "prestige"
    entry from day one.
-5. **Slice-table provenance** — snapshot Google's `css2` ranges into a static
-   data file vs. regenerate at build time; pin a version either way.
+5. ~~Slice-table provenance~~ — **Decided: derive from the Apache-2.0 `nam-files`
+   slicing strategy**, not the scraped `css2` API. The canonical TC strategy
+   (`slices/traditional-chinese_default.txt`, 120 subsets) is pinned at
+   `data/sources/traditional-chinese_default.txt` (+ sha256, attribution in
+   `data/sources/README.md`) and parsed into `data/slices.traditional-chinese.json`.
+   One canonical table for all styles; clean licensed lineage (see
+   `docs/research/2026-06-12-google-fonts-unicode-range.md`).
 
 ## 10. References
 

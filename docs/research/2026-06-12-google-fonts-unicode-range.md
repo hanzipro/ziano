@@ -1,9 +1,10 @@
 # How Google Fonts slices CJK with `unicode-range` — research report
 
-**Date:** 2026-06-12 · **Scope:** the partition logic cheritage snapshots into
-`data/slices.{sans,serif}.json`. Combines (a) Google's official statements and
-(b) empirical analysis of the live `css2` responses we captured in
-`tests/fixtures/noto-{sans,serif}-tc.css2.txt` (Noto TC, `v39`).
+**Date:** 2026-06-12 · **Scope:** the partition logic cheritage uses in
+`data/slices.traditional-chinese.json`. Combines (a) Google's official slicing
+strategy — the Apache-2.0 text-proto pinned at
+`data/sources/traditional-chinese_default.txt` (from `googlefonts/nam-files`) —
+and (b) our empirical analysis of it.
 
 ---
 
@@ -65,54 +66,60 @@ and the web-fonts API article
   worst, which simply divides the font into equal parts."**
 - They validated strategies against **real-world traffic** via the Early Access
   system before shipping.
-- The exact clustering algorithm and frequency cut-offs are **kept proprietary**.
 
-The actual codepoint sets are open, though: Google publishes them as **"nam
-files"** in
-[`googlefonts/nam-files`](https://github.com/googlefonts/nam-files) — one codepoint
-(`0x….`) per line, machine-readable under `Lib/gfsubsets/data`, and they are what
-the CSS API uses to subset before serving. (cheritage doesn't parse nam files; it
-snapshots the *resolved* ranges straight from the `css2` response, which already
-reflects them.)
+The actual strategy is open, not proprietary: Google publishes it in
+[`googlefonts/nam-files`](https://github.com/googlefonts/nam-files) under
+`slices/traditional-chinese_default.txt` — a text-proto whose header documents the
+exact construction (**Apache-2.0**; cheritage pins it at
+`data/sources/traditional-chinese_default.txt`):
+
+> `17704 codepoints in 120 subsets … From highest to lowest priority:`
+> `1–20: FreqRange target_len 213 … 21: Remaining 13453 in 100 bins, sorted by codepoint`
+
+So the algorithm is concretely:
+
+1. **FreqRange slices (~20):** the highest-frequency codepoints packed into
+   uniform **~213-codepoint** slices, in frequency-priority order.
+2. **Remaining (~13,453 codepoints):** the long tail split into **100 bins ordered
+   by codepoint** (not frequency — order is irrelevant once a glyph is rare).
+
+cheritage parses this proto directly (`cheritage.slices.parse_slicing_strategy`)
+into `data/slices.traditional-chinese.json` — one canonical TC partition reused for
+every style.
 
 ## 3. What the data actually shows (empirical)
 
-Measured on the captured Noto **Sans** TC (`105` slices) and **Serif** TC (`108`
-slices); both behave identically.
+Measured on the canonical table (`data/slices.traditional-chinese.json`).
 
-| metric | Noto Sans TC |
+| metric | value |
 |---|---|
-| slices | 105 |
-| codepoints covered | 16,254 |
-| …of which CJK Unified (U+4E00–9FFF) | 12,564 |
-| codepoints per slice | min 102 · **mean 161** · max 1,162 |
-| `unicode-range` fragments per slice | min 5 · **mean 93** · max 212 |
+| slices | 120 |
+| codepoints covered | 17,704 |
+| …of which CJK Unified (U+4E00–9FFF) | 12,548 |
+| codepoints per slice | min 134 · **mean 147** · max 214 |
 
-### 3a. Slices are frequency-ordered (rarest → commonest), Latin last
+### 3a. Slices are frequency-ordered (rarest → commonest), ASCII last
 
-Walking the slice index from 0 upward:
+Block order runs from rarest to commonest:
 
-- **index 0–~9 (rarest):** CJK Ext-A (U+3400+), compatibility ideographs
-  (U+FA0A), half-width kana (U+FF78), emoji (U+1F9xx). e.g. slice 0 = `㐁㑁㓾…`.
-- **index ~10–~95:** the bulk of CJK Unified, **frequency-graded** — density of
-  common characters rises with the index (CJK-Unified chars per 10-slice band:
-  752 → ~1,350 → **1,765 (80s) → 1,922 (90s)**).
-- **index ~95–~103 (commonest Han):** where ordinary text lands.
-- **final 2–4 slices:** Latin Extended, then **Basic Latin / ASCII / Latin-1**
-  (slice 104, `U+0000…`). ASCII is universal, so it is effectively always fetched.
+- **slice 0 (rarest):** emoji (U+1F921 🤡); the early slices are the "Remaining"
+  codepoint-ordered bins — CJK Ext-A, compatibility ideographs, half-width kana.
+- **middle slices:** the long tail of CJK Unified.
+- **last ~20 slices (~100–119):** the `FreqRange` blocks — the highest-frequency
+  Han, uniform ~213 codepoints each.
+- **final slice (119):** Basic Latin / ASCII (`U+20…`) — universal, effectively
+  always fetched.
 
-Within a slice the codepoints are **scattered across the whole code space** (mean
-93 disjoint ranges per slice) — direct evidence the grouping is by *frequency /
-co-occurrence*, not by code point.
+Within a slice the codepoints are **scattered across the whole code space** —
+direct evidence the grouping is by *frequency*, not by code point.
 
 ### 3b. Common characters are guaranteed to hit few slices
 
-| test (Noto Sans TC) | result |
+| test | result |
 |---|---|
-| Common TC paragraph (~65 distinct chars) | **7 slices** (idx 93–103) |
-| Top ~89 most-frequent characters | **5 slices** (idx 96–100) |
-| …concentration | **78 of 89** chars fall in just **2 slices** (99 & 100) |
-| Those common slices' size | uniform **213 codepoints** each |
+| Common TC paragraph (53 distinct chars) | **7 slices** (idx 113–119) |
+| Top ~89 most-frequent characters | **4 slices** (idx 115, 117–119) |
+| FreqRange slice size | uniform **~213 codepoints** each |
 
 So a typical CJK page downloads the ASCII slice + ~5–8 common-Han slices =
 **~6–9 small woff2 (~30–100 KB each)**, almost all shared with every other site
@@ -123,11 +130,11 @@ hit cheaply."
 
 | test | result |
 |---|---|
-| 10 assorted rare chars (鬱靈鑑釁衞夔饕餮龘鱻) | land in **10 different slices** (idx 4, 6, 9, 15, 22, 60, 81, 88, 92, 96) |
+| 10 assorted rare chars (鬱靈鑑釁衞夔饕餮龘鱻) | land in **10 different slices** |
 
-Each uncommon character sits in its own low-index slice, so using one rare glyph
-pulls in exactly **one** extra tiny file — and only if the page actually contains
-it. Pages that never use 鬱 never download 鬱's slice.
+Each uncommon character sits in its own bin, so using one rare glyph pulls in
+exactly **one** extra tiny file — and only if the page actually contains it. Pages
+that never use 鬱 never download 鬱's slice.
 
 ## 4. Why this shape is optimal
 
@@ -138,25 +145,28 @@ it. Pages that never use 鬱 never download 鬱's slice.
 - **Co-occurrence modelling** ⇒ characters that appear together (same slice)
   reduce the *number* of requests vs. naive frequency bucketing (the 20× win).
 - **Stable ids + immutable URLs** ⇒ cross-site browser-cache sharing.
-- Cost paid: **CSS is verbose** (mean 93 range fragments/slice → ~100 KB of CSS),
-  but it gzip/brotli-compresses to ~20–33 KB and is fetched once.
+- Cost paid: **CSS is verbose** (codepoints scatter into many range fragments →
+  ~100 KB of CSS), but it gzip/brotli-compresses to ~20–33 KB and is fetched once.
 
 ## 5. Implications for cheritage
 
-- We **snapshot the resolved Noto TC ranges** (`data/slices.{sans,serif}.json`),
-  so we **inherit Google's frequency tuning for free** — our Shanggu/GenYo/LXGW
-  packages get the same "common text → few files" behaviour without re-deriving a
-  partition.
+- We **derive the partition from the Apache-2.0 `nam-files` strategy**
+  (`data/slices.traditional-chinese.json`, generated from
+  `data/sources/traditional-chinese_default.txt`), so we **inherit Google's
+  frequency tuning for free** — Shanggu/GenYo/LXGW get the same "common text → few
+  files" behaviour without re-deriving a partition, on a clean licensed lineage
+  (no scraped CSS).
 - We slice the **whole font** against this table; with `unicode-range` a TC page
   only ever pulls the common-Han + ASCII slices regardless of what else the font
   covers (the rationale already in spec §4).
-- **Caveat for narrow fonts (already in `docs/TODO.md`):** the table assumes
-  Noto-level coverage. A small font like **Klee One (~10k glyphs)** leaves many
+- **Caveat for narrow fonts (already in `docs/TODO.md`):** the table targets
+  full-coverage CJK. A small font like **Klee One (~10k glyphs)** leaves many
   slices empty/near-empty — those should be skipped (no woff2, no `@font-face`),
   exactly as Google omits ranges a font doesn't cover.
-- **Refresh discipline:** the partition is versioned (`v39`). If we ever
-  regenerate `data/slices.*.json`, slice ids shift and break cross-version cache
-  reuse — so treat the snapshot as a pinned, deliberately-bumped asset (spec §9.5).
+- **Refresh discipline:** the strategy is versioned by Google. If we re-pin
+  `data/sources/traditional-chinese_default.txt` and regenerate, slice ids shift
+  and break cross-version cache reuse — so treat it as a pinned, deliberately-bumped
+  asset (spec §9.5).
 
 ## 6. The successor: Incremental Font Transfer (IFT)
 
@@ -173,6 +183,6 @@ revisit before any large-scale production push.
 
 - Google Developers Blog — *Google Fonts launches Korean support*: https://developers.googleblog.com/en/google-fonts-launches-korean-support/
 - web.dev — *An API for fast, beautiful web fonts*: https://web.developers.google.cn/articles/api-for-fast-beautiful-web-fonts
-- `googlefonts/nam-files` — the subset codepoint definitions: https://github.com/googlefonts/nam-files
+- `googlefonts/nam-files` — slicing strategies + subset definitions (Apache-2.0): https://github.com/googlefonts/nam-files
 - W3C — *Incremental Font Transfer*: https://w3c.github.io/IFT/Overview.html
-- Primary data: `tests/fixtures/noto-{sans,serif}-tc.css2.txt` (Noto TC `v39`), analysed via `cheritage.slices`.
+- Primary data: `data/sources/traditional-chinese_default.txt` (pinned from nam-files), parsed via `cheritage.slices.parse_slicing_strategy`. Attribution: `data/sources/README.md`.
