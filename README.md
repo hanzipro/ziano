@@ -74,6 +74,28 @@ The browser downloads only the slices your page hits. Uncovered codepoints fall
 through to the next font in your stack (by design — no tofu, and the mechanism by
 which JP/KR/SC stay on system fonts).
 
+### Which CDN
+
+The packages are plain npm packages, so **any npm CDN serves them** — switching
+host is just editing the `@import` URL, no republish. Recommended:
+
+- **jsDelivr (default).** Multi-CDN with automatic failover, purpose-built for
+  static npm assets, immutable caching on versioned paths, widest global reach.
+  Use it unless you have a reason not to.
+  ```css
+  @import url("https://cdn.jsdelivr.net/npm/@cheritage/shanggu-serif/variable.css");
+  ```
+- **unpkg (Asia fallback).** Cloudflare-fronted; from a Taipei POP it measured
+  noticeably faster than jsDelivr (which routed via Singapore/Frankfurt). Good
+  primary if your audience is overwhelmingly Taiwan/Asia — trading jsDelivr's
+  multi-CDN resilience for lower regional latency.
+  ```css
+  @import url("https://unpkg.com/@cheritage/shanggu-serif/variable.css");
+  ```
+
+Pin a version for production (`@cheritage/shanggu-serif@1.2.3/...`); jsDelivr and
+unpkg serve versioned paths immutably, so the npm version is your cache-buster.
+
 ### System font first (`local()`)
 
 Where a font commonly ships on the OS, its `@font-face src` lists `local()`
