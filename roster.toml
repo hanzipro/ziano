@@ -110,3 +110,72 @@ asset_sha256    = "616be26e3448b1396b342533d046d8bb0d5b1801d80b5a8ee882811bdc625
   [[family.weights]]
   weight = 900
   member = "GenYoGothic2TW-H.otf"
+
+# --- 丹版 (TC): the more-traditional/heritage-leaning GenYo cut (傳承印刷體風格) ---
+# Same GenYo series + weights as the 月版/TW entries above, TC region. RFN gate passed.
+
+[[family]]
+id              = "genyo-min-tc"
+font_family     = "GenYo Min TC"
+style           = "serif"
+format          = "static"
+repo            = "ButTaiwan/genyo-font"
+release_tag     = "v2.100"
+asset           = "GenYoMin2TC-otf.zip"
+license_member  = "SIL_Open_Font_License_1.1.txt"
+asset_sha256    = "45cbaca2e813810e84b4ddef1a4cf9cf6bb8d5ee75c1c68f0e1cdfb9afc85863"
+
+  [[family.weights]]
+  weight = 250
+  member = "GenYoMin2TC-EL.otf"
+  [[family.weights]]
+  weight = 300
+  member = "GenYoMin2TC-L.otf"
+  [[family.weights]]
+  weight = 400
+  member = "GenYoMin2TC-R.otf"
+  [[family.weights]]
+  weight = 500
+  member = "GenYoMin2TC-M.otf"
+  [[family.weights]]
+  weight = 600
+  member = "GenYoMin2TC-SB.otf"
+  [[family.weights]]
+  weight = 700
+  member = "GenYoMin2TC-B.otf"
+  [[family.weights]]
+  weight = 900
+  member = "GenYoMin2TC-H.otf"
+
+[[family]]
+id              = "genyo-gothic-tc"
+font_family     = "GenYo Gothic TC"
+style           = "sans"
+format          = "static"
+repo            = "ButTaiwan/genyog-font"
+release_tag     = "v2.100"
+asset           = "GenYoGothic2TC-otf.zip"
+license_member  = "SIL_Open_Font_License_1.1.txt"
+asset_sha256    = "e87a63854a4f378e03684377c6d8d491099737233179961bde70cd0d83b0e849"
+
+  [[family.weights]]
+  weight = 250
+  member = "GenYoGothic2TC-EL.otf"
+  [[family.weights]]
+  weight = 300
+  member = "GenYoGothic2TC-L.otf"
+  [[family.weights]]
+  weight = 350
+  member = "GenYoGothic2TC-N.otf"
+  [[family.weights]]
+  weight = 400
+  member = "GenYoGothic2TC-R.otf"
+  [[family.weights]]
+  weight = 500
+  member = "GenYoGothic2TC-M.otf"
+  [[family.weights]]
+  weight = 700
+  member = "GenYoGothic2TC-B.otf"
+  [[family.weights]]
+  weight = 900
+  member = "GenYoGothic2TC-H.otf"

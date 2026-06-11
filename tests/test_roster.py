@@ -39,6 +39,17 @@ def test_load_roster_static_families_have_per_weight_members():
     assert gweights[350] == "GenYoGothic2TW-N.otf"
 
 
+def test_load_roster_tc_dan_families():
+    by_id = {f.id: f for f in load_roster("roster.toml")}
+    min_tc = by_id["genyo-min-tc"]
+    assert min_tc.format == "static"
+    assert min_tc.font_family == "GenYo Min TC"
+    assert min_tc.asset == "GenYoMin2TC-otf.zip"
+    assert {w.member for w in min_tc.weights} >= {"GenYoMin2TC-SB.otf", "GenYoMin2TC-EL.otf"}
+    gothic_tc = by_id["genyo-gothic-tc"]
+    assert {w.weight for w in gothic_tc.weights} == {250, 300, 350, 400, 500, 700, 900}
+
+
 def test_load_roster_rejects_static_without_weights(tmp_path):
     bad = tmp_path / "bad.toml"
     bad.write_text(
