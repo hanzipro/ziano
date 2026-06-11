@@ -1,0 +1,29 @@
+from .roster import FamilyConfig
+from .slices import Slice
+
+
+def woff2_name(fam: FamilyConfig, slice_index: int, weight: int | None = None) -> str:
+    if fam.format == "vf" or weight is None:
+        return f"{fam.id}.{slice_index}.woff2"
+    return f"{fam.id}.{weight}.{slice_index}.woff2"
+
+
+def _face(fam: FamilyConfig, s: Slice, weight: int | None) -> str:
+    if fam.format == "vf":
+        weight_decl = f"font-weight: {fam.weight_min} {fam.weight_max};"
+    else:
+        weight_decl = f"font-weight: {weight};"
+    return (
+        "@font-face {\n"
+        f"  font-family: '{fam.font_family}';\n"
+        "  font-style: normal;\n"
+        f"  {weight_decl}\n"
+        "  font-display: swap;\n"
+        f"  src: url(./files/{woff2_name(fam, s.index, weight)}) format('woff2');\n"
+        f"  unicode-range: {s.unicode_range};\n"
+        "}\n"
+    )
+
+
+def generate_css(fam: FamilyConfig, slices: list[Slice], weight: int | None = None) -> str:
+    return "\n".join(_face(fam, s, weight) for s in slices)
