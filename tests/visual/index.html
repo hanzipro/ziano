@@ -1,0 +1,26 @@
+<!doctype html>
+<meta charset="utf-8" />
+<title>cheritage visual smoke</title>
+<style>
+  @import url("../../dist/shanggu-serif/variable.css");
+  @import url("../../dist/shanggu-sans/variable.css");
+  body { font-size: 48px; line-height: 2; margin: 2rem; }
+  .label { font: 14px/1.4 system-ui, sans-serif; color: #888; }
+  .serif { font-family: "Shanggu Serif", serif; }
+  .sans  { font-family: "Shanggu Sans", sans-serif; font-weight: 300; }
+  .heavy { font-weight: 900; }   /* proves the VF axis works from one file */
+</style>
+
+<!-- 戶 骨 直 過 青 are classic 傳承 vs 國標 divergence points -->
+<p class="label">serif · default weight</p>
+<p class="serif">傳承字形：戶骨直過青說海角</p>
+
+<p class="label">sans · weight 300</p>
+<p class="sans">傳承字形：戶骨直過青說海角</p>
+
+<p class="label">sans · weight 900 (same VF file, heavier axis)</p>
+<p class="sans heavy">字重 900：戶骨直過青</p>
+
+<!-- mixed-script: kana/hangul/SC should fall through to system font, not tofu -->
+<p class="label">mixed script — JP/KR/SC fall through to system fonts (no tofu)</p>
+<p class="serif">混排：漢字 かな 한글 简体</p>
