@@ -14,27 +14,27 @@ and interaction*, not the static-HTML stack.
 
 ---
 
-## Decisions (please confirm the ⚑ ones)
+## Decisions — CONFIRMED 2026-06-12
 
-- **Stack: Vite + vanilla TypeScript** (no framework). A typography specimen needs
-  DOM + a few sliders/toggles; React/Vue would be dead weight and bloat the Pages
-  bundle. Vanilla TS + a little CSS = fast, tiny, ideal for Pages.
-- **Location: `demo/`** in this repo (mirrors the reference's `demo/`), as a
-  self-contained pnpm project (`demo/package.json`, `demo/vite.config.ts`).
-- **⚑ Font hosting** — the one real decision:
-  - **Dev (now):** load fonts from the local built `dist/` (a tiny prebuild script
-    copies the needed packages' `index.css` + `files/*.woff2` into
-    `demo/public/fonts/<id>/`). Self-contained, works offline.
-  - **Pages (prod):** switch the `@import`s to **jsDelivr** once `@hanzi.pro/webfonts-*`
-    is published — Pages then hosts only HTML/CSS/JS (tiny). A build-time flag
-    (`VITE_FONT_SRC=cdn|local`) swaps the source.
-  - *Recommendation:* CDN for Pages. **Do not** commit/host all 10 packages' woff2
-    on Pages (the GenYo packages alone are ~33 MB each).
-- **⚑ Design direction:** "ink on paper" — warm off-white background, near-black
-  ink, one restrained accent (vermilion 朱, nodding to 丹版); Shanggu as the
-  display face; system-ui only for UI chrome. Light/dark toggle optional.
-- **Base path:** project Pages serves under `/cheritage/` → `vite base` set from an
-  env var so dev (`/`) and Pages (`/cheritage/`) both work.
+- **Stack: Bun + Vite + vanilla TypeScript** (no framework). Bun as runtime +
+  package manager (replaces node/pnpm); Vite for dev/build. Fast, tiny, Pages-ready.
+- **Location: `demo/`** — self-contained bun project, kept entirely separate from
+  `dist/` (build artifacts). `demo/public/fonts/` (local font copy) is gitignored.
+- **Font source = runtime-switchable.** A control lets the user pick the font
+  source: **Local** (now) and, once published, **jsDelivr** / **unpkg**. The picker
+  rewrites the `@import` host live (and is reflected in the copyable snippet).
+  Default Local until 0.1.0 is up.
+- **Roster: ALL 10 families, as a PLAYGROUND.** The core UX: the user freely
+  toggles families + weights (+ style/variant), sees them render live, and the page
+  shows the **exact CSS `@import` snippet for their current selection, copy-able**.
+- **Slice-loader viz: YES, scoped to the two Shanggu families** (serif+sans) for
+  now — type Chinese → watch which of the 120 slices light up / get fetched.
+- **Pages: not yet.** Develop + run locally (:7070) now. After 0.1.0 npm publish and
+  a CDN sanity check, ship the CDN-sourced build to Pages.
+- **Design:** "ink on paper" — warm off-white, near-black ink, one 朱紅 vermilion
+  accent (nods to 丹版); Shanggu as the display face; system-ui only for chrome.
+- **Base path:** `vite base` from env so dev (`/`) and future Pages (`/cheritage/`)
+  both work.
 
 ---
 
