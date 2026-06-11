@@ -1,0 +1,41 @@
+# Each [[family]] is one packaged face. Data only — no code.
+# format: "vf" (variable, one file spans all weights) | "static" (per-weight)
+# style:  "serif" | "sans"  → selects the slice table (data/slices.<style>.json)
+# asset:  the GitHub-release asset (a .7z archive of region variants)
+# member: the exact font file to extract from the archive
+#         → the *TC* region variant: TC heritage glyphs as default + full coverage
+# license_member: the OFL license file inside the archive
+#
+# Real values confirmed against the live GuiWonder/Shanggu 1.028 release:
+#   - tag is "1.028" (no leading "v")
+#   - assets are .7z archives of all region variants
+#   - the TC VF axis is wght 250..900 (not 100..900)
+#   - no Reserved Font Name is declared in the OFL → upstream-derived names kept
+
+[[family]]
+id              = "shanggu-serif"
+font_family     = "Shanggu Serif"          # keep name (spec §7); RFN gate passed
+style           = "serif"
+format          = "vf"
+weight_min      = 250
+weight_max      = 900
+repo            = "GuiWonder/Shanggu"
+release_tag     = "1.028"
+asset           = "ShangguSerifVF_TTFs.7z"
+member          = "ShangguSerifTC-VF.ttf"
+license_member  = "LICENSE.txt"
+asset_sha256    = "36c26a19f159d4e388de115e222fd663dd7d0629d0dba48b289f85a7cd85c399"
+
+[[family]]
+id              = "shanggu-sans"
+font_family     = "Shanggu Sans"
+style           = "sans"
+format          = "vf"
+weight_min      = 250
+weight_max      = 900
+repo            = "GuiWonder/Shanggu"
+release_tag     = "1.028"
+asset           = "ShangguSansVF_TTFs.7z"
+member          = "ShangguSansTC-VF.ttf"
+license_member  = "LICENSE.txt"
+asset_sha256    = "31b207a05332196ff444114d66de1c7b622d3a7244ec15a2485e8d0844cb1984"
