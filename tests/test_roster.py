@@ -39,6 +39,22 @@ def test_load_roster_static_families_have_per_weight_members():
     assert gweights[350] == "GenYoGothic2TW-N.otf"
 
 
+def test_load_roster_cursive_families():
+    by_id = {f.id: f for f in load_roster("roster.toml")}
+    lxgw = by_id["lxgw-wenkai-tc"]
+    assert lxgw.style == "cursive" and lxgw.format == "static"
+    assert {w.weight for w in lxgw.weights} == {300, 400, 500}
+    assert lxgw.license_member == "lxgw-wenkai-tc-v1.522/OFL.txt"
+    iansui = by_id["iansui"]
+    assert {w.weight for w in iansui.weights} == {400}  # single weight
+    assert iansui.weights[0].member == "Iansui-Regular.ttf"
+
+
+def test_cursive_style_uses_serif_slice_table():
+    from cheritage.roster import slice_table_name
+    assert slice_table_name("cursive") == "serif"
+
+
 def test_load_roster_tc_dan_families():
     by_id = {f.id: f for f in load_roster("roster.toml")}
     min_tc = by_id["genyo-min-tc"]

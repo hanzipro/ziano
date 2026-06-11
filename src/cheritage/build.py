@@ -4,8 +4,7 @@ from pathlib import Path
 from .acquire import download, extract_member
 from .cssgen import generate_css, generate_index_css, weight_css_name, woff2_name
 from .package import write_package_skeleton
-from .roster import FamilyConfig
-from .roster import load_roster
+from .roster import FamilyConfig, load_roster, slice_table_name
 from .slices import Slice, load_slices
 from .subset import subset_to_woff2
 
@@ -52,7 +51,7 @@ def build_family(family_id: str, *, roster_path: str, dest: str, version: str,
     license_path = extract_member(archive, fam.license_member, work)
     license_text = Path(license_path).read_text(encoding="utf-8", errors="replace")
 
-    slices = load_slices(f"data/slices.{fam.style}.json")
+    slices = load_slices(f"data/slices.{slice_table_name(fam.style)}.json")
 
     if fam.format == "vf":
         return _build_vf(fam, archive, work, slices,

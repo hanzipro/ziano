@@ -1,8 +1,17 @@
 import tomllib
 from dataclasses import dataclass, field
 
-_STYLES = {"serif", "sans"}
+_STYLES = {"serif", "sans", "cursive"}
 _FORMATS = {"vf", "static"}
+
+# Which snapshot slice table a style uses. The partition is just Unicode
+# buckets (cache-friendly boundaries), so it is script-agnostic; cursive (楷書,
+# a handwriting/brush style) reuses the serif table.
+_SLICE_TABLE = {"serif": "serif", "sans": "sans", "cursive": "serif"}
+
+
+def slice_table_name(style: str) -> str:
+    return _SLICE_TABLE[style]
 
 
 @dataclass(frozen=True)

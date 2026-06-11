@@ -179,3 +179,44 @@ asset_sha256    = "e87a63854a4f378e03684377c6d8d491099737233179961bde70cd0d83b0e
   [[family.weights]]
   weight = 900
   member = "GenYoGothic2TC-H.otf"
+
+# --- 楷體 (style "cursive" / handwriting). cheritage bans 國字標準字體 only in
+# PRINTED faces (serif/sans); 楷 is a handwriting style, so MOE-standard forms are
+# allowed here. Iansui = 國字標準字體 楷 (MOE). LXGW WenKai TC = 傳承字形 楷.
+# Users pick freely. ---
+
+[[family]]
+id              = "lxgw-wenkai-tc"
+font_family     = "LXGW WenKai TC"
+style           = "cursive"
+format          = "static"
+repo            = "lxgw/LxgwWenkaiTC"
+release_tag     = "v1.522"
+asset           = "lxgw-wenkai-tc-v1.522.zip"
+license_member  = "lxgw-wenkai-tc-v1.522/OFL.txt"
+asset_sha256    = "1c3021d72c2000fdbad219bbf093a7a20fe1f8de7699ca4b4017192afe2b542f"
+
+  [[family.weights]]
+  weight = 300
+  member = "lxgw-wenkai-tc-v1.522/LXGWWenKaiTC-Light.ttf"
+  [[family.weights]]
+  weight = 400
+  member = "lxgw-wenkai-tc-v1.522/LXGWWenKaiTC-Regular.ttf"
+  [[family.weights]]
+  weight = 500
+  member = "lxgw-wenkai-tc-v1.522/LXGWWenKaiTC-Medium.ttf"
+
+[[family]]
+id              = "iansui"
+font_family     = "Iansui"
+style           = "cursive"
+format          = "static"
+repo            = "ButTaiwan/iansui"
+release_tag     = "v1.020"
+asset           = "iansui.zip"
+license_member  = "OFL.txt"
+asset_sha256    = "28d58aef9b7a21c137945a4fd14138d6284a8573c0c1b123f6e5b708423348a6"
+
+  [[family.weights]]
+  weight = 400
+  member = "Iansui-Regular.ttf"

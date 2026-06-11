@@ -54,3 +54,19 @@ def test_build_genyo_gothic_static_one_weight(tmp_path):
     # only the requested weight was subset
     assert not list((root / "files").glob("genyo-gothic.700.*.woff2"))
     assert "SIL Open Font License" in (root / "LICENSE").read_text()
+
+
+@pytest.mark.integration
+def test_build_iansui_cursive_single_weight(tmp_path):
+    # cursive style → serif slice table (108 ranges); single-weight static font
+    root = build_family(
+        "iansui", roster_path="roster.toml", dest=str(tmp_path), version="0.1.0"
+    )
+    assert json.loads((root / "package.json").read_text())["name"] == "@cheritage/iansui"
+    index = (root / "index.css").read_text()
+    assert index.strip() == '@import url("./400.css");'  # one weight
+    css = (root / "400.css").read_text()
+    woff2 = list((root / "files").glob("iansui.400.*.woff2"))
+    assert len(woff2) == css.count("@font-face") > 50
+    assert all(p.read_bytes()[:4] == b"wOF2" for p in woff2)
+    assert "Open Font License" in (root / "LICENSE").read_text()
