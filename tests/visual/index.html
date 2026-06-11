@@ -4,23 +4,35 @@
 <style>
   @import url("../../dist/shanggu-serif/variable.css");
   @import url("../../dist/shanggu-sans/variable.css");
-  body { font-size: 48px; line-height: 2; margin: 2rem; }
-  .label { font: 14px/1.4 system-ui, sans-serif; color: #888; }
-  .serif { font-family: "Shanggu Serif", serif; }
-  .sans  { font-family: "Shanggu Sans", sans-serif; font-weight: 300; }
+  @import url("../../dist/genyo-min/index.css");
+  @import url("../../dist/genyo-gothic/index.css");
+  body { font-size: 44px; line-height: 1.9; margin: 2rem; }
+  .label { font: 14px/1.4 system-ui, sans-serif; color: #888; margin-top: 1.4em; }
+  .sg-serif { font-family: "Shanggu Serif", serif; }
+  .sg-sans  { font-family: "Shanggu Sans", sans-serif; font-weight: 300; }
+  .gy-min    { font-family: "GenYo Min", serif; }
+  .gy-gothic { font-family: "GenYo Gothic", sans-serif; }
+  .w400 { font-weight: 400; }
+  .w700 { font-weight: 700; }
   .heavy { font-weight: 900; }   /* proves the VF axis works from one file */
 </style>
 
 <!-- 戶 骨 直 過 青 are classic 傳承 vs 國標 divergence points -->
-<p class="label">serif · default weight</p>
-<p class="serif">傳承字形：戶骨直過青說海角</p>
+<p class="label">Shanggu serif (full 舊字形) · default weight</p>
+<p class="sg-serif">傳承字形：戶骨直過青說海角</p>
 
-<p class="label">sans · weight 300</p>
-<p class="sans">傳承字形：戶骨直過青說海角</p>
+<p class="label">Shanggu sans · weight 300 → 900 (same VF file, heavier axis)</p>
+<p class="sg-sans">傳承字形：戶骨直過青說海角</p>
+<p class="sg-sans heavy">字重 900：戶骨直過青</p>
 
-<p class="label">sans · weight 900 (same VF file, heavier axis)</p>
-<p class="sans heavy">字重 900：戶骨直過青</p>
+<!-- neutral-alt: GenYo (月版/TW), static per-weight -->
+<p class="label">GenYo Min (neutral, 月版/TW) · weight 400 vs 700 (separate static files)</p>
+<p class="gy-min w400">傳承字形：戶骨直過青說海角</p>
+<p class="gy-min w700">字重 700：戶骨直過青</p>
+
+<p class="label">GenYo Gothic (neutral, 月版/TW) · weight 400</p>
+<p class="gy-gothic w400">傳承字形：戶骨直過青說海角</p>
 
 <!-- mixed-script: kana/hangul/SC should fall through to system font, not tofu -->
 <p class="label">mixed script — JP/KR/SC fall through to system fonts (no tofu)</p>
-<p class="serif">混排：漢字 かな 한글 简体</p>
+<p class="sg-serif">混排：漢字 かな 한글 简体</p>
