@@ -22,8 +22,11 @@ and (b) our empirical analysis of it.
   **~7 slices**; the ~90 most frequent characters live in **5 slices** (and ~78 of
   them in just **2**); **10 random rare characters land in 10 different slices**.
   Basic Latin/ASCII sits in the final slice and is effectively always loaded.
-- That is the whole trick: **common text → a few cache-shared files; a rare
-  character → one extra tiny file, only if you use it.**
+- That is the whole trick: **common text → a few small files; a rare character →
+  one extra tiny file, only if you use it.** (Note: modern browsers *partition* the
+  HTTP cache per top-level site — Chrome 86+, Firefox 85+, Safari since 2013 — so
+  these files are **not** reused across different sites; each site downloads them
+  itself once, then reuses within that site.)
 
 ---
 
@@ -122,9 +125,10 @@ direct evidence the grouping is by *frequency*, not by code point.
 | FreqRange slice size | uniform **~213 codepoints** each |
 
 So a typical CJK page downloads the ASCII slice + ~5–8 common-Han slices =
-**~6–9 small woff2 (~30–100 KB each)**, almost all shared with every other site
-using the same font. This is *the* mechanism that "ensures common characters are
-hit cheaply."
+**~6–9 woff2 (≈0.5–1 MB total for a VF serif; less for sans/static)**, fetched once
+per site and then reused across that site's pages. This is *the* mechanism that
+"ensures common characters are hit cheaply." (Per-site, not cross-site — see §4 on
+cache partitioning.)
 
 ### 3c. Rare characters are isolated
 
@@ -144,7 +148,12 @@ that never use 鬱 never download 鬱's slice.
   rare glyph never drags in a big bucket of unrelated rare glyphs.
 - **Co-occurrence modelling** ⇒ characters that appear together (same slice)
   reduce the *number* of requests vs. naive frequency bucketing (the 20× win).
-- **Stable ids + immutable URLs** ⇒ cross-site browser-cache sharing.
+- **Stable ids + immutable URLs** ⇒ within-site cache reuse (across a site's pages
+  and repeat visits) + CDN edge caching. **Not** cross-site: modern browsers
+  partition the HTTP cache by top-level site (Chrome 86+, Firefox 85+, Safari since
+  2013), so the old "shared CDN cache across sites" benefit is gone — each site
+  downloads the slices itself once. The win is now CDN-edge speed + within-site
+  reuse, not cross-site sharing.
 - Cost paid: **CSS is verbose** (codepoints scatter into many range fragments →
   ~100 KB of CSS), but it gzip/brotli-compresses to ~20–33 KB and is fetched once.
 
