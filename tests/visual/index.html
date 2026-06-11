@@ -8,6 +8,8 @@
   @import url("../../dist/genyo-gothic/index.css");
   @import url("../../dist/genyo-min-tc/index.css");
   @import url("../../dist/genyo-gothic-tc/index.css");
+  @import url("../../dist/lxgw-wenkai-tc/index.css");
+  @import url("../../dist/iansui/index.css");
   body { font-size: 44px; line-height: 1.9; margin: 2rem; }
   .label { font: 14px/1.4 system-ui, sans-serif; color: #888; margin-top: 1.4em; }
   .sg-serif { font-family: "Shanggu Serif", serif; }
@@ -16,6 +18,8 @@
   .gy-gothic { font-family: "GenYo Gothic", sans-serif; }
   .gy-min-tc    { font-family: "GenYo Min TC", serif; }
   .gy-gothic-tc { font-family: "GenYo Gothic TC", sans-serif; }
+  .lxgw   { font-family: "LXGW WenKai TC", cursive; }
+  .iansui { font-family: "Iansui", cursive; }
   .w400 { font-weight: 400; }
   .w700 { font-weight: 700; }
   .heavy { font-weight: 900; }   /* proves the VF axis works from one file */
@@ -45,6 +49,13 @@
 <p class="label">GenYo Gothic 月版/TW vs 丹版/TC · weight 400</p>
 <p class="gy-gothic w400">月版：者著廾虛黃骨過</p>
 <p class="gy-gothic-tc w400">丹版：者著廾虛黃骨過</p>
+
+<!-- 楷 (cursive): handwriting style. LXGW = 傳承, Iansui = 國字標準 (allowed for 楷) -->
+<p class="label">楷 · LXGW WenKai TC (傳承字形) · weight 400 vs 300/500</p>
+<p class="lxgw w400">傳承字形：戶骨直過青說海角</p>
+
+<p class="label">楷 · Iansui 芫荽 (國字標準字體, 手寫體可用) · weight 400</p>
+<p class="iansui w400">傳承字形：戶骨直過青說海角</p>
 
 <!-- mixed-script: kana/hangul/SC should fall through to system font, not tofu -->
 <p class="label">mixed script — JP/KR/SC fall through to system fonts (no tofu)</p>
