@@ -31,6 +31,23 @@ def test_static_font_face_uses_single_weight_and_weight_suffix():
     assert "src: url(./files/genyo-min.700.0.woff2) format('woff2');" in css
 
 
+def test_local_names_emitted_before_url():
+    fam = FamilyConfig(
+        id="klee-one", font_family="Klee One", style="cursive", format="static",
+        repo="fontworks-fonts/Klee", release_tag="Version1.000", source="raw",
+        local_names=("Klee One", "Klee"),
+        weights=(Weight(400, "fonts/ttf/KleeOne-Regular.ttf"),),
+    )
+    css = generate_css(fam, [Slice(0, "U+4e00")], weight=400)
+    assert 'src: local("Klee One"), local("Klee"), ' \
+           "url(./files/klee-one.400.0.woff2) format('woff2');" in css
+
+
+def test_no_local_names_keeps_plain_url():
+    css = generate_css(VF, [Slice(0, "U+4e00-4e10")])
+    assert "src: url(./files/shanggu-serif.0.woff2) format('woff2');" in css
+
+
 def test_generate_index_css_imports_each_weight_sorted():
     fam = FamilyConfig(
         id="genyo-min", font_family="GenYo Min", style="serif", format="static",

@@ -1,8 +1,9 @@
 import tomllib
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 _STYLES = {"serif", "sans", "cursive"}
 _FORMATS = {"vf", "static"}
+_SOURCES = {"release", "raw"}
 
 # Which snapshot slice table a style uses. The partition is just Unicode
 # buckets (cache-friendly boundaries), so it is script-agnostic; cursive (楷書,
@@ -17,7 +18,8 @@ def slice_table_name(style: str) -> str:
 @dataclass(frozen=True)
 class Weight:
     weight: int  # CSS font-weight (from the font's usWeightClass)
-    member: str  # the per-weight font file inside the asset archive
+    member: str  # per-weight font file (archive member, or raw repo path)
+    sha256: str = ""  # raw source: per-file checksum (release uses asset_sha256)
 
 
 @dataclass(frozen=True)
@@ -27,14 +29,18 @@ class FamilyConfig:
     style: str
     format: str
     repo: str
-    release_tag: str
-    asset: str
-    asset_sha256: str
+    release_tag: str  # release tag (source=release) or git ref/tag (source=raw)
+    asset: str = ""  # release: the downloadable archive; unused for raw
+    asset_sha256: str = ""
+    source: str = "release"  # "release" (GitHub release asset) | "raw" (repo file)
     license_member: str = "LICENSE.txt"
     member: str = ""  # vf: the single font file inside the archive
     weights: tuple[Weight, ...] = ()  # static: one entry per weight
     weight_min: int = 400  # vf: fvar axis bounds → CSS "font-weight: min max"
     weight_max: int = 400
+    # local() names tried before the webfont url in @font-face src, so a browser
+    # with the system font (e.g. macOS "Klee One") downloads nothing.
+    local_names: tuple[str, ...] = ()
 
 
 def load_roster(path: str) -> list[FamilyConfig]:
@@ -49,7 +55,10 @@ def load_roster(path: str) -> list[FamilyConfig]:
         fmt = raw.get("format")
         if fmt not in _FORMATS:
             raise ValueError(f"invalid format {fmt!r} in {fam_id!r}")
+        if raw.get("source", "release") not in _SOURCES:
+            raise ValueError(f"invalid source {raw.get('source')!r} in {fam_id!r}")
         weights = tuple(Weight(**w) for w in raw.pop("weights", []))
+        raw["local_names"] = tuple(raw.get("local_names", []))
         if fmt == "vf" and not raw.get("member"):
             raise ValueError(f"vf family {fam_id!r} needs a member")
         if fmt == "static" and not weights:

@@ -70,3 +70,19 @@ def test_build_iansui_cursive_single_weight(tmp_path):
     assert len(woff2) == css.count("@font-face") > 50
     assert all(p.read_bytes()[:4] == b"wOF2" for p in woff2)
     assert "Open Font License" in (root / "LICENSE").read_text()
+
+
+@pytest.mark.integration
+def test_build_klee_raw_source_with_local(tmp_path):
+    # raw source (no GitHub release) + local() priority for the macOS system font
+    root = build_family(
+        "klee-one", roster_path="roster.toml", dest=str(tmp_path), version="0.1.0",
+        only_weights=[400],
+    )
+    assert json.loads((root / "package.json").read_text())["name"] == "@cheritage/klee-one"
+    css = (root / "400.css").read_text()
+    assert 'src: local("Klee One"), local("Klee"), url(./files/klee-one.400.' in css
+    woff2 = list((root / "files").glob("klee-one.400.*.woff2"))
+    assert len(woff2) == css.count("@font-face") > 50
+    assert all(p.read_bytes()[:4] == b"wOF2" for p in woff2)
+    assert "Open Font License" in (root / "LICENSE").read_text()

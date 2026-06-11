@@ -55,6 +55,30 @@ def test_cursive_style_uses_serif_slice_table():
     assert slice_table_name("cursive") == "serif"
 
 
+def test_load_roster_raw_source_and_local_names():
+    by_id = {f.id: f for f in load_roster("roster.toml")}
+    klee = by_id["klee-one"]
+    assert klee.source == "raw"
+    assert klee.local_names == ("Klee One", "Klee")
+    assert {w.weight for w in klee.weights} == {400, 600}
+    # raw weights carry their own sha256
+    assert all(w.sha256 for w in klee.weights)
+    # release families default to source=release with empty local_names
+    assert by_id["shanggu-serif"].source == "release"
+    assert by_id["shanggu-serif"].local_names == ()
+    assert by_id["lxgw-wenkai"].local_names == ("LXGW WenKai",)
+
+
+def test_load_roster_rejects_bad_source(tmp_path):
+    bad = tmp_path / "bad.toml"
+    bad.write_text(
+        '[[family]]\nid="x"\nfont_family="X"\nstyle="serif"\nformat="vf"\n'
+        'source="ftp"\nrepo="a/b"\nrelease_tag="v1"\nmember="x.ttf"\n'
+    )
+    with pytest.raises(ValueError, match="source"):
+        load_roster(str(bad))
+
+
 def test_load_roster_tc_dan_families():
     by_id = {f.id: f for f in load_roster("roster.toml")}
     min_tc = by_id["genyo-min-tc"]

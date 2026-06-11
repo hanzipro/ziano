@@ -220,3 +220,49 @@ asset_sha256    = "28d58aef9b7a21c137945a4fd14138d6284a8573c0c1b123f6e5b70842334
   [[family.weights]]
   weight = 400
   member = "Iansui-Regular.ttf"
+
+# --- 楷 SC + JP. 楷體在手機/Safari 幾乎無系統字可用 → webfont 補足。
+# Klee 在 Mac 上常有 → local() 優先取系統字，沒有才下載 web font。 ---
+
+[[family]]
+id              = "lxgw-wenkai"
+font_family     = "LXGW WenKai"
+style           = "cursive"
+format          = "static"
+repo            = "lxgw/LxgwWenKai"
+release_tag     = "v1.522"
+asset           = "lxgw-wenkai-v1.522.zip"
+license_member  = "lxgw-wenkai-v1.522/OFL.txt"
+asset_sha256    = "3b596205423d838ccd0965bfa2c7e8b6ebcb9d9284e1809e234ad1d5f441adef"
+local_names     = ["LXGW WenKai"]
+
+  [[family.weights]]
+  weight = 300
+  member = "lxgw-wenkai-v1.522/LXGWWenKai-Light.ttf"
+  [[family.weights]]
+  weight = 400
+  member = "lxgw-wenkai-v1.522/LXGWWenKai-Regular.ttf"
+  [[family.weights]]
+  weight = 500
+  member = "lxgw-wenkai-v1.522/LXGWWenKai-Medium.ttf"
+
+# Klee One (Fontworks, JP 楷). No GitHub release → raw repo files at a pinned tag.
+[[family]]
+id              = "klee-one"
+font_family     = "Klee One"
+style           = "cursive"
+format          = "static"
+source          = "raw"
+repo            = "fontworks-fonts/Klee"
+release_tag     = "Version1.000"
+license_member  = "OFL.txt"
+local_names     = ["Klee One", "Klee"]
+
+  [[family.weights]]
+  weight = 400
+  member = "fonts/ttf/KleeOne-Regular.ttf"
+  sha256 = "74cb0a6523cc22b221ceaa7b78b56cea66512ec14b4145fd0102ffe27c30d084"
+  [[family.weights]]
+  weight = 600
+  member = "fonts/ttf/KleeOne-SemiBold.ttf"
+  sha256 = "9dbb25466c575f6dc8768a28845798f67fa5d47a5d20a6408c30c58d700a1044"

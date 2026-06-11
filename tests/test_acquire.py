@@ -19,6 +19,25 @@ def test_sha256_file(tmp_path):
     assert sha256_file(str(p)) == hashlib.sha256(b"hello").hexdigest()
 
 
+def test_raw_file_url():
+    from cheritage.acquire import raw_file_url
+    assert raw_file_url("fontworks-fonts/Klee", "Version1.000", "fonts/ttf/KleeOne-Regular.ttf") == (
+        "https://raw.githubusercontent.com/fontworks-fonts/Klee/Version1.000/"
+        "fonts/ttf/KleeOne-Regular.ttf"
+    )
+
+
+@pytest.mark.integration
+def test_download_raw_klee_is_a_real_font():
+    from fontTools.ttLib import TTFont
+    from cheritage.acquire import download_raw
+    p = download_raw(
+        "fontworks-fonts/Klee", "Version1.000", "fonts/ttf/KleeOne-Regular.ttf",
+        expected_sha256="74cb0a6523cc22b221ceaa7b78b56cea66512ec14b4145fd0102ffe27c30d084",
+    )
+    assert TTFont(str(p))["name"].getDebugName(1) == "Klee One"
+
+
 def test_download_rejects_sha256_mismatch(tmp_path, monkeypatch):
     import cheritage.acquire as acq
 

@@ -8,6 +8,13 @@ def woff2_name(fam: FamilyConfig, slice_index: int, weight: int | None = None) -
     return f"{fam.id}.{weight}.{slice_index}.woff2"
 
 
+def _src(fam: FamilyConfig, slice_index: int, weight: int | None) -> str:
+    # local() names first → a browser with the system font downloads nothing.
+    parts = [f'local("{n}")' for n in fam.local_names]
+    parts.append(f"url(./files/{woff2_name(fam, slice_index, weight)}) format('woff2')")
+    return "src: " + ", ".join(parts) + ";"
+
+
 def _face(fam: FamilyConfig, s: Slice, weight: int | None) -> str:
     if fam.format == "vf":
         weight_decl = f"font-weight: {fam.weight_min} {fam.weight_max};"
@@ -19,7 +26,7 @@ def _face(fam: FamilyConfig, s: Slice, weight: int | None) -> str:
         "  font-style: normal;\n"
         f"  {weight_decl}\n"
         "  font-display: swap;\n"
-        f"  src: url(./files/{woff2_name(fam, s.index, weight)}) format('woff2');\n"
+        f"  {_src(fam, s.index, weight)}\n"
         f"  unicode-range: {s.unicode_range};\n"
         "}\n"
     )
