@@ -178,7 +178,11 @@ per-family npm package  ──publish──▶  npm  ──▶  jsDelivr CDN
    on `ShangguSerifTC-VF.ttf` (1.028): **24/24 common-hard 傳承 chars covered, 0
    missing**, out of 44,791 cmap glyphs. The "high raw count hoards rare chars but
    misses common-hard" hypothesis did not materialize for the curated set; no roster
-   reorder. (Re-evaluate when GenYo lands in Plan 2 for a serif-vs-serif comparison.)
+   reorder. **Plan 2 serif-vs-serif update (2026-06-12):** Shanggu Serif 44,791
+   glyphs vs GenYo Min R (TW/月) 35,349 glyphs — **both cover 24/24** common-hard
+   chars, 0 missing. Shanggu's higher raw count does not buy common-hard coverage
+   here, but neither family fails it; default stands. (RFN gate also passed for
+   both GenYo families — no Reserved Font Name declared.)
 2. ~~OFL naming~~ — **Decided: keep upstream names**, subject to the per-font
    Reserved-Font-Name check in §7 (rename only if an RFN is declared).
 3. ~~GenYo static weight set~~ — **Decided: ship all ~7 Source Han weights.**
