@@ -10,6 +10,9 @@ def css_entry_name(fam: FamilyConfig) -> str:
 
 def package_json(fam: FamilyConfig, *, version: str) -> dict:
     entry = css_entry_name(fam)
+    # static ships one css per weight (caught by the *.css glob) alongside index.css
+    files = ["*.css", "files/", "LICENSE", "README.md"] if fam.format == "static" \
+        else [entry, "files/", "LICENSE", "README.md"]
     return {
         "name": f"@cheritage/{fam.id}",
         "version": version,
@@ -20,7 +23,7 @@ def package_json(fam: FamilyConfig, *, version: str) -> dict:
         "license": "OFL-1.1",
         "sideEffects": ["*.css"],
         "exports": {f"./{entry}": f"./{entry}", "./files/*": "./files/*"},
-        "files": [entry, "files/", "LICENSE", "README.md"],
+        "files": files,
         "keywords": ["webfont", "cjk", "traditional-chinese", "傳承字形", fam.style],
     }
 
@@ -50,10 +53,13 @@ def render_readme(fam: FamilyConfig, *, version: str) -> str:
 def write_package_skeleton(
     fam: FamilyConfig, *, dest: str, version: str,
     css: str, license_text: str, readme: str | None = None,
+    extra_css: dict[str, str] | None = None,
 ) -> Path:
     root = Path(dest) / fam.id
     (root / "files").mkdir(parents=True, exist_ok=True)
     (root / css_entry_name(fam)).write_text(css)
+    for name, text in (extra_css or {}).items():
+        (root / name).write_text(text)
     (root / "LICENSE").write_text(license_text)
     (root / "README.md").write_text(readme if readme is not None else render_readme(fam, version=version))
     (root / "package.json").write_text(
