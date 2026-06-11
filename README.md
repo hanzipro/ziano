@@ -25,11 +25,17 @@ See `docs/superpowers/specs/` for the full design.
 | `@cheritage/genyo-gothic` | 源樣黑體 GenYo Gothic | 黑 sans | static | 7 | neutral · 月版/TW (milder) |
 | `@cheritage/genyo-min-tc` | 源樣明體 GenYo Min TC | 明 serif | static | 7 | 丹版/TC (傳承印刷體) |
 | `@cheritage/genyo-gothic-tc` | 源樣黑體 GenYo Gothic TC | 黑 sans | static | 7 | 丹版/TC (傳承印刷體) |
-| `@cheritage/lxgw-wenkai-tc` | LXGW WenKai TC 霞鶩文楷 | 楷 cursive | static | 3 | 傳承字形 |
+| `@cheritage/lxgw-wenkai-tc` | LXGW WenKai TC 霞鶩文楷 | 楷 cursive | static | 3 | 傳承字形 (TC) |
+| `@cheritage/lxgw-wenkai` | LXGW WenKai 霞鶩文楷 | 楷 cursive | static | 3 | 傳承字形 (SC) |
 | `@cheritage/iansui` | Iansui 芫荽 | 楷 cursive | static | 1 | 國字標準字體 (MOE) |
+| `@cheritage/klee-one` | Klee One | 楷 cursive | static | 2 | JP 楷 (Klee) |
 
 GenYo weights: serif `250 300 400 500 600 700 900`, sans `250 300 350 400 500 700 900`.
-LXGW weights: `300 400 500`.
+LXGW weights: `300 400 500`. Klee One weights: `400 600`.
+
+楷 (cursive) is offered widest because system 楷 fonts are scarce on mobile and
+restricted in macOS Safari — webfonts are often the only option. LXGW = 傳承字形
+(TC + SC); Iansui = 國字標準字體; Klee One = the JP cut.
 
 ## Printed vs. handwriting: where MOE standard forms are (dis)allowed
 
@@ -67,6 +73,18 @@ The print faces (Shanggu, GenYo) remain heritage-only.
 The browser downloads only the slices your page hits. Uncovered codepoints fall
 through to the next font in your stack (by design — no tofu, and the mechanism by
 which JP/KR/SC stay on system fonts).
+
+### System font first (`local()`)
+
+Where a font commonly ships on the OS, its `@font-face src` lists `local()`
+before the webfont url, so a browser that already has it downloads **nothing**:
+
+```css
+src: local("Klee One"), local("Klee"), url(./files/klee-one.400.0.woff2) format('woff2');
+```
+
+`@cheritage/klee-one` (macOS often has Klee) and `@cheritage/lxgw-wenkai` prefer
+the local copy and only fetch slices when it is absent.
 
 > Tip: for static families, importing `index.css` pulls every weight's CSS via
 > `@import`. If you only need one or two weights, import those `<weight>.css`

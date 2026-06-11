@@ -10,6 +10,8 @@
   @import url("../../dist/genyo-gothic-tc/index.css");
   @import url("../../dist/lxgw-wenkai-tc/index.css");
   @import url("../../dist/iansui/index.css");
+  @import url("../../dist/lxgw-wenkai/index.css");
+  @import url("../../dist/klee-one/index.css");
   body { font-size: 44px; line-height: 1.9; margin: 2rem; }
   .label { font: 14px/1.4 system-ui, sans-serif; color: #888; margin-top: 1.4em; }
   .sg-serif { font-family: "Shanggu Serif", serif; }
@@ -20,6 +22,8 @@
   .gy-gothic-tc { font-family: "GenYo Gothic TC", sans-serif; }
   .lxgw   { font-family: "LXGW WenKai TC", cursive; }
   .iansui { font-family: "Iansui", cursive; }
+  .lxgw-sc { font-family: "LXGW WenKai", cursive; }
+  .klee    { font-family: "Klee One", cursive; }
   .w400 { font-weight: 400; }
   .w700 { font-weight: 700; }
   .heavy { font-weight: 900; }   /* proves the VF axis works from one file */
@@ -56,6 +60,12 @@
 
 <p class="label">楷 · Iansui 芫荽 (國字標準字體, 手寫體可用) · weight 400</p>
 <p class="iansui w400">傳承字形：戶骨直過青說海角</p>
+
+<p class="label">楷 · LXGW WenKai SC (简中版傳承) · weight 400 — 简体：传承字形过青说</p>
+<p class="lxgw-sc w400">简体楷书：传承字形过青说海角</p>
+
+<p class="label">楷 · Klee One (JP, local() 優先取系統字) · weight 400/600</p>
+<p class="klee w400">日本語かな漢字：戶骨直過青</p>
 
 <!-- mixed-script: kana/hangul/SC should fall through to system font, not tofu -->
 <p class="label">mixed script — JP/KR/SC fall through to system fonts (no tofu)</p>
