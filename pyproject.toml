@@ -1,0 +1,20 @@
+[project]
+name = "cheritage"
+version = "0.0.0"
+description = "傳承字形 webfont CDN build pipeline"
+requires-python = ">=3.12"
+dependencies = ["fonttools[woff]>=4.50", "py7zr>=0.21"]
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/cheritage"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+markers = ["integration: needs network / real fonts (deselect with -m 'not integration')"]
