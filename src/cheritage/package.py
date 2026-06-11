@@ -1,0 +1,62 @@
+import json
+from pathlib import Path
+
+from .roster import FamilyConfig
+
+
+def css_entry_name(fam: FamilyConfig) -> str:
+    return "variable.css" if fam.format == "vf" else "index.css"
+
+
+def package_json(fam: FamilyConfig, *, version: str) -> dict:
+    entry = css_entry_name(fam)
+    return {
+        "name": f"@cheritage/{fam.id}",
+        "version": version,
+        "description": (
+            f"{fam.font_family} — 傳承字形 webfont subset of {fam.repo} "
+            f"({fam.release_tag}), sliced by cheritage."
+        ),
+        "license": "OFL-1.1",
+        "sideEffects": ["*.css"],
+        "exports": {f"./{entry}": f"./{entry}", "./files/*": "./files/*"},
+        "files": [entry, "files/", "LICENSE", "README.md"],
+        "keywords": ["webfont", "cjk", "traditional-chinese", "傳承字形", fam.style],
+    }
+
+
+def render_readme(fam: FamilyConfig, *, version: str) -> str:
+    entry = css_entry_name(fam)
+    pkg = f"@cheritage/{fam.id}"
+    return (
+        f"# {pkg}\n\n"
+        f"**{fam.font_family}** — 傳承字形 (heritage-glyph) Traditional-Chinese webfont, "
+        f"sliced into `unicode-range` woff2 subsets from "
+        f"[{fam.repo}](https://github.com/{fam.repo}) `{fam.release_tag}`.\n\n"
+        "## Usage\n\n"
+        "```css\n"
+        f'@import url("https://cdn.jsdelivr.net/npm/{pkg}@{version}/{entry}");\n\n'
+        f"body {{ font-family: \"{fam.font_family}\", serif; }}\n"
+        "```\n\n"
+        "The browser downloads only the slices your page actually uses. "
+        "Uncovered codepoints fall through to the next font in your stack "
+        "(by design — JP/KR/SC stay on system fonts, no tofu).\n\n"
+        "## License\n\n"
+        "SIL Open Font License 1.1 — see `LICENSE`. Font copyright remains with the "
+        f"upstream authors of {fam.repo}.\n"
+    )
+
+
+def write_package_skeleton(
+    fam: FamilyConfig, *, dest: str, version: str,
+    css: str, license_text: str, readme: str | None = None,
+) -> Path:
+    root = Path(dest) / fam.id
+    (root / "files").mkdir(parents=True, exist_ok=True)
+    (root / css_entry_name(fam)).write_text(css)
+    (root / "LICENSE").write_text(license_text)
+    (root / "README.md").write_text(readme if readme is not None else render_readme(fam, version=version))
+    (root / "package.json").write_text(
+        json.dumps(package_json(fam, version=version), indent=2, ensure_ascii=False)
+    )
+    return root
