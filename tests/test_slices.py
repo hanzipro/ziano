@@ -1,28 +1,52 @@
 from pathlib import Path
 
-from cheritage.slices import Slice, parse_css2_unicode_ranges
+from cheritage.slices import (
+    Slice,
+    format_unicode_range,
+    load_slices,
+    parse_slicing_strategy,
+    save_slices,
+)
+
+PROTO = """\
+# a comment
+subsets {
+  codepoints: 65 # A
+  codepoints: 66 # B
+  codepoints: 67 # C
+  codepoints: 19968 # 一
+}
+subsets {
+  codepoints: 32
+}
+"""
 
 
-def test_parse_css2_yields_one_slice_per_font_face():
-    css = Path("tests/fixtures/noto-sans-tc.css2.txt").read_text()
-    slices = parse_css2_unicode_ranges(css)
-    assert 100 <= len(slices) <= 130  # ~105 blocks
-    assert all(isinstance(s, Slice) for s in slices)
-    assert slices[0].index == 0
-    assert "U+" in slices[0].unicode_range
+def test_format_unicode_range_collapses_runs():
+    assert format_unicode_range({0x41, 0x42, 0x43, 0x4E00}) == "U+41-43, U+4e00"
+    assert format_unicode_range({0x20}) == "U+20"
+
+
+def test_parse_slicing_strategy_yields_indexed_slices():
+    slices = parse_slicing_strategy(PROTO)
+    assert len(slices) == 2
+    assert slices[0].index == 0 and slices[1].index == 1
+    assert slices[0].unicode_range == "U+41-43, U+4e00"
+    assert slices[0].codepoints() == {0x41, 0x42, 0x43, 0x4E00}
+    assert slices[1].unicode_range == "U+20"
+
+
+def test_real_tc_strategy_parses_to_120_slices():
+    text = Path("data/sources/traditional-chinese_default.txt").read_text()
+    slices = parse_slicing_strategy(text)
+    assert len(slices) == 120
+    total = set()
     for s in slices:
-        for tok in s.unicode_range.split(","):
-            assert tok.strip().startswith("U+")
-
-
-def test_slice_codepoints_expands_ranges():
-    s = Slice(index=0, unicode_range="U+41-43, U+4e00")
-    assert s.codepoints() == {0x41, 0x42, 0x43, 0x4E00}
+        total |= s.codepoints()
+    assert len(total) == 17704
 
 
 def test_save_then_load_roundtrips(tmp_path):
-    from cheritage.slices import load_slices, save_slices
-
     original = [Slice(0, "U+41-43"), Slice(1, "U+4e00, U+4e01")]
     path = tmp_path / "slices.json"
     save_slices(original, str(path))

@@ -50,9 +50,11 @@ def test_load_roster_cursive_families():
     assert iansui.weights[0].member == "Iansui-Regular.ttf"
 
 
-def test_cursive_style_uses_serif_slice_table():
+def test_styles_use_canonical_tc_slice_table():
     from cheritage.roster import slice_table_name
-    assert slice_table_name("cursive") == "serif"
+    assert slice_table_name("cursive") == "traditional-chinese"
+    assert slice_table_name("serif") == "traditional-chinese"
+    assert slice_table_name("sans") == "traditional-chinese"
 
 
 def test_load_roster_raw_source_and_local_names():

@@ -1,8 +1,5 @@
 import json
-import re
 from dataclasses import dataclass
-
-_UR_RE = re.compile(r"unicode-range:\s*([^;]+);", re.IGNORECASE)
 
 
 @dataclass(frozen=True)
@@ -22,11 +19,41 @@ class Slice:
         return cps
 
 
-def parse_css2_unicode_ranges(css: str) -> list[Slice]:
-    return [
-        Slice(index=i, unicode_range=m.group(1).strip())
-        for i, m in enumerate(_UR_RE.finditer(css))
-    ]
+def format_unicode_range(cps: set[int]) -> str:
+    """Collapse a set of codepoints into a compact CSS unicode-range token list."""
+    out: list[str] = []
+    s = sorted(cps)
+    i = 0
+    while i < len(s):
+        j = i
+        while j + 1 < len(s) and s[j + 1] == s[j] + 1:
+            j += 1
+        out.append(f"U+{s[i]:x}" if i == j else f"U+{s[i]:x}-{s[j]:x}")
+        i = j + 1
+    return ", ".join(out)
+
+
+def parse_slicing_strategy(text: str) -> list[Slice]:
+    """Parse a Google Fonts nam-files slicing-strategy text-proto into slices.
+
+    The proto is a sequence of `subsets { codepoints: N ... }` blocks (Apache-2.0,
+    googlefonts/nam-files). Block order is preserved as the slice index.
+    """
+    slices: list[Slice] = []
+    cur: set[int] | None = None
+    idx = 0
+    for raw in text.splitlines():
+        line = raw.strip()
+        if line.startswith("subsets"):
+            cur = set()
+        elif line.startswith("}"):
+            if cur is not None:
+                slices.append(Slice(index=idx, unicode_range=format_unicode_range(cur)))
+                idx += 1
+                cur = None
+        elif line.startswith("codepoints:") and cur is not None:
+            cur.add(int(line[len("codepoints:"):].split("#", 1)[0].strip()))
+    return slices
 
 
 def save_slices(slices: list[Slice], path: str) -> None:

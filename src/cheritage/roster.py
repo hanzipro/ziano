@@ -5,10 +5,15 @@ _STYLES = {"serif", "sans", "cursive"}
 _FORMATS = {"vf", "static"}
 _SOURCES = {"release", "raw"}
 
-# Which snapshot slice table a style uses. The partition is just Unicode
-# buckets (cache-friendly boundaries), so it is script-agnostic; cursive (楷書,
-# a handwriting/brush style) reuses the serif table.
-_SLICE_TABLE = {"serif": "serif", "sans": "sans", "cursive": "serif"}
+# Which slice table a style uses. We use Google Fonts' single canonical
+# Traditional-Chinese slicing strategy (Apache-2.0, googlefonts/nam-files) for
+# every print/handwriting style — the partition is font-agnostic Unicode buckets.
+# (A simplified-chinese table could be added later for SC-default fonts.)
+_SLICE_TABLE = {
+    "serif": "traditional-chinese",
+    "sans": "traditional-chinese",
+    "cursive": "traditional-chinese",
+}
 
 
 def slice_table_name(style: str) -> str:
