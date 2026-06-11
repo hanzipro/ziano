@@ -59,6 +59,7 @@ The roster is a **config file**; everything below is data, not code.
 - **Neutral alt = GenYo 月版 (Moon).** Static-only (no VF in its releases —
   confirmed: v2.100 ships `*-ttc.zip` + per-region OTF, no `VF`/`Variable`
   asset). Provides a milder cut for users who find full 舊字形 too aggressive.
+  Ships **all ~7 Source Han weights** as static per-weight slices (decided).
 - Chiron Hei/Sung were **rejected** — they balance standard + printed forms and
   are explicitly *not* 舊字形/傳承.
 - Future drop-in roster entries (config only): I.Ming 一點明體 (the canonical
@@ -147,9 +148,12 @@ per-family npm package  ──publish──▶  npm  ──▶  jsDelivr CDN
   Chromium/Firefox/Safari; the static GenYo packages double as the conservative
   fallback family for ancient engines.
 - **OFL Reserved Font Name** — subsetting is technically a modification.
-  Decision pending (§9): keep original names (as Fontsource does) vs. rename
-  derived families. Each package must bundle the upstream `OFL.txt` and
-  preserve copyright/RFN notices regardless.
+  **Decided: keep the upstream font name.** Caveat (compliance gate): OFL's RFN
+  clause forbids the *reserved* name on a modified build, so per font we must
+  check whether the upstream `OFL.txt` actually declares a Reserved Font Name —
+  keep the name where none is declared (the common case; what Fontsource relies
+  on), rename only if an RFN forces it. Each package bundles the upstream
+  `OFL.txt` and preserves copyright/RFN notices regardless.
 - jsDelivr 50 MB/file limit — slices are ~30–100 KB each, never an issue.
 
 ## 8. Testing / verification
@@ -171,10 +175,9 @@ per-family npm package  ──publish──▶  npm  ──▶  jsDelivr CDN
 
 1. **Coverage verdict** — result of §8 coverage analysis; confirm Shanggu is the
    right *practical* default (not just VF-convenient). May reorder roster.
-2. **OFL naming** — keep upstream font names on the subsetted output vs. rename
-   derived families. Affects `@font-face font-family` and package naming.
-3. **GenYo static weight set** — ship all of Source Han's ~7 weights, or a lean
-   400 / 500 / 700 to cut package size. (VF Shanggu is unaffected — one file.)
+2. ~~OFL naming~~ — **Decided: keep upstream names**, subject to the per-font
+   Reserved-Font-Name check in §7 (rename only if an RFN is declared).
+3. ~~GenYo static weight set~~ — **Decided: ship all ~7 Source Han weights.**
 4. **v1 stop line** — Shanggu + GenYo only, or also ship I.Ming as a "prestige"
    entry from day one.
 5. **Slice-table provenance** — snapshot Google's `css2` ranges into a static
