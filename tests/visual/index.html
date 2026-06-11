@@ -6,12 +6,16 @@
   @import url("../../dist/shanggu-sans/variable.css");
   @import url("../../dist/genyo-min/index.css");
   @import url("../../dist/genyo-gothic/index.css");
+  @import url("../../dist/genyo-min-tc/index.css");
+  @import url("../../dist/genyo-gothic-tc/index.css");
   body { font-size: 44px; line-height: 1.9; margin: 2rem; }
   .label { font: 14px/1.4 system-ui, sans-serif; color: #888; margin-top: 1.4em; }
   .sg-serif { font-family: "Shanggu Serif", serif; }
   .sg-sans  { font-family: "Shanggu Sans", sans-serif; font-weight: 300; }
   .gy-min    { font-family: "GenYo Min", serif; }
   .gy-gothic { font-family: "GenYo Gothic", sans-serif; }
+  .gy-min-tc    { font-family: "GenYo Min TC", serif; }
+  .gy-gothic-tc { font-family: "GenYo Gothic TC", sans-serif; }
   .w400 { font-weight: 400; }
   .w700 { font-weight: 700; }
   .heavy { font-weight: 900; }   /* proves the VF axis works from one file */
@@ -32,6 +36,11 @@
 
 <p class="label">GenYo Gothic (neutral, 月版/TW) · weight 400</p>
 <p class="gy-gothic w400">傳承字形：戶骨直過青說海角</p>
+
+<!-- 月版(TW) vs 丹版(TC): 者 has a dot in 丹版, none in 月版; 廾/虛 etc differ -->
+<p class="label">GenYo Min 月版/TW vs 丹版/TC · 者 著 廾 虛 黃 — note 者's dot &amp; print forms</p>
+<p class="gy-min w400">月版：者著廾虛黃骨過</p>
+<p class="gy-min-tc w400">丹版：者著廾虛黃骨過</p>
 
 <!-- mixed-script: kana/hangul/SC should fall through to system font, not tofu -->
 <p class="label">mixed script — JP/KR/SC fall through to system fonts (no tofu)</p>

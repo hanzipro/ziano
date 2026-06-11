@@ -98,7 +98,20 @@ for per-weight members, a static branch in `build.py`, and the per-weight CSS +
 
 ---
 
+## Task 7: GenYo 丹版/TC (added 2026-06-12, post-plan)
+
+Heritage-leaning cut requested after the 月版 build. Config-only — the static
+pipeline (Tasks 1–4) was unchanged.
+
+- Added `genyo-min-tc` / `genyo-gothic-tc` to `roster.toml` (family names
+  `GenYo Min TC` / `GenYo Gothic TC`), pointing at `GenYo{Min,Gothic}2TC-otf.zip`.
+- Verified vs the live release: same GenYo series + same weight sets as TW
+  (serif incl. SB 600, sans incl. N 350), real `usWeightClass`, OFL member
+  `SIL_Open_Font_License_1.1.txt`, **RFN gate passed** (no Reserved Font Name).
+- sha256: Min-TC `45cbaca2…5863`, Gothic-TC `e87a6385…e849`.
+- Built both (7 weights × ~105 slices); harness shows a 月版-vs-丹版 row.
+
 ## Deferred (unchanged from Plan 1's list)
 Plan 3 meta-package · Plan 4 CI/publish · Plan 5 demo site · Plan 6 han.css
-integration. Possible future: GenYo **TC (丹版)** as a heritage-leaning variant;
-Genki series; other regions (HK/JP).
+integration. Possible future: **Genki (源起)** series (broken-stroke, design
+use); other regions (HK/JP).
