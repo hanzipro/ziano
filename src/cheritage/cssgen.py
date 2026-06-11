@@ -27,3 +27,13 @@ def _face(fam: FamilyConfig, s: Slice, weight: int | None) -> str:
 
 def generate_css(fam: FamilyConfig, slices: list[Slice], weight: int | None = None) -> str:
     return "\n".join(_face(fam, s, weight) for s in slices)
+
+
+def weight_css_name(weight: int) -> str:
+    return f"{weight}.css"
+
+
+def generate_index_css(fam: FamilyConfig) -> str:
+    """For static families: an index.css that @imports every per-weight css."""
+    weights = sorted(w.weight for w in fam.weights)
+    return "".join(f'@import url("./{weight_css_name(w)}");\n' for w in weights)
