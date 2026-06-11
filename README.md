@@ -58,8 +58,8 @@ The print faces (Shanggu, GenYo) remain heritage-only.
 
 ```css
 /* flagship: Shanggu, variable, full 舊字形 */
-@import url("https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif/variable.css");
-@import url("https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans/variable.css");
+@import url("https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif/index.css");
+@import url("https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans/index.css");
 
 /* static families import index.css (all weights) or a single weight, e.g. ./400.css */
 @import url("https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-lxgw-wenkai-tc/400.css");
@@ -83,14 +83,14 @@ host is just editing the `@import` URL, no republish. Recommended:
   static npm assets, immutable caching on versioned paths, widest global reach.
   Use it unless you have a reason not to.
   ```css
-  @import url("https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif/variable.css");
+  @import url("https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif/index.css");
   ```
 - **unpkg (Asia fallback).** Cloudflare-fronted; from a Taipei POP it measured
   noticeably faster than jsDelivr (which routed via Singapore/Frankfurt). Good
   primary if your audience is overwhelmingly Taiwan/Asia — trading jsDelivr's
   multi-CDN resilience for lower regional latency.
   ```css
-  @import url("https://unpkg.com/@hanzi.pro/webfonts-shanggu-serif/variable.css");
+  @import url("https://unpkg.com/@hanzi.pro/webfonts-shanggu-serif/index.css");
   ```
 
 Pin a version for production (`@hanzi.pro/webfonts-shanggu-serif@1.2.3/...`); jsDelivr and

@@ -13,7 +13,7 @@ def test_build_shanggu_serif_produces_installable_package(tmp_path):
     pj = json.loads((root / "package.json").read_text())
     assert pj["name"] == "@hanzi.pro/webfonts-shanggu-serif"
 
-    css = (root / "variable.css").read_text()
+    css = (root / "index.css").read_text()
     assert "font-weight: 250 900;" in css
     n_faces = css.count("@font-face")
 

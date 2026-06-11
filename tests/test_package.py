@@ -22,7 +22,7 @@ def test_package_json_fields():
     assert pj["version"] == "0.1.0"
     assert pj["license"] == "OFL-1.1"
     assert pj["sideEffects"] == ["*.css"]
-    assert pj["exports"]["./variable.css"] == "./variable.css"
+    assert pj["exports"]["./index.css"] == "./index.css"
     assert "GuiWonder/Shanggu" in pj["description"]
 
 
@@ -32,7 +32,7 @@ def test_write_package_skeleton_creates_layout(tmp_path):
         css="@font-face{}", license_text="OFL TEXT", readme="# hi",
     )
     assert (root / "package.json").exists()
-    assert (root / "variable.css").read_text() == "@font-face{}"
+    assert (root / "index.css").read_text() == "@font-face{}"
     assert (root / "LICENSE").read_text() == "OFL TEXT"
     assert (root / "README.md").read_text() == "# hi"
     assert (root / "files").is_dir()

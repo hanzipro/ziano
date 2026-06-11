@@ -16,7 +16,9 @@ def package_name(fam: FamilyConfig) -> str:
 
 
 def css_entry_name(fam: FamilyConfig) -> str:
-    return "variable.css" if fam.format == "vf" else "index.css"
+    # Uniform entry for every family — import index.css regardless of vf/static.
+    # (VF: the variable @font-face rules; static: @imports of each weight.)
+    return "index.css"
 
 
 def package_json(fam: FamilyConfig, *, version: str) -> dict:
