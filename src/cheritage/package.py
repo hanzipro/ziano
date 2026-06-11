@@ -3,6 +3,17 @@ from pathlib import Path
 
 from .roster import FamilyConfig
 
+# npm publishing identity. Packages publish as @hanzi.pro/webfonts-<id>.
+# The GitHub repo (cheritage) deliberately does NOT appear in the package name.
+PKG_SCOPE = "@hanzi.pro"
+PKG_PREFIX = "webfonts-"
+REPO_URL = "https://github.com/hanzi-pro/cheritage"  # TODO: confirm GitHub org slug
+HOMEPAGE = "https://hanzi.pro"
+
+
+def package_name(fam: FamilyConfig) -> str:
+    return f"{PKG_SCOPE}/{PKG_PREFIX}{fam.id}"
+
 
 def css_entry_name(fam: FamilyConfig) -> str:
     return "variable.css" if fam.format == "vf" else "index.css"
@@ -14,23 +25,27 @@ def package_json(fam: FamilyConfig, *, version: str) -> dict:
     files = ["*.css", "files/", "LICENSE", "README.md"] if fam.format == "static" \
         else [entry, "files/", "LICENSE", "README.md"]
     return {
-        "name": f"@cheritage/{fam.id}",
+        "name": package_name(fam),
         "version": version,
         "description": (
             f"{fam.font_family} — 傳承字形 webfont subset of {fam.repo} "
             f"({fam.release_tag}), sliced by cheritage."
         ),
         "license": "OFL-1.1",
+        "homepage": HOMEPAGE,
+        "repository": {"type": "git", "url": f"git+{REPO_URL}.git"},
         "sideEffects": ["*.css"],
         "exports": {f"./{entry}": f"./{entry}", "./files/*": "./files/*"},
         "files": files,
         "keywords": ["webfont", "cjk", "traditional-chinese", "傳承字形", fam.style],
+        # scoped packages are private by default — must opt into public publish
+        "publishConfig": {"access": "public"},
     }
 
 
 def render_readme(fam: FamilyConfig, *, version: str) -> str:
     entry = css_entry_name(fam)
-    pkg = f"@cheritage/{fam.id}"
+    pkg = package_name(fam)
     return (
         f"# {pkg}\n\n"
         f"**{fam.font_family}** — 傳承字形 (heritage-glyph) Traditional-Chinese webfont, "

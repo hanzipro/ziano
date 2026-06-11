@@ -18,7 +18,7 @@ VF = FamilyConfig(
 
 def test_package_json_fields():
     pj = package_json(VF, version="0.1.0")
-    assert pj["name"] == "@cheritage/shanggu-serif"
+    assert pj["name"] == "@hanzi.pro/webfonts-shanggu-serif"
     assert pj["version"] == "0.1.0"
     assert pj["license"] == "OFL-1.1"
     assert pj["sideEffects"] == ["*.css"]
@@ -36,12 +36,12 @@ def test_write_package_skeleton_creates_layout(tmp_path):
     assert (root / "LICENSE").read_text() == "OFL TEXT"
     assert (root / "README.md").read_text() == "# hi"
     assert (root / "files").is_dir()
-    assert json.loads((root / "package.json").read_text())["name"] == "@cheritage/shanggu-serif"
+    assert json.loads((root / "package.json").read_text())["name"] == "@hanzi.pro/webfonts-shanggu-serif"
 
 
 def test_static_package_json_uses_index_and_css_glob():
     pj = package_json(STATIC, version="0.1.0")
-    assert pj["name"] == "@cheritage/genyo-min"
+    assert pj["name"] == "@hanzi.pro/webfonts-genyo-min"
     assert pj["exports"]["./index.css"] == "./index.css"
     assert "*.css" in pj["files"]
 

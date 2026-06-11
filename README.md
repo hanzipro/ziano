@@ -19,16 +19,16 @@ See `docs/superpowers/specs/` for the full design.
 
 | Package | Family | Style | Format | Weights | Glyph forms |
 |---|---|---|---|---|---|
-| `@cheritage/shanggu-serif` | 尚古宋 Shanggu Serif | 明 serif | **VF** | 250–900 | **full 舊字形** (flagship) |
-| `@cheritage/shanggu-sans` | 尚古黑 Shanggu Sans | 黑 sans | **VF** | 250–900 | **full 舊字形** (flagship) |
-| `@cheritage/genyo-min` | 源樣明體 GenYo Min | 明 serif | static | 7 | neutral · 月版/TW (milder) |
-| `@cheritage/genyo-gothic` | 源樣黑體 GenYo Gothic | 黑 sans | static | 7 | neutral · 月版/TW (milder) |
-| `@cheritage/genyo-min-tc` | 源樣明體 GenYo Min TC | 明 serif | static | 7 | 丹版/TC (傳承印刷體) |
-| `@cheritage/genyo-gothic-tc` | 源樣黑體 GenYo Gothic TC | 黑 sans | static | 7 | 丹版/TC (傳承印刷體) |
-| `@cheritage/lxgw-wenkai-tc` | LXGW WenKai TC 霞鶩文楷 | 楷 cursive | static | 3 | 傳承字形 (TC) |
-| `@cheritage/lxgw-wenkai` | LXGW WenKai 霞鶩文楷 | 楷 cursive | static | 3 | 傳承字形 (SC) |
-| `@cheritage/iansui` | Iansui 芫荽 | 楷 cursive | static | 1 | 國字標準字體 (MOE) |
-| `@cheritage/klee-one` | Klee One | 楷 cursive | static | 2 | JP 楷 (Klee) |
+| `@hanzi.pro/webfonts-shanggu-serif` | 尚古宋 Shanggu Serif | 明 serif | **VF** | 250–900 | **full 舊字形** (flagship) |
+| `@hanzi.pro/webfonts-shanggu-sans` | 尚古黑 Shanggu Sans | 黑 sans | **VF** | 250–900 | **full 舊字形** (flagship) |
+| `@hanzi.pro/webfonts-genyo-min` | 源樣明體 GenYo Min | 明 serif | static | 7 | neutral · 月版/TW (milder) |
+| `@hanzi.pro/webfonts-genyo-gothic` | 源樣黑體 GenYo Gothic | 黑 sans | static | 7 | neutral · 月版/TW (milder) |
+| `@hanzi.pro/webfonts-genyo-min-tc` | 源樣明體 GenYo Min TC | 明 serif | static | 7 | 丹版/TC (傳承印刷體) |
+| `@hanzi.pro/webfonts-genyo-gothic-tc` | 源樣黑體 GenYo Gothic TC | 黑 sans | static | 7 | 丹版/TC (傳承印刷體) |
+| `@hanzi.pro/webfonts-lxgw-wenkai-tc` | LXGW WenKai TC 霞鶩文楷 | 楷 cursive | static | 3 | 傳承字形 (TC) |
+| `@hanzi.pro/webfonts-lxgw-wenkai` | LXGW WenKai 霞鶩文楷 | 楷 cursive | static | 3 | 傳承字形 (SC) |
+| `@hanzi.pro/webfonts-iansui` | Iansui 芫荽 | 楷 cursive | static | 1 | 國字標準字體 (MOE) |
+| `@hanzi.pro/webfonts-klee-one` | Klee One | 楷 cursive | static | 2 | JP 楷 (Klee) |
 
 GenYo weights: serif `250 300 400 500 600 700 900`, sans `250 300 350 400 500 700 900`.
 LXGW weights: `300 400 500`. Klee One weights: `400 600`.
@@ -47,9 +47,9 @@ faces where heritage vs. standard forms are a real typographic choice.
 standard forms are legitimate (they are, after all, modelled on handwriting). So
 cheritage admits a 楷 font that follows the MOE standard:
 
-- **`@cheritage/iansui`** (Iansui 芫荽) — a **國字標準字體** 楷. Allowed because it
+- **`@hanzi.pro/webfonts-iansui`** (Iansui 芫荽) — a **國字標準字體** 楷. Allowed because it
   is handwriting, not print.
-- **`@cheritage/lxgw-wenkai-tc`** (LXGW WenKai TC) — a **傳承字形** 楷 (Klee-based).
+- **`@hanzi.pro/webfonts-lxgw-wenkai-tc`** (LXGW WenKai TC) — a **傳承字形** 楷 (Klee-based).
 
 Both ship side by side so users **freely choose** the kai orthography they want.
 The print faces (Shanggu, GenYo) remain heritage-only.
@@ -58,11 +58,11 @@ The print faces (Shanggu, GenYo) remain heritage-only.
 
 ```css
 /* flagship: Shanggu, variable, full 舊字形 */
-@import url("https://cdn.jsdelivr.net/npm/@cheritage/shanggu-serif/variable.css");
-@import url("https://cdn.jsdelivr.net/npm/@cheritage/shanggu-sans/variable.css");
+@import url("https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif/variable.css");
+@import url("https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans/variable.css");
 
 /* static families import index.css (all weights) or a single weight, e.g. ./400.css */
-@import url("https://cdn.jsdelivr.net/npm/@cheritage/lxgw-wenkai-tc/400.css");
+@import url("https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-lxgw-wenkai-tc/400.css");
 
 :root {
   --han-heritage-serif: "Shanggu Serif";
@@ -83,17 +83,17 @@ host is just editing the `@import` URL, no republish. Recommended:
   static npm assets, immutable caching on versioned paths, widest global reach.
   Use it unless you have a reason not to.
   ```css
-  @import url("https://cdn.jsdelivr.net/npm/@cheritage/shanggu-serif/variable.css");
+  @import url("https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif/variable.css");
   ```
 - **unpkg (Asia fallback).** Cloudflare-fronted; from a Taipei POP it measured
   noticeably faster than jsDelivr (which routed via Singapore/Frankfurt). Good
   primary if your audience is overwhelmingly Taiwan/Asia — trading jsDelivr's
   multi-CDN resilience for lower regional latency.
   ```css
-  @import url("https://unpkg.com/@cheritage/shanggu-serif/variable.css");
+  @import url("https://unpkg.com/@hanzi.pro/webfonts-shanggu-serif/variable.css");
   ```
 
-Pin a version for production (`@cheritage/shanggu-serif@1.2.3/...`); jsDelivr and
+Pin a version for production (`@hanzi.pro/webfonts-shanggu-serif@1.2.3/...`); jsDelivr and
 unpkg serve versioned paths immutably, so the npm version is your cache-buster.
 
 ### System font first (`local()`)
@@ -105,7 +105,7 @@ before the webfont url, so a browser that already has it downloads **nothing**:
 src: local("Klee One"), local("Klee"), url(./files/klee-one.400.0.woff2) format('woff2');
 ```
 
-`@cheritage/klee-one` (macOS often has Klee) and `@cheritage/lxgw-wenkai` prefer
+`@hanzi.pro/webfonts-klee-one` (macOS often has Klee) and `@hanzi.pro/webfonts-lxgw-wenkai` prefer
 the local copy and only fetch slices when it is absent.
 
 > Tip: for static families, importing `index.css` pulls every weight's CSS via

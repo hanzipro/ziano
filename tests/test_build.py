@@ -11,7 +11,7 @@ def test_build_shanggu_serif_produces_installable_package(tmp_path):
         "shanggu-serif", roster_path="roster.toml", dest=str(tmp_path), version="0.1.0"
     )
     pj = json.loads((root / "package.json").read_text())
-    assert pj["name"] == "@cheritage/shanggu-serif"
+    assert pj["name"] == "@hanzi.pro/webfonts-shanggu-serif"
 
     css = (root / "variable.css").read_text()
     assert "font-weight: 250 900;" in css
@@ -36,7 +36,7 @@ def test_build_genyo_gothic_static_one_weight(tmp_path):
         version="0.1.0", only_weights=[400],
     )
     pj = json.loads((root / "package.json").read_text())
-    assert pj["name"] == "@cheritage/genyo-gothic"
+    assert pj["name"] == "@hanzi.pro/webfonts-genyo-gothic"
 
     index = (root / "index.css").read_text()
     for w in (250, 300, 350, 400, 500, 700, 900):
@@ -62,7 +62,7 @@ def test_build_iansui_cursive_single_weight(tmp_path):
     root = build_family(
         "iansui", roster_path="roster.toml", dest=str(tmp_path), version="0.1.0"
     )
-    assert json.loads((root / "package.json").read_text())["name"] == "@cheritage/iansui"
+    assert json.loads((root / "package.json").read_text())["name"] == "@hanzi.pro/webfonts-iansui"
     index = (root / "index.css").read_text()
     assert index.strip() == '@import url("./400.css");'  # one weight
     css = (root / "400.css").read_text()
@@ -79,7 +79,7 @@ def test_build_klee_raw_source_with_local(tmp_path):
         "klee-one", roster_path="roster.toml", dest=str(tmp_path), version="0.1.0",
         only_weights=[400],
     )
-    assert json.loads((root / "package.json").read_text())["name"] == "@cheritage/klee-one"
+    assert json.loads((root / "package.json").read_text())["name"] == "@hanzi.pro/webfonts-klee-one"
     css = (root / "400.css").read_text()
     assert 'src: local("Klee One"), local("Klee"), url(./files/klee-one.400.' in css
     woff2 = list((root / "files").glob("klee-one.400.*.woff2"))
