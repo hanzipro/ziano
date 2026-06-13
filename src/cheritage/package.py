@@ -7,7 +7,7 @@ from .roster import FamilyConfig
 # The GitHub repo (cheritage) deliberately does NOT appear in the package name.
 PKG_SCOPE = "@hanzi.pro"
 PKG_PREFIX = "webfonts-"
-REPO_URL = "https://github.com/hanzi-pro/cheritage"  # TODO: confirm GitHub org slug
+REPO_URL = "https://github.com/hanzipro/cheritage"
 HOMEPAGE = "https://hanzi.pro"
 
 
@@ -48,15 +48,23 @@ def package_json(fam: FamilyConfig, *, version: str) -> dict:
 def render_readme(fam: FamilyConfig, *, version: str) -> str:
     entry = css_entry_name(fam)
     pkg = package_name(fam)
+    css_url = f"https://cdn.jsdelivr.net/npm/{pkg}@{version}/{entry}"
+    fallback = "sans-serif" if fam.style == "sans" else "serif"
     return (
         f"# {pkg}\n\n"
         f"**{fam.font_family}** — 傳承字形 (heritage-glyph) Traditional-Chinese webfont, "
         f"sliced into `unicode-range` woff2 subsets from "
         f"[{fam.repo}](https://github.com/{fam.repo}) `{fam.release_tag}`.\n\n"
         "## Usage\n\n"
+        "Drop these in your `<head>` — `preconnect` warms the CDN connection so the "
+        "stylesheet (and the woff2 slices it pulls) arrive sooner:\n\n"
+        "```html\n"
+        '<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />\n'
+        f'<link rel="stylesheet" href="{css_url}" />\n'
+        "```\n\n"
+        "Then use the family in CSS:\n\n"
         "```css\n"
-        f'@import url("https://cdn.jsdelivr.net/npm/{pkg}@{version}/{entry}");\n\n'
-        f"body {{ font-family: \"{fam.font_family}\", serif; }}\n"
+        f'body {{ font-family: "{fam.font_family}", {fallback}; }}\n'
         "```\n\n"
         "The browser downloads only the slices your page actually uses. "
         "Uncovered codepoints fall through to the next font in your stack "
