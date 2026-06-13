@@ -120,5 +120,5 @@ and interaction*, not the static-HTML stack.
 ---
 
 ## Deferred (not this plan)
-Light/dark theme polish · i18n (中/EN copy toggle) · vertical-writing specimen ·
-the live slice-loader if it grows · wiring the demo into han.css docs.
+Light/dark theme polish・i18n (中/EN copy toggle)・vertical-writing specimen ·
+the live slice-loader if it grows・wiring the demo into han.css docs.

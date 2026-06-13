@@ -1,4 +1,4 @@
-# cheritage · 傳承字形 webfont CDN
+# cheritage・傳承字形 webfont CDN
 
 Free, CDN-hosted, drop-in **傳承字形 / 舊字形** (heritage / orthodox glyph form)
 Traditional-Chinese webfonts. cheritage does for heritage CJK what
@@ -15,14 +15,14 @@ See `docs/superpowers/specs/` for the full design.
 
 ## Roster
 
-黑 (sans) · 明 (serif) · 楷 (cursive) — all three styles covered.
+黑 (sans)・明 (serif)・楷 (cursive) — all three styles covered.
 
 | Package | Family | Style | Format | Weights | Glyph forms |
 |---|---|---|---|---|---|
 | `@hanzi.pro/webfonts-shanggu-serif` | 尚古宋 Shanggu Serif | 明 serif | **VF** | 250–900 | **full 舊字形** (flagship) |
 | `@hanzi.pro/webfonts-shanggu-sans` | 尚古黑 Shanggu Sans | 黑 sans | **VF** | 250–900 | **full 舊字形** (flagship) |
-| `@hanzi.pro/webfonts-genyo-min` | 源樣明體 GenYo Min | 明 serif | static | 7 | neutral · 月版/TW (milder) |
-| `@hanzi.pro/webfonts-genyo-gothic` | 源樣黑體 GenYo Gothic | 黑 sans | static | 7 | neutral · 月版/TW (milder) |
+| `@hanzi.pro/webfonts-genyo-min` | 源樣明體 GenYo Min | 明 serif | static | 7 | neutral・月版/TW (milder) |
+| `@hanzi.pro/webfonts-genyo-gothic` | 源樣黑體 GenYo Gothic | 黑 sans | static | 7 | neutral・月版/TW (milder) |
 | `@hanzi.pro/webfonts-genyo-min-tc` | 源樣明體 GenYo Min TC | 明 serif | static | 7 | 丹版/TC (傳承印刷體) |
 | `@hanzi.pro/webfonts-genyo-gothic-tc` | 源樣黑體 GenYo Gothic TC | 黑 sans | static | 7 | 丹版/TC (傳承印刷體) |
 | `@hanzi.pro/webfonts-lxgw-wenkai-tc` | LXGW WenKai TC 霞鶩文楷 | 楷 cursive | static | 3 | 傳承字形 (TC) |

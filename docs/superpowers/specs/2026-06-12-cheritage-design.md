@@ -1,7 +1,7 @@
 # cheritage — 傳承字形 webfont CDN
 
 **Status:** Design approved 2026-06-12. Pending implementation plan.
-**Repo:** `~/Workspace/hanzi.pro/cheritage` · npm: `cheritage` (meta) + `@cheritage/*` (per-family)
+**Repo:** `~/Workspace/hanzi.pro/cheritage`・npm: `cheritage` (meta) + `@cheritage/*` (per-family)
 
 ---
 

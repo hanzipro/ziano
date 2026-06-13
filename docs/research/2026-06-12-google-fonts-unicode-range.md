@@ -1,6 +1,6 @@
 # How Google Fonts slices CJK with `unicode-range` — research report
 
-**Date:** 2026-06-12 · **Scope:** the partition logic cheritage uses in
+**Date:** 2026-06-12・**Scope:** the partition logic cheritage uses in
 `data/slices.traditional-chinese.json`. Combines (a) Google's official slicing
 strategy — the Apache-2.0 text-proto pinned at
 `data/sources/traditional-chinese_default.txt` (from `googlefonts/nam-files`) —
@@ -99,7 +99,7 @@ Measured on the canonical table (`data/slices.traditional-chinese.json`).
 | slices | 120 |
 | codepoints covered | 17,704 |
 | …of which CJK Unified (U+4E00–9FFF) | 12,548 |
-| codepoints per slice | min 134 · **mean 147** · max 214 |
+| codepoints per slice | min 134・**mean 147**・max 214 |
 
 ### 3a. Slices are frequency-ordered (rarest → commonest), ASCII last
 

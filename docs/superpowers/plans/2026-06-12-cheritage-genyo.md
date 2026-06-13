@@ -29,8 +29,8 @@ for per-weight members, a static branch in `build.py`, and the per-weight CSS +
 - **Format:** static OTF (CFF) → woff2. CFF-flavoured woff2 is broadly supported;
   `desubroutinize=True` (already set) keeps it small.
 - **Weights (authoritative `usWeightClass`; serif and sans differ — real Source Han):**
-  - serif: 250 EL · 300 L · 400 R · 500 M · 600 SB · 700 B · 900 H
-  - sans:  250 EL · 300 L · 350 N · 400 R · 500 M · 700 B · 900 H
+  - serif: 250 EL・300 L・400 R・500 M・600 SB・700 B・900 H
+  - sans:  250 EL・300 L・350 N・400 R・500 M・700 B・900 H
 - **RFN gate:** no `with Reserved Font Name` in the OFL → keep names
   `GenYo Min` / `GenYo Gothic`.
 - **Coverage:** GenYoMin Regular covers 24/24 common-hard chars (35,349 glyphs).
@@ -112,6 +112,6 @@ pipeline (Tasks 1–4) was unchanged.
 - Built both (7 weights × ~105 slices); harness shows a 月版-vs-丹版 row.
 
 ## Deferred (unchanged from Plan 1's list)
-Plan 3 meta-package · Plan 4 CI/publish · Plan 5 demo site · Plan 6 han.css
+Plan 3 meta-package・Plan 4 CI/publish・Plan 5 demo site・Plan 6 han.css
 integration. Possible future: **Genki (源起)** series (broken-stroke, design
 use); other regions (HK/JP).
