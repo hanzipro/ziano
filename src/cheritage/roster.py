@@ -5,18 +5,26 @@ _STYLES = {"serif", "sans", "cursive"}
 _FORMATS = {"vf", "static"}
 _SOURCES = {"release", "raw"}
 
-# Which slice table a style uses. We use Google Fonts' single canonical
-# Traditional-Chinese slicing strategy (Apache-2.0, googlefonts/nam-files) for
-# every print/handwriting style — the partition is font-agnostic Unicode buckets.
-# (A simplified-chinese table could be added later for SC-default fonts.)
+# Which slice table a style uses by default. We use Google Fonts' canonical
+# slicing strategies (Apache-2.0, googlefonts/nam-files) — the partitions are
+# font-agnostic frequency-ordered Unicode buckets. Print/handwriting TC styles
+# default to the Traditional-Chinese partition; a family whose default script is
+# SC or JP overrides this via `slice_table` in roster.toml (e.g. LXGW WenKai SC →
+# "simplified-chinese", Klee One → "japanese"), so SC/JP-only codepoints (鹜, ゐ…)
+# land in a slice instead of being dropped.
 _SLICE_TABLE = {
     "serif": "traditional-chinese",
     "sans": "traditional-chinese",
     "cursive": "traditional-chinese",
 }
+_SLICE_TABLES = {"traditional-chinese", "simplified-chinese", "japanese"}
 
 
-def slice_table_name(style: str) -> str:
+def slice_table_name(style: str, override: str = "") -> str:
+    if override:
+        if override not in _SLICE_TABLES:
+            raise ValueError(f"unknown slice_table {override!r}")
+        return override
     return _SLICE_TABLE[style]
 
 
@@ -38,6 +46,9 @@ class FamilyConfig:
     asset: str = ""  # release: the downloadable archive; unused for raw
     asset_sha256: str = ""
     source: str = "release"  # "release" (GitHub release asset) | "raw" (repo file)
+    # override the style→slice-table default (see _SLICE_TABLE). Used by SC/JP-default
+    # families so their script-specific codepoints get sliced instead of dropped.
+    slice_table: str = ""
     license_member: str = "LICENSE.txt"
     member: str = ""  # vf: the single font file inside the archive
     weights: tuple[Weight, ...] = ()  # static: one entry per weight

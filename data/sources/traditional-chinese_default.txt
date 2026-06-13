@@ -18061,7 +18061,7 @@ subsets {
   codepoints: 174 # ® REGISTERED SIGN
   codepoints: 178 # ² SUPERSCRIPT TWO
   codepoints: 179 # ³ SUPERSCRIPT THREE
-  codepoints: 183 # · MIDDLE DOT
+  codepoints: 183 #・MIDDLE DOT
   codepoints: 187 # » RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
   codepoints: 191 # ¿ INVERTED QUESTION MARK
   codepoints: 201 # É LATIN CAPITAL LETTER E WITH ACUTE

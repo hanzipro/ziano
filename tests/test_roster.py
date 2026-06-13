@@ -57,6 +57,29 @@ def test_styles_use_canonical_tc_slice_table():
     assert slice_table_name("sans") == "traditional-chinese"
 
 
+def test_slice_table_override_wins_over_style():
+    from cheritage.roster import slice_table_name
+    assert slice_table_name("cursive", "simplified-chinese") == "simplified-chinese"
+    assert slice_table_name("cursive", "japanese") == "japanese"
+    # empty override falls back to the style default
+    assert slice_table_name("serif", "") == "traditional-chinese"
+
+
+def test_unknown_slice_table_override_rejected():
+    import pytest
+    from cheritage.roster import slice_table_name
+    with pytest.raises(ValueError):
+        slice_table_name("serif", "klingon")
+
+
+def test_sc_and_jp_families_declare_overrides():
+    fams = {f.id: f for f in load_roster("roster.toml")}
+    assert fams["lxgw-wenkai"].slice_table == "simplified-chinese"
+    assert fams["klee-one"].slice_table == "japanese"
+    # the TC sibling must NOT override (stays on the TC partition)
+    assert fams["lxgw-wenkai-tc"].slice_table == ""
+
+
 def test_load_roster_raw_source_and_local_names():
     by_id = {f.id: f for f in load_roster("roster.toml")}
     klee = by_id["klee-one"]

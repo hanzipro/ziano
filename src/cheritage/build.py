@@ -56,7 +56,7 @@ def build_family(family_id: str, *, roster_path: str, dest: str, version: str,
     work = _EXTRACT_DIR / fam.id
     license_text = Path(_acquire(fam, work, fam.license_member)).read_text(
         encoding="utf-8", errors="replace")
-    slices = load_slices(f"data/slices.{slice_table_name(fam.style)}.json")
+    slices = load_slices(f"data/slices.{slice_table_name(fam.style, fam.slice_table)}.json")
 
     if fam.format == "vf":
         return _build_vf(fam, work, slices,
