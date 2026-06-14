@@ -1,0 +1,28 @@
+/**
+ * ================================================================================
+ * Documents — design tokens live in variables.css
+ * ================================================================================
+ */
+:where(:root) {
+  /* The root */
+  & {
+    box-sizing: border-box;
+    container-name: fullscreen-pseudo-elmts;
+    font-family: var(--font-default);
+    font-size: 16px;
+    line-height: 1.25;
+    text-autospace: normal;
+    text-underline-offset: .125rem;
+    color: var(--palette-text);
+    scroll-behavior: smooth;
+  }
+
+  /* The body */
+  :where(body) {
+    margin: 0;
+    background: var(--palette-bg);
+    /* re-declared (not just inherited from :root) so the dark-mode override on
+       body:has(…) in variables.css actually re-resolves the text colour */
+    color: var(--palette-text);
+  }
+}

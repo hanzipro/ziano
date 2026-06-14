@@ -1,0 +1,25 @@
+/**
+ * ================================================================================
+ * Container 
+ * ================================================================================
+ */
+@container fullscreen-pseudo-elmts {
+  :where(body > *, #playground, main > article > dl) {
+    & {
+      position: relative;
+      margin: auto;
+      max-inline-size: var(--max-w-layout);
+    }
+    &::before, &::after {
+      content: '';
+      position: absolute;
+      inset-block-start: 0;
+      inset-inline-start: 50%;
+      transform: translateX(-50%);
+      display: block;
+      inline-size: 100vw;
+      block-size: 100%;
+      pointer-events: none;
+    }
+  }
+}

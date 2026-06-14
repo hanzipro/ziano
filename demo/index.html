@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <title>ziano・傳承字形 webfont CDN</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Modern day heritage-glyph fonts on the web." />
+
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="preconnect" href="https://unpkg.com" crossorigin />
+  <link rel="preconnect" href="https://esm.sh" crossorigin />
+
+  <link rel="stylesheet" href="/src/main.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif@rc/swap.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans@rc/swap.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-genyo-min@rc/swap.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-genyo-gothic@rc/swap.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-genyo-min-tc@rc/swap.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-genyo-gothic-tc@rc/swap.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-lxgw-wenkai-tc@rc/swap.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-lxgw-wenkai@rc/swap.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-iansui@rc/swap.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-klee-one@rc/swap.css" />
+
+  <script type="module" src="/src/main.ts"></script>
+</head>
+<body>
+  <header>
+    <h1>
+      <small>@hanzi.pro/</small>ziano
+    </h1>
+    <menu>
+      <li><a href="#playground">切片實驗室</a></li>
+      <li><a href="cdn-bench.html">CDN競速</a></li>
+      <li><a href="//github.com/hanzipro/ziano">GitHub</a></li>
+      <li>
+        <label>
+          <input type="checkbox" name="dark-mode" />
+          <span>黑暗模式</span>
+          <!--
+            One job: restore the checkbox's checked state the instant it's parsed —
+            as this region is drawn, before it paints — so :root:has(input:checked)
+            renders dark on the first paint, no flash. The toggle is persisted in
+            theme.ts. The page's one pre-paint exception.
+          -->
+          <script>
+            try {
+              const $darkModeInput = document.querySelector('input[name="dark-mode"]')
+              const saved = localStorage.getItem('ziano-theme')
+              $darkModeInput.checked = saved ? saved === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches
+            } catch (e) {}
+          </script>
+        </label>
+      </li>
+    </menu>
+  </header>
+
+  <main>
+    <article>
+      <hgroup>
+        <h1 lang="en">Ziano WF</h1>
+        <h1>傳承字形WF</h1>
+      </hgroup>
+      <figure>
+        <ul>
+          <li>英</li>
+          <li>言</li>
+          <li>青</li>
+          <li>北</li>
+          <li>山</li>
+          <li>糹</li>
+          <li>厶</li>
+          <li>⻍</li>
+        </ul>
+        <figcaption>傳承字形的重要組成部件</figcaption>
+      </figure>
+      <dl data-font-name="shanggu-serif" data-generics="ming" data-weights="250-900" data-variable="true" data-name="尚古宋" data-font-family="Shanggu Serif" data-script="tc">
+        <dt>尚古宋
+        <dd>Shanggu Serif
+        <dd>可變字體・250-900
+        <dd>明體・傳承字形
+      </dl>
+      <dl data-font-name="shanggu-sans" data-generics="hei" data-weights="250-900" data-variable="true" data-name="尚古黑" data-font-family="Shanggu Sans" data-script="tc">
+        <dt>尚古黑
+        <dd>Shanggu Sans
+        <dd>可變字體・250-900
+        <dd>黑體・傳承字形
+      </dl>
+      <dl data-font-name="genyo-min" data-generics="ming" data-weights="250,300,400,500,600,700,900" data-name="源樣明體・月" data-font-family="Genyo Min" data-script="tc">
+        <dt>源樣明體・月
+        <dd>Genyo Min
+        <dd>靜態字體・250 300 400 500 600 700 900
+        <dd>明體・傳承字形
+      </dl>
+      <dl data-font-name="genyo-min-tc" data-generics="ming" data-weights="250,300,400,500,600,700,900" data-name="源樣明體・丹" data-font-family="Genyo Min TC" data-script="tc">
+        <dt>源樣明體・丹
+        <dd>Genyo Min TC
+        <dd>靜態字體・250 300 400 500 600 700 900
+        <dd>明體・傳承字形
+      </dl>
+      <dl data-font-name="genyo-gothic" data-generics="hei" data-weights="250,300,400,500,600,700,900" data-name="源樣黑體・月" data-font-family="Genyo Gothic" data-script="tc">
+        <dt>源樣黑體・月
+        <dd>Genyo Gothic 
+        <dd>靜態字體・250 300 400 500 600 700 900
+        <dd>黑體・傳承字形
+      </dl>
+      <dl data-font-name="genyo-gothic-tc" data-generics="hei" data-weights="250,300,400,500,600,700,900" data-name="源樣黑體・丹" data-font-family="Genyo Gothic TC" data-script="tc">
+        <dt>源樣黑體・丹
+        <dd>Genyo Gothic TC
+        <dd>靜態字體・250 300 400 500 600 700 900
+        <dd>黑體・傳承字形
+      </dl>
+      <dl data-font-name="lxgw-wenkai-tc" data-generics="kai" data-weights="300,400,500" data-name="霞鶩文楷TC" data-font-family="LXGW Wenkai TC" data-script="tc">
+        <dt>霞鶩文楷TC
+        <dd>LXGW Wenkai TC
+        <dd>靜態字體・300 400 500
+        <dd>楷體・傳承字形
+      </dl>
+      <dl data-font-name="lxgw-wenkai" data-generics="kai" data-weights="300,400,500" data-name="霞鹜文楷SC" data-font-family="LXGW Wenkai" data-script="sc">
+        <dt>霞鹜文楷SC
+        <dd>LXGW Wenkai
+        <dd>靜態字體・300 400 500
+        <dd>楷體・GB簡體字形
+      </dl>
+      <dl data-font-name="iansui" data-generics="kai" data-weights="400" data-name="芫荽" data-font-family="Iansui" data-script="tc">
+        <dt>芫荽
+        <dd>Iansui
+        <dd>靜態字體・400
+        <dd>楷體・國字標準字形
+      </dl>
+      <dl data-font-name="klee-one" data-generics="kai" data-weights="400,600" data-name="クレーOne" data-font-family="Klee One" data-script="jp">
+        <dt>クレーOne
+        <dd>Klee One
+        <dd>靜態字體・400 600
+        <dd>楷體・JIS新字形
+      </dl>
+    </article>
+
+    <section id="playground">
+      <aside>
+        <label>
+          <span>字體</span>
+          <select name="font">
+            <button>
+              <selectedcontent>請選擇字體</selectedcontent>
+            </button>
+            <optgroup data-generics="ming">
+               <legend>明體</legend>
+            </optgroup>
+            <optgroup data-generics="hei">
+               <legend>黑體</legend>
+            </optgroup>
+            <optgroup data-generics="kai">
+               <legend>楷體</legend>
+            </optgroup>
+          </select>
+        </label>
+
+        <label>
+          <span>
+            字重
+            <output>300</output>
+          </span>
+          <input name="font-weight" type="range" min="250" max="900" step="10" value="300" />
+        </label>
+
+        <label>
+          <span>
+            字級／像素
+            <output>18px</output>
+          </span>
+          <input name="font-size" type="range" min="8" max="120" step="2" value="18" />
+        </label>
+
+        <fieldset>
+          <legend>書寫方向</legend>
+          <label>
+            <input type="radio" name="writing-mode" value="horizontal" checked />
+            橫排
+          </label>
+          <label>
+            <input type="radio" name="writing-mode" value="vertical" />
+            直排
+          </label>
+        </fieldset>
+
+        <fieldset>
+          <legend>來源CDN</legend>
+          <label>
+            <input type="radio" name="cdn" value="jsdelivr" checked />
+            jsDelivr
+          </label>
+          <label>
+            <input type="radio" name="cdn" value="unpkg" />
+            unpkg
+          </label>
+          <label>
+            <input type="radio" name="cdn" value="esmsh" />
+            esm.sh
+          </label>
+        </fieldset>
+
+        <p class="status">
+          命中<output name="hit-slices">0</output>／120字體切片・首載・只有命中的切片會被下載
+        </p>
+
+        <p class="meta"></p>
+      </aside>
+
+      <div class="panes">
+        <!-- a radio group (not ARIA tabs): the <fieldset> is the group and the
+             <legend> names it natively — no role/aria needed. CSS :has() switches panels. -->
+        <fieldset class="tabs">
+          <legend>檢視</legend>
+          <label>
+            <input type="radio" name="pane" value="preview" checked />
+            <span>預覽</span>
+          </label>
+          <label>
+            <input type="radio" name="pane" value="usage" />
+            <span>用法</span>
+          </label>
+        </fieldset>
+
+        <article>
+          <h1 contenteditable spellcheck="false">字裡行間的傳承</h1>
+          <div contenteditable spellcheck="false">
+            <p>清晨的台北，捷運緩緩駛過城市的骨幹，車窗外的天色由青轉亮。月台上，旅客的情緒交織成一片低語，有人讀著手中的書，有人望向遠方的海角。文字像一條無形的絲線，把過去與現在織在一起。每個字的形體，都承載著前人的講究與情感。</p>
+            <p>從英國到台北，從鉛字到螢幕，書寫的方式不斷改變，對美的追求卻始終如一。傳承字形所展現的，正是這份對細節的尊重——戶的寫法、骨的轉折、直的橫豎、青的結構、過的走之，無一不在訴說漢字悠長的歷史。當我們重新端詳這些字，彷彿能聽見時間的回響，看見文化在筆畫間靜靜流動，言語與書藝交融，從不間斷。</p>
+          </div>
+        </article>
+
+        <article class="usage">
+          <h2>用法</h2>
+          <p>把這兩行加進 <code>&lt;head&gt;</code>：<code>preconnect</code> 先暖好 CDN 連線，stylesheet 只會拉下頁面實際用到的切片。</p>
+          <pre>
+            <button class="copy">Copy</button>
+            <code class="snippet"></code>
+          </pre>
+          <p>然後在 CSS 指定字族，後面接同類 generic 當 fallback —— webfont 載入前、或遇到切片外的字時，能優雅退化：</p>
+          <pre><code class="css-usage"></code></pre>
+          <p class="hint">更小的下載：static 字體可改用單一字重的 <code>swap/&lt;字重&gt;.css</code>。不同 <code>font-display</code>：把 <code>swap.css</code> 換成 <code>block.css</code>（標題用，不閃退化字形）或 <code>optional.css</code>（重 CWV 的頁面，零版位位移）。</p>
+        </article>
+      </div>
+
+      <div class="Piano" role="presentation"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>
+      OFL 1.1字體・衍生自Google Fonts <a rel="nofollow noopener" target="_blank" href="https://github.com/googlefonts/nam-files">nam-files</a>（Apache-2.0）・<a href="https://github.com/hanzipro/ziano">GitHub</a>
+    </p>
+  </footer>
+</body>
+</html>

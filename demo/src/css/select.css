@@ -1,0 +1,136 @@
+/**
+ * ================================================================================
+ * Customizable <select> — the font picker
+ * --------------------------------------------------------------------------------
+ * Progressive enhancement via `appearance: base-select`, opted in on BOTH the
+ * <select> (its button) and its ::picker() popover. Browsers without support keep
+ * the native control untouched. Ref: MDN Learn/Forms/Customizable_select.
+ * ================================================================================
+ */
+select,
+select::picker(select) {
+  appearance: base-select;
+}
+
+/* the in-page button (shows the chosen font via <selectedcontent>) */
+select {
+  & {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    padding-inline: .75rem;
+    block-size: 2rem;
+    font-size: .875rem;
+    text-align: start;
+    background-color: var(--palette-bg);
+    border: 1px solid var(--palette-rule);
+    border-radius: .25rem;
+    cursor: pointer;
+    transition: border-color .15s ease-out;
+  }
+  &:hover {
+    border-color: var(--palette-ink-grey);
+  }
+  &:open {
+    border-color: var(--palette-ink);
+  }
+  &::picker-icon {
+    content: '';
+    margin-inline: auto -.5em;
+    transition: rotate .2s ease-out;
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    background-color: var(--palette-supplement-text);
+    clip-path: var(--path-caret);
+  }
+  &:open::picker-icon {
+    rotate: 180deg;
+  }
+}
+
+selectedcontent {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* the drop-down popover */
+select::picker(select) {
+  & {
+    border: 1px solid var(--palette-rule);
+    border-radius: .25rem;
+    background-color: var(--palette-bg);
+    box-shadow: 0 .5rem 1.5rem #0003;
+    /* enter/exit transition — display + overlay are discrete, so allow-discrete
+        keeps the popover around long enough to animate out */
+    opacity: 0;
+    translate: 0 -.25rem;
+    transition:
+      opacity .15s ease-out,
+      translate .15s ease-out,
+      display .15s allow-discrete,
+      overlay .15s allow-discrete;
+  }
+}
+select:open::picker(select) {
+  margin-block: .5rem;
+  padding: 0;
+  border-radius: .25rem;
+  opacity: 1;
+  transition: .25s all ease-out;
+
+  @starting-style {
+    opacity: 0;
+    transform: scale(.95) translateX(.5rem);
+    transform-origin: center bottom;
+  }
+}
+
+optgroup {
+  & {
+    padding: .5rem 0 .25rem;
+    font-size: .75rem;
+    font-weight: 200;
+    color: var(--palette-supplement-text);
+  }
+  &:not(:first-of-type) {
+    border-block-start: 1px solid var(--palette-grid);
+  }
+  legend {
+    padding: 0 1rem;
+    font-size: .875rem;
+    letter-spacing: .5em;
+  }
+}
+
+/* one row per font — each previews in its own family (set inline by the script) */
+option {
+  & {
+    display: flex;
+    align-items: center;
+    padding-inline: 1rem;
+    line-height: 2;
+    font-size: 1rem;
+    color: var(--palette-text);
+    cursor: pointer;
+  }
+  &:first-child {
+    margin-block-start: .25rem;
+  }
+  &:hover,
+  &:focus {
+    background-color: var(--palette-panel);
+  }
+  &:checked {
+    font-weight: 700;
+  }
+  &::checkmark {
+    content: '️';
+    order: 1; /* push the tick to the trailing edge */
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    margin-inline: auto -.5em;
+    clip-path: var(--path-check);
+    background-color: var(--palette-supplement-text-3q);
+  }
+}

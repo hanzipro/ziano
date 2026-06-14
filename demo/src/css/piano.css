@@ -1,0 +1,72 @@
+/**
+ * ================================================================================
+ * Piano — the 120 unicode-range slices drawn as a 120-key keyboard (piano.ts fills
+ * it with <kbd> keys). Lives in #playground as a full-width band above the controls
+ * + specimen; `position: sticky` pins it just under the header ONCE you scroll into
+ * the playground (not before). Typing lights the slices the text hits. White keys
+ * are flex siblings; black keys overlay the boundary after their preceding white
+ * key (--pos). All sizing is %-based → scales with the viewport.
+ * ================================================================================
+ */
+.Piano {
+  & {
+    order: -1; /* visually first in #playground, though it's the last child */
+    inline-size: 100vw; /* full-bleed: span the whole viewport width… */
+    flex-shrink: 0; /* …don't let flex squeeze it back into the 68rem column… */
+    position: sticky;
+    inset-block-start: 0;
+    z-index: -10; /* …and ride over the content that scrolls under it */
+    display: flex;
+    align-items: flex-start; /* keys hang from the top edge */
+    block-size: min(16rem, 30vh); /* keyboard depth */
+    margin-inline: calc(50% - 50vw); /* …and pull it out to both viewport edges */
+    overflow: hidden;
+    pointer-events: none;
+    --glow: #b0040455; /* soft accent-red halo on a struck key */
+  }
+
+  /* every key is a <kbd> — semantically “a key the reader presses” ^_^ */
+  kbd {
+    padding: 0;
+    border: 0;
+    font: inherit;
+    transition: background .22s ease, box-shadow .22s ease;
+  }
+  kbd.white {
+    flex: 1;
+    block-size: 100%;
+    background: linear-gradient(to bottom, #efefef, #fff);
+    border-inline-end: 1px solid var(--palette-rule);
+    border-radius: 0 0 5px 5px;
+    box-shadow:
+      -1px 0 0 #ffffff8c inset,
+      0 -3px 4px #0000001f inset;
+  }
+  kbd.black {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: var(--pos);
+    inline-size: calc(var(--wkstep) * .62);
+    block-size: 62%;
+    transform: translateX(-50%);
+    z-index: 2;
+    background: linear-gradient(to bottom, #3a3a3a, #050505);
+    border-radius: 0 0 4px 4px;
+    box-shadow:
+      -1px -1px 2px #ffffff2e inset,
+      0 -4px 3px 2px #0000008c inset,
+      0 2px 4px #00000073;
+  }
+
+  /* struck = a slice the typed text reaches: high-contrast surface + accent halo,
+     legible on white and black keys alike */
+  kbd.on {
+    box-shadow: 0 0 26px 1px var(--glow);
+  }
+  kbd.white.on {
+    background: var(--palette-ink);
+  }
+  kbd.black.on {
+    background: var(--palette-supplement-text);
+  }
+}

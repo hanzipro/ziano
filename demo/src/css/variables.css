@@ -1,0 +1,119 @@
+/**
+ * ================================================================================
+ * Variables — design tokens
+ * ================================================================================
+ */
+:root {
+  /* Tell the UA which scheme to paint native chrome in — the customizable <select>
+     picker backplate, form controls, scrollbars. Flipped to dark by the dark-mode
+     block below; without it they render light even when our tokens are dark. */
+  color-scheme: light;
+
+  /* Sizes */
+  --max-w-layout: 68rem;
+  --h-header: 3rem;
+  --h-footer: 4rem;
+
+  /* Fonts */
+  --font-default: 'Helvetica Neue', Arial, 'Shanggu Sans', sans-serif;
+  /* --font-default: 'Hiragino Sans', sans-serif; */
+  --font-alternative: 'Shanggu Serif', serif;
+  --font-accent: 'LXGW Wenkai TC', cursive, serif;
+
+  --font-shanggu-sans: 'Shanggu Sans', sans-serif;
+
+  /* ── Colour primitives ──────────────────────────────────────────
+   * Raw swatches, named by appearance, theme-INVARIANT. NEVER consume
+   * these from a component — use the semantic --palette-* layer below
+   * (that's the one that flips for dark mode). */
+  --color-white: #fff;
+  --color-snow: #f7f7f7; /* off-white surface */
+  --color-mist: #eeeeee; /* pale grey — faint text / hairlines */
+  --color-cloud: #e6e6e6; /* hairline grey — grid / rule */
+  --color-silver: #b0b1b3;
+  --color-ash: #9b9b9b;
+  --color-slate: #696c6b; /* muted green-grey */
+  --color-graphite: #2a2a2d;
+  --color-onyx: #242427;
+  --color-charcoal: #18181b;
+  --color-black: #111; /* body-text black */
+  --color-ink: #0a0a0a; /* deepest near-black surface */
+  --color-ink-grey: #4e4f51;
+  --color-ink-light: #4e4f519c;
+  --color-red: #b00404;
+
+  /* ── Semantic palette (palette) ──────────────────────────────────
+   * Role names; each REFERENCES a primitive. Components consume ONLY
+   * these — dark mode (below) repoints them to other primitives. The
+   * -3q/-2q/-1q alphas (75/50/25 %) are color-mix of their own base, so
+   * they track whatever the base points at. (color-mix(): Baseline 2023.) */
+  --palette-accent: var(--color-red);
+  --palette-text: var(--color-black);
+  --palette-grid: var(--color-cloud);
+
+  --palette-bg: var(--color-white);
+  --palette-bg-3q: color-mix(in srgb, var(--palette-bg) 75%, transparent);
+  --palette-bg-2q: color-mix(in srgb, var(--palette-bg) 50%, transparent);
+  --palette-bg-1q: color-mix(in srgb, var(--palette-bg) 25%, transparent);
+
+  --palette-bg-inverse: var(--color-ink);
+  --palette-bg-inverse-3q: color-mix(in srgb, var(--palette-bg-inverse) 75%, transparent);
+  --palette-bg-inverse-2q: color-mix(in srgb, var(--palette-bg-inverse) 50%, transparent);
+  --palette-bg-inverse-1q: color-mix(in srgb, var(--palette-bg-inverse) 25%, transparent);
+
+  --palette-text-inverse: var(--color-mist);
+  --palette-text-inverse-3q: color-mix(in srgb, var(--palette-text-inverse) 75%, transparent);
+  --palette-text-inverse-2q: color-mix(in srgb, var(--palette-text-inverse) 50%, transparent);
+  --palette-text-inverse-1q: color-mix(in srgb, var(--palette-text-inverse) 25%, transparent);
+
+  --palette-supplement-text: var(--color-slate);
+  --palette-supplement-text-3q: color-mix(in srgb, var(--palette-supplement-text) 75%, transparent);
+  --palette-supplement-text-2q: color-mix(in srgb, var(--palette-supplement-text) 50%, transparent);
+  --palette-supplement-text-1q: color-mix(in srgb, var(--palette-supplement-text) 25%, transparent);
+
+  --palette-panel: var(--color-snow);
+  --palette-ink: var(--color-ink);
+  --palette-ink-grey: var(--color-ink-grey);
+  --palette-ink-light: var(--color-ink-light);
+  --palette-rule: var(--color-cloud);
+}
+
+/* Dark theme — only the SEMANTIC layer flips; primitives stay put. The checkbox is
+ * the single source of truth: a tiny inline script ticks it from localStorage / OS
+ * pref BEFORE first paint (placed right after the checkbox in the markup), so this
+ * :has() match renders dark on the first paint — no flash.
+ * --palette-ink and the -inverse roles deliberately do NOT flip — ink stays dark
+ * (code block / selected pill), inverse text stays light (the hero's black
+ * bands) — so both read in either theme. The supplement-text alphas need no
+ * override here: they're color-mix of --palette-supplement-text, so flipping the
+ * base re-tints them automatically.
+ */
+:root:has(input[name='dark-mode']:checked) {
+  color-scheme: dark;
+  --palette-bg: var(--color-ink);
+  --palette-bg-inverse: var(--color-snow);
+  --palette-bg-3q: color-mix(in srgb, var(--color-ink) 82%, transparent);
+  --palette-grid: var(--color-onyx);
+  --palette-text: var(--color-mist);
+  --palette-supplement-text: var(--color-ash);
+  --palette-panel: var(--color-charcoal);
+  --palette-ink-grey: var(--color-silver);
+  --palette-rule: var(--color-graphite);
+}
+
+/**
+  * ================================================================================
+  * Paths
+  * ================================================================================
+  *
+  * clip-path shapes for the icons. shape() is %-based, so it scales to whatever
+  * box the element gives it — no fixed canvas to normalise against. Authored as
+  * the responsive twin of a 16×16 path(); see docs/css-clip-path-scaling.md for
+  * the path()→shape() conversion if you need to add a new one.
+  *
+  * shape() is Baseline 2026 (Chrome/Edge 135+, Safari 18.4+, Firefox 148+).
+  */
+:root {
+  --path-caret: shape(from 68.8763% 37.3738%, curve to 68.8763% 41.7931% with 70.0969% 38.5938% / 70.0969% 40.5725%, line to 52.2094% 58.4594%, curve to 47.7906% 58.4594% with 50.9894% 59.68% / 49.0106% 59.68%, line to 31.1238% 41.7931%, curve to 31.1238% 37.3738% with 29.9031% 40.5725% / 29.9031% 38.5938%, curve to 35.5431% 37.3738% with 32.3438% 36.1531% / 34.3225% 36.1531%, line to 50% 51.8306%, line to 64.4569% 37.3738%, curve to 68.8763% 37.3738% with 65.6775% 36.1531% / 67.6556% 36.1531%, close);
+  --path-check: shape(from 75.1263% 33.2069%, curve to 75.1263% 37.6263% with 76.3469% 34.4275% / 76.3469% 36.4063%, line to 45.9594% 66.7931%, curve to 41.54% 66.7931% with 44.7394% 68.0131% / 42.7606% 68.0131%, line to 24.8738% 50.1263%, curve to 24.8738% 45.7069% with 23.6531% 48.9056% / 23.6531% 46.9275%, curve to 29.2931% 45.7069% with 26.0938% 44.4869% / 28.0725% 44.4869%, line to 43.75% 60.1638%, line to 70.7069% 33.2069%, curve to 75.1263% 33.2069% with 71.9275% 31.9869% / 73.9056% 31.9869%, close);
+}

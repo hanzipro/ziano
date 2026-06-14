@@ -1,0 +1,197 @@
+/**
+ * ================================================================================
+ * Hero
+ * ================================================================================
+ */
+body > main > article {
+  :where(h1, h2, h3, h4, h5, h6) {
+    margin: 0;
+    font-weight: inherit;
+  }
+  hgroup {
+    opacity: 0;
+    display: none;
+  }
+  figure {
+    & {
+      display: flex;
+      margin: 0;
+      inline-size: 100%;
+    }
+    ul {
+      display: flex;
+      align-items: flex-end;
+      flex-direction: column;
+      margin: 0;
+      padding: 0;
+      inline-size: 100%;
+      user-select: none;
+    }
+    li {
+      & {
+        position: relative;
+        z-index: -10;
+        font-family: var(--font-alternative);
+        font-size: 10vh;
+      }
+      &:first-child {
+        position: absolute;
+        inset-inline-start: 0;
+        margin-block-start: -.75em;
+        font-size: 20vh;
+      }
+      &:nth-child(2) {
+        position: absolute;
+        inset-inline-start: 18vh;
+        font-size: 8vh;
+        color: var(--palette-supplement-text-3q);
+      }
+      &:nth-child(3) {
+        font-size: 10vh;
+        font-weight: 300;
+        color: var(--palette-supplement-text-2q);
+        text-shadow: 3px 0 0 var(--palette-ink-grey);
+      }
+      &:nth-child(4) {
+        font-size: 3rem;
+        font-weight: 700;
+      }
+      &:nth-child(5) {
+        margin-inline-end: 16vh;
+        margin-block-start: -16vh;
+        font-family: var(--font-default);
+        font-weight: 250;
+      }
+      &:nth-child(6) {
+        font-weight: 250;
+        color: var(--palette-supplement-text-2q);
+      }
+      &:nth-child(7) {
+        margin-inline-end: -10vh;
+        margin-block-start: -8vh;
+        font-family: var(--font-default);
+        font-weight: 900;
+        font-size: 16vh;
+      }
+      &:last-child {
+        margin-block: -20rem -3rem;
+        font-size: 60vh;
+        filter: blur(5px);
+        color: var(--palette-accent);
+      }
+      &:nth-child(1),
+      &:nth-child(2n+6) {
+        &::marker {
+          content: '';
+        }
+      }
+    }
+    figcaption {
+      margin-inline: .75rem;
+      margin-block: .5rem;
+      font-size: .75rem;
+      font-weight: 250;
+      letter-spacing: .125em;
+      writing-mode: vertical-rl;
+      color: var(--palette-ink);
+    }
+  }
+  dl {
+    & {
+      position: relative;
+      margin-block: 0;
+      padding: 3rem 0 1rem 60%;
+      line-height: 1.5;
+      cursor: pointer; /* JS makes each card a button: pick the font + jump to #playground */
+    }
+    /* :focus-visible: Baseline 2022 — keyboard focus ring without a mouse halo */
+    &:focus-visible {
+      outline: 2px solid var(--palette-accent);
+      outline-offset: -.5rem;
+    }
+    &:last-child {
+      margin-block-end: 3rem;
+    }
+    &:nth-child(odd) {
+      color: var(--palette-text-inverse);
+      color: var(--palette-text);
+      color: var(--palette-bg-3q);
+    }
+    &::after {
+      z-index: -10;
+      inline-size: calc(100vw - 2rem);
+      transition: .15s all ease-out;
+    }
+    &:nth-child(odd) {
+      dt {
+        color: var(--palette-bg);
+      }
+      &::after {
+        background: var(--palette-bg-inverse);
+      }
+    }
+    &:hover, &:focus-visible {
+      &:nth-child(odd) {
+        &, dt {
+          color: var(--palette-text);
+        }
+        &::after {
+          background-color: var(--palette-bg-inverse-1q);
+        }
+      }
+      &:nth-child(even) {
+        & {
+          color: var(--palette-bg);
+        }
+        &::after {
+          background-color: var(--palette-bg-inverse-3q);
+        }
+      }
+    }
+    dt {
+      position: absolute;
+      inset: auto auto 1rem 0;
+      font-size: 5rem;
+      font-weight: 600;
+      line-height: 1;
+    }
+    dd {
+      margin: 0;
+      font-size: .875rem;
+    }
+  }
+  [data-font-name='shanggu-serif'] dt {
+    font-family: 'Shanggu Serif', serif;
+  }
+  [data-font-name='shanggu-sans'] dt {
+    font-family: 'Shanggu Sans', sans-serif;
+  }
+  [data-font-name='genyo-min'] dt {
+    font-family: 'Genyo Min', serif;
+  }
+  [data-font-name='genyo-min-tc'] dt {
+    font-family: 'Genyo Min TC', serif;
+  }
+  [data-font-name='genyo-gothic'] dt {
+    font-family: 'Genyo Gothic', sans-serif;
+  }
+  [data-font-name='genyo-gothic-tc'] dt {
+    font-family: 'Genyo Gothic TC', sans-serif;
+  }
+  [data-font-name='lxgw-wenkai-tc'] dt {
+    font-family: 'LXGW Wenkai TC', cursive, serif;
+    font-weight: normal;
+  }
+  [data-font-name='lxgw-wenkai'] dt {
+    font-family: 'LXGW Wenkai', cursive, serif;
+    font-weight: normal;
+  }
+  [data-font-name='iansui'] dt {
+    font-family: Iansui, cursive, serif;
+    font-weight: normal;
+  }
+  [data-font-name='klee-one'] dt {
+    font-family: 'Klee One', cursive, serif;
+    font-weight: normal;
+  }
+}

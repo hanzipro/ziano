@@ -1,0 +1,116 @@
+/**
+ * ================================================================================
+ * Layout
+ * ================================================================================
+ */
+
+/* Header */
+body > header {
+  & {
+    position: fixed;
+    z-index: 10;
+    inset-inline-start: 50%;
+    transform: translateX(-50%);
+    inset-block-start: 0;
+    display: flex;
+    align-items: center;
+    inline-size: var(--max-w-layout);
+    block-size: var(--h-header);
+  }
+  &::after {
+    z-index: -10;
+    background-color: var(--palette-bg-3q);
+    border-block-end: 1px solid var(--palette-grid);
+    backdrop-filter: blur(6px) saturate(1.1);
+  }
+  h1 {
+    & {
+      position: relative;
+      font-size: 1.5rem;
+      font-weight: 200;
+    }
+    small {
+      font-size: .675em;
+      opacity: .5;
+    }
+    &::after {
+      content: '';
+      position: absolute;
+      inset-inline-end: -2.5rem;
+      inset-block-start: 1.0625em;
+      display: block;
+      inline-size: 5rem;
+      border-block-end: 2px solid var(--palette-accent);
+    }
+  }
+  menu {
+    & {
+      display: flex;
+      margin-inline-start: auto;
+      padding: 0;
+      gap: 1rem;
+      list-style: none;
+    }
+    a, label span {
+      display: inline-flex;
+      align-items: center;
+      block-size: calc(var(--h-header) - 1px);
+      cursor: pointer;
+    }
+    a {
+      font-size: .875rem;
+      color: var(--palette-ink-grey);
+    }
+  }
+  li:has(input[type='checkbox']) {
+    & {
+      position: relative;
+    }
+    input[type='checkbox'] {
+      position: absolute;
+      opacity: 0;
+    }
+    span {
+      & {
+        position: relative;
+        inline-size: 1em;
+        overflow: hidden;
+        font-size: 1.5em;
+        color: transparent;
+      }
+      &::before {
+        content: '🌒';
+        color: black;
+      }
+    }
+    input[type='checkbox']:checked + span::before {
+      content: '🌞';
+    }
+  }
+}
+
+/* Main */
+body > main {
+  & {
+    margin-block-start: var(--h-header);
+  }
+}
+
+/* Footer */
+body > footer {
+  & {
+    display: flex;
+    align-items: center;
+    block-size: var(--h-footer);
+    font-size: .75rem;
+    font-weight: 250;
+    color: var(--palette-supplement-text);
+  }
+  &::before {
+    border-block-start: 1px solid var(--palette-grid);
+  }
+  p {
+    inline-size: 100%;
+    text-align: center;
+  }
+}

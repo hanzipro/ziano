@@ -1,0 +1,274 @@
+/**
+ * ================================================================================
+ * Playground 
+ * ================================================================================
+ */
+#playground {
+  & {
+    display: flex;
+    flex-wrap: wrap; /* let .Piano take its own full-width line above the controls */
+    align-content: flex-start;
+    gap: 2rem 4rem;
+    padding-block: 0 5rem;
+    min-block-size: calc(100vh - var(--h-header));
+  }
+  &::before {
+    margin-block-start: -1rem;
+    border-block-start: 1rem solid var(--palette-ink-grey);
+  }
+  aside {
+    & {
+      inline-size: 20rem;
+      font-size: .875rem;
+    }
+    > label, fieldset {
+      display: flex;
+      margin-block-end: 2rem;
+      inline-size: 100%;
+    }
+    > label {
+      flex-direction: column;
+    }
+    label span, fieldset legend {
+      display: flex;
+      font-weight: 200;
+      margin-block-end: .5em;
+      text-shadow:
+        -1px 0 1px var(--palette-bg),
+        1px 0 1px var(--palette-bg),
+        0 1px 1px var(--palette-bg),
+        0 -1px 1px var(--palette-bg)
+      ;
+    }
+    label span output {
+      margin-inline-start: auto;
+      color: var(--palette-accent);
+    }
+    select {
+      min-block-size: 2rem;
+    }
+    input[type="radio"] {
+      opacity: 0;
+      position: absolute;
+    }
+    input[type="range"] {
+      /* theme-aware so the thumb/filled track stay visible in dark mode
+         (--palette-ink stays dark for the code block, so don't use it here) */
+      accent-color: var(--palette-text);
+    }
+    fieldset {
+      & {
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+      legend {
+        width: 100%;
+      }
+      label {
+        & {
+          flex: 1;
+          position: relative;
+          block-size: 2rem;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          text-align: center;
+          background-color: var(--palette-panel);
+          border: 1px solid var(--palette-rule);
+          border-inline-end-width: 0;
+          cursor: pointer;
+        }
+        &:has(:checked) {
+          background-color: var(--palette-text);
+          color: var(--palette-bg);
+        }
+        &:first-of-type {
+          border-radius: .25rem 0 0 .25rem;
+        }
+        &:last-of-type {
+          border-inline-end-width: 1px;
+          border-radius: 0 .25rem .25rem 0;
+        }
+      }
+    }
+    .status {
+      margin-block-start: -.25em;
+    }
+    .chips {
+      & {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .25rem;
+      }
+      /* VF fonts use the slider only — JS sets [hidden], which must beat the
+         display:flex above (else stale static chips linger after static→VF). */
+      &[hidden] {
+        display: none;
+      }
+      button {
+        & {
+          flex: 1;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: .75rem;
+          line-height: 2;
+          background-color: var(--palette-panel);
+          border: 1px solid var(--palette-rule);
+          border-radius: .25rem;
+          cursor: pointer;
+        }
+        &[aria-pressed='true'] {
+          background-color: var(--palette-text);
+          color: var(--palette-bg);
+        }
+      }
+    }
+    .meta {
+      margin-block-start: 1rem;
+      font-size: .75rem;
+      line-height: 1.5;
+      color: var(--palette-supplement-text);
+    }
+  }
+
+  /* main pane: tabs switch between the editable 預覽 and the 用法 (CSS) panel */
+  .panes {
+    & {
+      flex: 1;
+      min-inline-size: 0;
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+      max-block-size: clamp(20rem, 40rem, calc(100vh - var(--h-header) - 6rem));
+    }
+    /* both views share the card chrome; only the checked tab's panel shows */
+    > article, > .usage {
+      flex: 1;
+      min-block-size: 0;
+      padding: 2rem;
+      overflow: auto;
+      border: 1px solid var(--palette-grid);
+      border-radius: .5rem;
+      background-color: var(--palette-bg-3q);
+      backdrop-filter: blur(6px) saturate(1.1);
+    }
+    &:has(input[value="usage"]:checked) > article:not(.usage) {
+      display: none;
+    }
+    &:has(input[value="preview"]:checked) > .usage {
+      display: none;
+    }
+  }
+
+  .tabs {
+    & {
+      display: flex;
+      flex: none;
+      gap: .25rem;
+    }
+    legend {
+      /* the <legend> names the radio group for AT; visually hidden since the pills
+         are self-evident (no visible group label needed) */
+      position: absolute;
+      inline-size: 1px;
+      block-size: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+    input {
+      opacity: 0;
+      position: absolute;
+    }
+    label {
+      & {
+        padding-block: .35rem;
+        padding-inline: 1rem;
+        border: 1px solid var(--palette-rule);
+        border-radius: .25rem;
+        background-color: var(--palette-panel);
+        font-size: .8125rem;
+        cursor: pointer;
+      }
+      &:has(:checked) {
+        background-color: var(--palette-text);
+        color: var(--palette-bg);
+      }
+    }
+  }
+
+  article {
+    & {
+      font-family: var(--font-shanggu-sans);
+      line-height: 1.5;
+      text-align: justify;
+    }
+    [contenteditable] {
+      outline: 0;
+    }
+    h1 {
+      margin: 0;
+    }
+    p:first-of-type {
+      margin-block-start: .5em;
+    }
+  }
+
+  .usage {
+    & {
+      font-size: .875rem;
+      line-height: 1.6;
+    }
+    h2 {
+      margin-block: 0 1rem;
+      font-size: 1.25rem;
+      font-weight: 200;
+    }
+    p {
+      margin-block: 1rem;
+    }
+    :where(p, .hint) code {
+      padding-inline: .25em;
+      border-radius: .25rem;
+      background-color: var(--palette-panel);
+      font-family: ui-monospace, 'SF Mono', Menlo, Courier, monospace;
+      font-size: .85em;
+    }
+    .hint {
+      color: var(--palette-supplement-text);
+      font-size: .8125rem;
+    }
+    pre {
+      & {
+        position: relative;
+        margin-block: 0;
+        white-space: normal; /* collapse the markup indentation around button/code */
+        border-radius: .25rem;
+        background-color: var(--palette-ink);
+        color: var(--palette-text-inverse-3q);
+      }
+      code {
+        margin: 0;
+        display: block;
+        padding: .75rem;
+        overflow-x: auto;
+        white-space: pre-wrap;
+        word-break: break-all;
+        font-family: ui-monospace, 'SF Mono', Menlo, Courier, monospace;
+        line-height: 1.5;
+      }
+      button.copy {
+        position: absolute;
+        inset: .5rem .5rem auto auto;
+        padding: .375rem .75rem;
+        font-size: .75rem;
+        background: #1c1c1c;
+        border: 1px solid #383838;
+        border-radius: .5rem;
+        color: #d8d8d8;
+        cursor: pointer;
+      }
+    }
+  }
+}

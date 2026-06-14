@@ -1,0 +1,187 @@
+/**
+ * ================================================================================
+ * CDN bench — page-specific components (controls, results table, specimen, log).
+ * Tokens / reset / header / footer come from the shared partials (see bench.css
+ * manifest). Consumes the semantic --palette-* layer only, so dark mode flips for
+ * free via :root:has(input[name='dark-mode']:checked).
+ * ================================================================================
+ */
+body > main {
+  & {
+    display: flex;
+    flex-direction: column;
+    padding-block: 2.5rem 1rem;
+  }
+
+  h1 {
+    margin-block: 0 .4rem;
+    font-size: clamp(1.3rem, 3.5vw, 1.8rem);
+    font-weight: 250;
+  }
+  .sub {
+    margin-block: 0 1.75rem;
+    max-inline-size: 52rem;
+    font-size: .9rem;
+    color: var(--palette-supplement-text);
+  }
+  code {
+    padding-block: .1em;
+    padding-inline: .4em;
+    border-radius: .25rem;
+    background-color: var(--palette-panel);
+    font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+    font-size: .85em;
+  }
+}
+
+/* ── controls ──────────────────────────────────────────────────── */
+.controls {
+  & {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .6rem;
+    margin-block-end: 1.25rem;
+  }
+  button {
+    & {
+      padding-block: .5rem;
+      padding-inline: 1rem;
+      border: 1px solid var(--palette-rule);
+      border-radius: .5rem;
+      background-color: var(--palette-panel);
+      color: var(--palette-text);
+      cursor: pointer;
+      transition: background-color .15s, border-color .15s;
+    }
+    &:hover {
+      background-color: var(--palette-grid);
+    }
+    &:disabled {
+      opacity: .5;
+      cursor: progress;
+    }
+    /* per-CDN run buttons — filled ink, like the playground's pressed chip;
+       --palette-ink + -inverse deliberately don't flip, so it reads in both
+       themes. The "run all" button (data-run='all') stays the plain panel style. */
+    &[data-run]:not([data-run='all']) {
+      border-color: var(--palette-ink);
+      background-color: var(--palette-ink);
+      color: var(--palette-text-inverse);
+    }
+    &[data-run]:not([data-run='all']):hover {
+      opacity: .85;
+    }
+  }
+  label {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    font-size: .85rem;
+    color: var(--palette-supplement-text);
+  }
+  input[type='number'] {
+    inline-size: 3.5rem;
+    padding: .3rem;
+    border: 1px solid var(--palette-rule);
+    border-radius: .375rem;
+    background-color: var(--palette-bg);
+    color: inherit;
+    font: inherit;
+  }
+  input[type='checkbox'] {
+    accent-color: var(--palette-ink);
+  }
+}
+
+/* ── results table ─────────────────────────────────────────────── */
+#results {
+  & {
+    inline-size: 100%;
+    margin-block: 1rem 1.75rem;
+    border-collapse: collapse;
+  }
+  th, td {
+    padding-block: .55rem;
+    padding-inline: .7rem;
+    border-block-end: 1px solid var(--palette-rule);
+    text-align: end;
+    white-space: nowrap;
+  }
+  th:first-child, td:first-child {
+    text-align: start;
+  }
+  thead th {
+    font-size: .78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .03em;
+    color: var(--palette-supplement-text-2q);
+  }
+  tbody tr.winner td {
+    background-color: var(--palette-panel);
+  }
+  .cdn {
+    font-weight: 700;
+  }
+  .badge {
+    margin-inline-start: .45rem;
+    padding-block: .1em;
+    padding-inline: .5em;
+    border-radius: 999px;
+    background-color: var(--palette-ink);
+    color: var(--palette-text-inverse);
+    font-size: .68rem;
+    vertical-align: .05em;
+  }
+  .muted {
+    color: var(--palette-supplement-text-2q);
+    font-weight: 400;
+  }
+  .n {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* ── specimen (renders only after a run loads the font) ─────────── */
+.specimen {
+  & {
+    margin-block-start: .5rem;
+    padding: 1.5rem;
+    min-block-size: 7rem;
+    border: 1px solid var(--palette-rule);
+    border-radius: .625rem;
+    background-color: var(--palette-bg);
+  }
+  .title {
+    font-size: 1.9rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  .body {
+    margin-block-start: .6rem;
+    font-size: 1.15rem;
+    line-height: 1.9;
+    text-align: justify;
+  }
+  .tag {
+    margin-block-start: .8rem;
+    font-size: .75rem;
+    color: var(--palette-supplement-text);
+  }
+}
+
+/* ── run log ───────────────────────────────────────────────────── */
+.log {
+  margin-block-start: 1.25rem;
+  padding-block: .9rem;
+  padding-inline: 1rem;
+  max-block-size: 14rem;
+  overflow: auto;
+  border: 1px solid var(--palette-rule);
+  border-radius: .5rem;
+  background-color: var(--palette-panel);
+  color: var(--palette-supplement-text);
+  font: 12px/1.5 ui-monospace, 'SF Mono', Menlo, monospace;
+  white-space: pre-wrap;
+}

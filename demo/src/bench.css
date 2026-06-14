@@ -1,0 +1,12 @@
+/**
+ * cdn-bench stylesheet — shares the foundation partials with index.html's main.css
+ * (tokens → root → reset → container → header/footer layout), then adds the
+ * bench-only components. Order = cascade order. Bundled via @import (Vite inlines).
+ */
+
+@import './css/variables.css';
+@import './css/root.css';
+@import './css/reset.css';
+@import './css/container.css';
+@import './css/layout.css';
+@import './css/bench.css';
