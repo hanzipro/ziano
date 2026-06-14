@@ -1,4 +1,9 @@
-from cheritage.cssgen import generate_css, generate_index_css
+from cheritage.cssgen import (
+    generate_aggregate_css,
+    generate_css,
+    mode_css_name,
+    weight_css_path,
+)
 from cheritage.roster import FamilyConfig, Weight
 from cheritage.slices import Slice
 
@@ -48,16 +53,38 @@ def test_no_local_names_keeps_plain_url():
     assert "src: url(./files/shanggu-serif.0.woff2) format('woff2');" in css
 
 
-def test_generate_index_css_imports_each_weight_sorted():
-    fam = FamilyConfig(
-        id="genyo-min", font_family="GenYo Min", style="serif", format="static",
-        repo="ButTaiwan/genyo-font", release_tag="v2.100", asset="x.zip",
-        asset_sha256="0",
-        weights=(Weight(900, "H.otf"), Weight(250, "EL.otf"), Weight(400, "R.otf")),
-    )
-    idx = generate_index_css(fam)
-    assert idx == (
-        '@import url("./250.css");\n'
-        '@import url("./400.css");\n'
-        '@import url("./900.css");\n'
-    )
+STATIC = FamilyConfig(
+    id="genyo-min", font_family="GenYo Min", style="serif", format="static",
+    repo="ButTaiwan/genyo-font", release_tag="v2.100", asset="x.zip",
+    asset_sha256="0",
+    weights=(Weight(900, "H.otf"), Weight(250, "EL.otf"), Weight(400, "R.otf")),
+)
+
+
+def test_display_mode_is_emitted():
+    css = generate_css(VF, [Slice(0, "U+20")], display="optional")
+    assert "font-display: optional;" in css
+    assert "font-display: swap;" not in css
+
+
+def test_aggregate_inlines_every_weight_sorted_no_import():
+    css = generate_aggregate_css(STATIC, [Slice(0, "U+20")], [900, 250, 400], display="block")
+    # no @import — all @font-face inlined to avoid a request waterfall
+    assert "@import" not in css
+    assert css.count("@font-face") == 3
+    assert "font-display: block;" in css
+    # weights inlined in sorted order
+    assert css.index("font-weight: 250;") < css.index("font-weight: 400;") < css.index("font-weight: 900;")
+    # top-level entry → ./files
+    assert "url(./files/genyo-min.250.0.woff2)" in css
+
+
+def test_per_weight_file_climbs_to_files_dir():
+    # swap/300.css sits one dir deep, so url() must reach back up with ../files
+    css = generate_css(STATIC, [Slice(0, "U+20")], weight=400, files_base="../files")
+    assert "url(../files/genyo-min.400.0.woff2)" in css
+
+
+def test_path_helpers():
+    assert mode_css_name("swap") == "swap.css"
+    assert weight_css_path("optional", 700) == "optional/700.css"

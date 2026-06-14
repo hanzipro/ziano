@@ -2,7 +2,14 @@ import sys
 from pathlib import Path
 
 from .acquire import download, download_raw, extract_member
-from .cssgen import generate_css, generate_index_css, weight_css_name, woff2_name
+from .cssgen import (
+    DISPLAY_MODES,
+    generate_aggregate_css,
+    generate_css,
+    mode_css_name,
+    weight_css_path,
+    woff2_name,
+)
 from .package import write_package_skeleton
 from .roster import FamilyConfig, load_roster, slice_table_name
 from .slices import Slice, load_slices
@@ -22,9 +29,12 @@ def _acquire(fam: FamilyConfig, work: Path, member: str, sha256: str = "") -> Pa
 def _build_vf(fam: FamilyConfig, work: Path, slices: list[Slice],
               *, dest: str, version: str, license_text: str) -> Path:
     font_path = _acquire(fam, work, fam.member)
+    # one top-level entry per display mode; the woff2 are shared (mode-independent).
+    css_files = {mode_css_name(m): generate_css(fam, slices, display=m)
+                 for m in DISPLAY_MODES}
     root = write_package_skeleton(
         fam, dest=dest, version=version,
-        css=generate_css(fam, slices), license_text=license_text,
+        css_files=css_files, license_text=license_text,
     )
     for s in slices:
         out = root / "files" / woff2_name(fam, s.index)
@@ -36,11 +46,19 @@ def _build_static(fam: FamilyConfig, work: Path, slices: list[Slice],
                   *, dest: str, version: str, license_text: str,
                   only_weights: list[int] | None) -> Path:
     weights = [w for w in fam.weights if only_weights is None or w.weight in only_weights]
-    extra_css = {weight_css_name(w.weight): generate_css(fam, slices, weight=w.weight)
-                 for w in weights}
+    # index.css lists every weight regardless of only_weights, so the published
+    # entry is complete; only_weights only limits which woff2 we actually subset.
+    all_weights = [w.weight for w in fam.weights]
+    css_files: dict[str, str] = {}
+    for mode in DISPLAY_MODES:
+        css_files[mode_css_name(mode)] = generate_aggregate_css(
+            fam, slices, all_weights, display=mode)
+        for w in fam.weights:
+            css_files[weight_css_path(mode, w.weight)] = generate_css(
+                fam, slices, weight=w.weight, display=mode, files_base="../files")
     root = write_package_skeleton(
         fam, dest=dest, version=version,
-        css=generate_index_css(fam), extra_css=extra_css, license_text=license_text,
+        css_files=css_files, license_text=license_text,
     )
     for w in weights:
         font_path = _acquire(fam, work, w.member, w.sha256)
