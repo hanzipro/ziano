@@ -49,6 +49,10 @@ class FamilyConfig:
     # override the style→slice-table default (see _SLICE_TABLE). Used by SC/JP-default
     # families so their script-specific codepoints get sliced instead of dropped.
     slice_table: str = ""
+    # TC glyph form: heritage/orthodox 傳承字形 (the project's core) vs the MOE
+    # 國字標準字體 standard form. Only meaningful for TC families; iansui is the
+    # lone standard-form one. Drives the npm keyword/branding, not the slicing.
+    heritage: bool = True
     license_member: str = "LICENSE.txt"
     member: str = ""  # vf: the single font file inside the archive
     weights: tuple[Weight, ...] = ()  # static: one entry per weight

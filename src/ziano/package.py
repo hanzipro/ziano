@@ -19,6 +19,24 @@ STYLE_KEYWORDS: dict[str, list[str]] = {
     "cursive": ["楷體"],
 }
 
+# npm keywords + a description label + a README tagline for a family. Two axes:
+# script (TC by default; SC/JP families set slice_table) and — within TC — the
+# glyph form: 傳承字形 (heritage/orthodox, the project's core) vs the MOE
+# 國字標準字體 standard form (iansui alone). 傳承字形 belongs ONLY on heritage TC.
+def script_meta(fam: FamilyConfig) -> dict:
+    script = fam.slice_table or "traditional-chinese"
+    if script == "simplified-chinese":
+        return {"keywords": ["simplified-chinese"], "label": "簡體中文",
+                "tagline": "Simplified-Chinese"}
+    if script == "japanese":
+        return {"keywords": ["japanese"], "label": "日本語",
+                "tagline": "Japanese"}
+    if fam.heritage:
+        return {"keywords": ["traditional-chinese", "傳承字形"], "label": "傳承字形",
+                "tagline": "傳承字形 (heritage-glyph) Traditional-Chinese"}
+    return {"keywords": ["traditional-chinese", "國字標準字體"], "label": "國字標準字體",
+            "tagline": "國字標準字體 (MOE-standard) Traditional-Chinese"}
+
 
 def package_name(fam: FamilyConfig) -> str:
     return f"{PKG_SCOPE}/{PKG_PREFIX}{fam.id}"
@@ -31,6 +49,7 @@ def css_entry_name(fam: FamilyConfig) -> str:
 
 
 def package_json(fam: FamilyConfig, *, version: str) -> dict:
+    meta = script_meta(fam)
     entry = css_entry_name(fam)  # swap.css
     # exports: bare specifier → swap; subpath per mode (./block, ./optional).
     exports: dict[str, str] = {".": f"./{entry}"}
@@ -48,7 +67,7 @@ def package_json(fam: FamilyConfig, *, version: str) -> dict:
         "name": package_name(fam),
         "version": version,
         "description": (
-            f"{fam.font_family} — 傳承字形 webfont subset of {fam.repo} "
+            f"{fam.font_family} — {meta['label']} webfont subset of {fam.repo} "
             f"({fam.release_tag}), sliced by ziano."
         ),
         "license": "OFL-1.1",
@@ -61,7 +80,7 @@ def package_json(fam: FamilyConfig, *, version: str) -> dict:
         "exports": exports,
         "files": [*mode_css, *mode_dirs, "files/", "LICENSE", "README.md"],
         "keywords": [
-            "webfont", "cjk", "traditional-chinese", "傳承字形", fam.style,
+            "webfont", "cjk", *meta["keywords"], fam.style,
             *STYLE_KEYWORDS.get(fam.style, []),
         ],
         # scoped packages are private by default — must opt into public publish
@@ -70,6 +89,7 @@ def package_json(fam: FamilyConfig, *, version: str) -> dict:
 
 
 def render_readme(fam: FamilyConfig, *, version: str) -> str:
+    meta = script_meta(fam)
     entry = css_entry_name(fam)
     pkg = package_name(fam)
     base = f"https://cdn.jsdelivr.net/npm/{pkg}@{version}"
@@ -96,7 +116,7 @@ def render_readme(fam: FamilyConfig, *, version: str) -> str:
         )
     return (
         f"# {pkg}\n\n"
-        f"**{fam.font_family}** — 傳承字形 (heritage-glyph) Traditional-Chinese webfont, "
+        f"**{fam.font_family}** — {meta['tagline']} webfont, "
         f"sliced into `unicode-range` woff2 subsets from "
         f"[{fam.repo}](https://github.com/{fam.repo}) `{fam.release_tag}`.\n\n"
         "## Usage\n\n"
