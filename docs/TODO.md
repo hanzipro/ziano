@@ -1,4 +1,19 @@
-# cheritage — deferred TODO
+# ziano — deferred TODO
+
+## On stable 0.1.0: switch demo's floating CDN tag `@rc` → `@latest`
+
+**Context:** the demo previews fonts via the floating `rc` dist-tag (`@rc`) so it
+tracks each `npm publish --tag rc` without a code change. `@latest`/unversioned
+can't be used during prerelease — `--tag rc` doesn't move the `latest` tag, so
+they'd freeze at the first version. User-facing snippets + README stay **pinned**.
+
+**Do (when 0.1.0 ships to the `latest` tag):**
+- `demo/src/cdn.ts` — `DEMO_TAG` `'rc'` → `'latest'`, `VERSION` → `'0.1.0'`
+- `demo/cdn-bench.html` — `PKG` `@rc` → `@latest`
+- README/snippet pins follow the build version automatically.
+
+Grep `DEMO_TAG` and `0.1.0-rc.0` to find every spot.
+
 
 ## Skip empty/near-empty slices for narrow-coverage fonts
 
