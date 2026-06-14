@@ -3,7 +3,7 @@
 1. Build packages:
    ```bash
    for f in shanggu-serif shanggu-sans genyo-min genyo-gothic; do
-     uv run python -m cheritage.build "$f"
+     uv run python -m ziano.build "$f"
    done
    ```
 2. Serve the repo root (the page imports `../../dist/...`):

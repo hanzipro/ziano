@@ -1,7 +1,7 @@
 # Slice-table source & attribution
 
 The `../slices.<script>.json` tables are **generated** from the `*_default.txt`
-slicing strategies in this directory by `cheritage.slices.parse_slicing_strategy`:
+slicing strategies in this directory by `ziano.slices.parse_slicing_strategy`:
 
 | Generated table | Source strategy file | Used by (default) |
 |---|---|---|
@@ -38,7 +38,7 @@ All three are Google Fonts' canonical per-script **slicing strategies** — the
 
 The `css2` API response is the *rendered* form of this same data but carries no
 explicit license. Deriving directly from the Apache-2.0 `nam-files` source gives a
-clean, attributable licensing chain. cheritage does **not** redistribute any Google
+clean, attributable licensing chain. ziano does **not** redistribute any Google
 font — only this openly-licensed codepoint partition, applied to our own OFL fonts.
 
 ## Updating
