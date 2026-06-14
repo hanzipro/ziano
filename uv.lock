@@ -170,29 +170,6 @@ wheels = [
 ]
 
 [[package]]
-name = "cheritage"
-version = "0.0.0"
-source = { editable = "." }
-dependencies = [
-    { name = "fonttools", extra = ["woff"] },
-    { name = "py7zr" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "pytest" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "fonttools", extras = ["woff"], specifier = ">=4.50" },
-    { name = "py7zr", specifier = ">=0.21" },
-]
-
-[package.metadata.requires-dev]
-dev = [{ name = "pytest", specifier = ">=8" }]
-
-[[package]]
 name = "colorama"
 version = "0.4.6"
 source = { registry = "https://pypi.org/simple" }
@@ -546,6 +523,29 @@ sdist = { url = "https://files.pythonhosted.org/packages/1c/dc/0aff23d6036a4d3bf
 wheels = [
     { url = "https://files.pythonhosted.org/packages/24/99/4772b8e00a136f3e01236de33b0efda31ee7077203ba5967fcc76da94d65/texttable-1.7.0-py2.py3-none-any.whl", hash = "sha256:72227d592c82b3d7f672731ae73e4d1f88cd8e2ef5b075a7a7f01a23a3743917", size = 10768, upload-time = "2023-10-03T09:48:10.434Z" },
 ]
+
+[[package]]
+name = "ziano"
+version = "0.0.0"
+source = { editable = "." }
+dependencies = [
+    { name = "fonttools", extra = ["woff"] },
+    { name = "py7zr" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "pytest" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "fonttools", extras = ["woff"], specifier = ">=4.50" },
+    { name = "py7zr", specifier = ">=0.21" },
+]
+
+[package.metadata.requires-dev]
+dev = [{ name = "pytest", specifier = ">=8" }]
 
 [[package]]
 name = "zopfli"

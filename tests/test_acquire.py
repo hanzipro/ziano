@@ -2,7 +2,7 @@ import hashlib
 
 import pytest
 
-from cheritage.acquire import release_asset_url, sha256_file
+from ziano.acquire import release_asset_url, sha256_file
 
 
 def test_release_asset_url_is_github_releases_download():
@@ -20,7 +20,7 @@ def test_sha256_file(tmp_path):
 
 
 def test_raw_file_url():
-    from cheritage.acquire import raw_file_url
+    from ziano.acquire import raw_file_url
     assert raw_file_url("fontworks-fonts/Klee", "Version1.000", "fonts/ttf/KleeOne-Regular.ttf") == (
         "https://raw.githubusercontent.com/fontworks-fonts/Klee/Version1.000/"
         "fonts/ttf/KleeOne-Regular.ttf"
@@ -30,7 +30,7 @@ def test_raw_file_url():
 @pytest.mark.integration
 def test_download_raw_klee_is_a_real_font():
     from fontTools.ttLib import TTFont
-    from cheritage.acquire import download_raw
+    from ziano.acquire import download_raw
     p = download_raw(
         "fontworks-fonts/Klee", "Version1.000", "fonts/ttf/KleeOne-Regular.ttf",
         expected_sha256="74cb0a6523cc22b221ceaa7b78b56cea66512ec14b4145fd0102ffe27c30d084",
@@ -39,7 +39,7 @@ def test_download_raw_klee_is_a_real_font():
 
 
 def test_download_rejects_sha256_mismatch(tmp_path, monkeypatch):
-    import cheritage.acquire as acq
+    import ziano.acquire as acq
 
     monkeypatch.setattr(acq, "CACHE", tmp_path)
     # pre-seed the cache so no network is hit, with wrong-hash content
@@ -52,7 +52,7 @@ def test_download_rejects_sha256_mismatch(tmp_path, monkeypatch):
 
 @pytest.mark.integration
 def test_download_shanggu_serif_archive_is_real():
-    from cheritage.acquire import download
+    from ziano.acquire import download
 
     p = download(
         "GuiWonder/Shanggu", "1.028", "ShangguSerifVF_TTFs.7z",
@@ -66,7 +66,7 @@ def test_download_shanggu_serif_archive_is_real():
 def test_extract_member_pulls_tc_vf_from_7z(tmp_path):
     from fontTools.ttLib import TTFont
 
-    from cheritage.acquire import download, extract_member
+    from ziano.acquire import download, extract_member
 
     archive = download("GuiWonder/Shanggu", "1.028", "ShangguSerifVF_TTFs.7z")
     ttf = extract_member(archive, "ShangguSerifTC-VF.ttf", tmp_path)
@@ -76,9 +76,8 @@ def test_extract_member_pulls_tc_vf_from_7z(tmp_path):
 
 
 def test_extract_member_missing_raises(tmp_path):
-    from cheritage.acquire import extract_member
+    from ziano.acquire import extract_member
 
-    archive = tmp_path / "GuiWonder__Shanggu__1.028__ShangguSerifVF_TTFs.7z"
     # reuse the seeded cache copy if present, else skip the body via passthrough
     real = __import__("pathlib").Path(
         ".cache/GuiWonder__Shanggu__1.028__ShangguSerifVF_TTFs.7z"

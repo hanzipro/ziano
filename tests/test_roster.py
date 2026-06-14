@@ -1,6 +1,6 @@
 import pytest
 
-from cheritage.roster import FamilyConfig, load_roster
+from ziano.roster import FamilyConfig, load_roster
 
 
 def test_load_roster_returns_typed_families():
@@ -51,14 +51,14 @@ def test_load_roster_cursive_families():
 
 
 def test_styles_use_canonical_tc_slice_table():
-    from cheritage.roster import slice_table_name
+    from ziano.roster import slice_table_name
     assert slice_table_name("cursive") == "traditional-chinese"
     assert slice_table_name("serif") == "traditional-chinese"
     assert slice_table_name("sans") == "traditional-chinese"
 
 
 def test_slice_table_override_wins_over_style():
-    from cheritage.roster import slice_table_name
+    from ziano.roster import slice_table_name
     assert slice_table_name("cursive", "simplified-chinese") == "simplified-chinese"
     assert slice_table_name("cursive", "japanese") == "japanese"
     # empty override falls back to the style default
@@ -67,7 +67,7 @@ def test_slice_table_override_wins_over_style():
 
 def test_unknown_slice_table_override_rejected():
     import pytest
-    from cheritage.roster import slice_table_name
+    from ziano.roster import slice_table_name
     with pytest.raises(ValueError):
         slice_table_name("serif", "klingon")
 

@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from cheritage.build import build_family
+from ziano.build import build_family
 
 
 @pytest.mark.integration

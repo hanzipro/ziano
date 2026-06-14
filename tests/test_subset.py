@@ -1,9 +1,9 @@
 import pytest
 from fontTools.ttLib import TTFont
 
-from cheritage.acquire import download, extract_member
-from cheritage.slices import Slice
-from cheritage.subset import subset_to_woff2
+from ziano.acquire import download, extract_member
+from ziano.slices import Slice
+from ziano.subset import subset_to_woff2
 
 
 @pytest.mark.integration

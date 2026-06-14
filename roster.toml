@@ -180,7 +180,7 @@ asset_sha256    = "e87a63854a4f378e03684377c6d8d491099737233179961bde70cd0d83b0e
   weight = 900
   member = "GenYoGothic2TC-H.otf"
 
-# --- 楷體 (style "cursive" / handwriting). cheritage bans 國字標準字體 only in
+# --- 楷體 (style "cursive" / handwriting). ziano bans 國字標準字體 only in
 # PRINTED faces (serif/sans); 楷 is a handwriting style, so MOE-standard forms are
 # allowed here. Iansui = 國字標準字體 楷 (MOE). LXGW WenKai TC = 傳承字形 楷.
 # Users pick freely. ---

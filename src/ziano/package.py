@@ -5,11 +5,19 @@ from .cssgen import DEFAULT_MODE, DISPLAY_MODES, mode_css_name
 from .roster import FamilyConfig
 
 # npm publishing identity. Packages publish as @hanzi.pro/webfonts-<id>.
-# The GitHub repo (cheritage) deliberately does NOT appear in the package name.
+# The GitHub repo (ziano) deliberately does NOT appear in the package name.
 PKG_SCOPE = "@hanzi.pro"
 PKG_PREFIX = "webfonts-"
-REPO_URL = "https://github.com/hanzipro/cheritage"
+REPO_URL = "https://github.com/hanzipro/ziano"
 HOMEPAGE = "https://hanzi.pro"
+
+# Chinese classification keywords per roster style. serif (明朝體) is searched as
+# both 明體 (TW) and 宋體 (CN); sans → 黑體; cursive (handwriting) → 楷體.
+STYLE_KEYWORDS: dict[str, list[str]] = {
+    "serif": ["明體", "宋體"],
+    "sans": ["黑體"],
+    "cursive": ["楷體"],
+}
 
 
 def package_name(fam: FamilyConfig) -> str:
@@ -41,7 +49,7 @@ def package_json(fam: FamilyConfig, *, version: str) -> dict:
         "version": version,
         "description": (
             f"{fam.font_family} — 傳承字形 webfont subset of {fam.repo} "
-            f"({fam.release_tag}), sliced by cheritage."
+            f"({fam.release_tag}), sliced by ziano."
         ),
         "license": "OFL-1.1",
         "homepage": HOMEPAGE,
@@ -52,7 +60,10 @@ def package_json(fam: FamilyConfig, *, version: str) -> dict:
         "sideEffects": ["*.css"],
         "exports": exports,
         "files": [*mode_css, *mode_dirs, "files/", "LICENSE", "README.md"],
-        "keywords": ["webfont", "cjk", "traditional-chinese", "傳承字形", fam.style],
+        "keywords": [
+            "webfont", "cjk", "traditional-chinese", "傳承字形", fam.style,
+            *STYLE_KEYWORDS.get(fam.style, []),
+        ],
         # scoped packages are private by default — must opt into public publish
         "publishConfig": {"access": "public"},
     }

@@ -1,11 +1,11 @@
-from cheritage.cssgen import (
+from ziano.cssgen import (
     generate_aggregate_css,
     generate_css,
     mode_css_name,
     weight_css_path,
 )
-from cheritage.roster import FamilyConfig, Weight
-from cheritage.slices import Slice
+from ziano.roster import FamilyConfig, Weight
+from ziano.slices import Slice
 
 VF = FamilyConfig(
     id="shanggu-serif", font_family="Shanggu Serif", style="serif", format="vf",

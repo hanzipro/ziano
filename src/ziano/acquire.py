@@ -18,7 +18,7 @@ def raw_file_url(repo: str, ref: str, path: str) -> str:
 
 
 def _fetch(url: str, dest: Path) -> None:
-    req = urllib.request.Request(url, headers={"User-Agent": "cheritage-build"})
+    req = urllib.request.Request(url, headers={"User-Agent": "ziano-build"})
     with urllib.request.urlopen(req) as resp, open(dest, "wb") as out:
         while chunk := resp.read(1 << 20):
             out.write(chunk)

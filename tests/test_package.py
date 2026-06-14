@@ -1,7 +1,7 @@
 import json
 
-from cheritage.package import package_json, write_package_skeleton
-from cheritage.roster import FamilyConfig, Weight
+from ziano.package import package_json, write_package_skeleton
+from ziano.roster import FamilyConfig, Weight
 
 STATIC = FamilyConfig(
     id="genyo-min", font_family="GenYo Min", style="serif", format="static",

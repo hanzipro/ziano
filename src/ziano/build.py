@@ -84,7 +84,7 @@ def build_family(family_id: str, *, roster_path: str, dest: str, version: str,
                          only_weights=only_weights)
 
 
-if __name__ == "__main__":  # python -m cheritage.build <family_id>
+if __name__ == "__main__":  # python -m ziano.build <family_id>
     fam_id = sys.argv[1]
     out = build_family(fam_id, roster_path="roster.toml", dest="dist", version="0.1.0")
     n = len(list((out / "files").glob("*.woff2")))

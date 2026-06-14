@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from cheritage.slices import (
+from ziano.slices import (
     Slice,
     format_unicode_range,
     load_slices,

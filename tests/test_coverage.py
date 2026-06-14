@@ -1,6 +1,6 @@
 import pytest
 
-from cheritage.coverage import cmap_codepoints, coverage_report
+from ziano.coverage import cmap_codepoints, coverage_report
 
 
 def test_coverage_report_counts_and_missing():
@@ -14,7 +14,7 @@ def test_coverage_report_counts_and_missing():
 
 @pytest.mark.integration
 def test_real_families_cover_common_hard_set(tmp_path):
-    from cheritage.acquire import download, extract_member
+    from ziano.acquire import download, extract_member
 
     archive = download("GuiWonder/Shanggu", "1.028", "ShangguSerifVF_TTFs.7z")
     ttf = extract_member(archive, "ShangguSerifTC-VF.ttf", tmp_path)
