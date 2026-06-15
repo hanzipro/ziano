@@ -13,94 +13,85 @@ body > main > article {
     display: none;
   }
   figure {
+    /* A carousel stage. carousel.ts breathes one part-glyph at a time in and out of
+       blur; the glyphs all share one centred grid cell so they stack dead-centre, and
+       overflow:clip keeps the blur(100px) exit from bleeding onto the roster below. */
     & {
-      display: flex;
+      --bg-rect: .675rem bottom / 9.5rem 20rem no-repeat;
+
+      position: relative;
+      z-index: -10;
+      display: grid;
+      place-items: center;
       margin: 0;
       inline-size: 100%;
+      block-size: min(60vh, 30rem);
+      /* overflow-y: clip; */
+      background: linear-gradient(var(--palette-accent), var(--palette-accent)) var(--bg-rect);
     }
     ul {
-      display: flex;
-      align-items: flex-end;
-      flex-direction: column;
+      display: grid;
+      grid-template-areas: 'stage';
+      place-items: center;
       margin: 0;
       padding: 0;
       inline-size: 100%;
+      block-size: 100%;
+      list-style: none;
       user-select: none;
     }
     li {
-      & {
-        position: relative;
-        z-index: -10;
-        font-family: var(--font-alternative);
-        font-size: 10vh;
-      }
-      &:first-child {
-        position: absolute;
-        inset-inline-start: 0;
-        margin-block-start: -.75em;
-        font-size: 20vh;
-      }
-      &:nth-child(2) {
-        position: absolute;
-        inset-inline-start: 18vh;
-        font-size: 8vh;
-        color: var(--palette-supplement-text-3q);
-      }
-      &:nth-child(3) {
-        font-size: 10vh;
-        font-weight: 300;
-        color: var(--palette-supplement-text-2q);
-        text-shadow: 3px 0 0 var(--palette-ink-grey);
-      }
-      &:nth-child(4) {
-        font-size: 3rem;
-        font-weight: 700;
-      }
-      &:nth-child(5) {
-        margin-inline-end: 16vh;
-        margin-block-start: -16vh;
-        font-family: var(--font-default);
-        font-weight: 250;
-      }
-      &:nth-child(6) {
-        font-weight: 250;
-        color: var(--palette-supplement-text-2q);
-      }
-      &:nth-child(7) {
-        margin-inline-end: -10vh;
-        margin-block-start: -8vh;
-        font-family: var(--font-default);
-        font-weight: 900;
-        font-size: 16vh;
-      }
-      &:last-child {
-        margin-block: -20rem -3rem;
-        font-size: 60vh;
-        filter: blur(5px);
-        color: var(--palette-accent);
-      }
-      &:nth-child(1),
-      &:nth-child(2n+6) {
-        &::marker {
-          content: '';
-        }
-      }
+      grid-area: stage; /* every glyph in the one cell → overlapped, centred */
+      margin: 0;
+      font-family: var(--font-alternative);
+      font-size: min(64vh, 32rem); /* fills the stage height; carousel.ts slides it left/right past the edges */
+      line-height: 1;
+      color: var(--palette-text);
+      opacity: 0; /* carousel.ts reveals the active glyph; :first-child is the no-JS fallback */
+      will-change: transform, filter, opacity;
+    }
+    li:first-child {
+      opacity: 1;
     }
     figcaption {
-      margin-inline: .75rem;
-      margin-block: .5rem;
-      font-size: .75rem;
-      font-weight: 250;
-      letter-spacing: .125em;
+      /* Pinned bottom-end corner. Logical insets resolve in THIS element's own
+         writing-mode (vertical-rl) — so inline runs top→bottom and block runs
+         right→left: inline-end = bottom, block-start = right. */
+      position: absolute;
+      inset-inline-end: 0rem;
+      inset-block-end: .75rem;
+      inset-block-end: 0;
+      z-index: 1; /* sit above the blurred glyph */
+      margin-inline: 2em -.125em;
+      inline-size: 12em;
+      font-size: 2rem;
+      font-weight: 800;
+      line-height: 1.5;
       writing-mode: vertical-rl;
-      color: var(--palette-ink);
+      text-align: justify;
+      text-indent: 1em;
+      background: var(--palette-text) linear-gradient(var(--palette-text-inverse), var(--palette-text-inverse)) var(--bg-rect);
+      background-clip: text;
+      color: transparent;
+    }
+    abbr {
+      writing-mode: horizontal-tb;
+      display: inline-block;
+      margin-block: .125em;
+      inline-size: 1em;
+      line-height: 1;
+      text-align: center;
+      text-indent: 0;
+      padding-left: .125em;
+      text-wrap: wrap;
+      word-break: break-all;
     }
   }
   dl {
     & {
       position: relative;
       margin-block: 0;
-      padding: 3rem 0 1rem 60%;
+      padding: 5rem 0 1rem 60%;
       line-height: 1.5;
       cursor: pointer; /* JS makes each card a button: pick the font + jump to #playground */
     }
@@ -121,6 +112,7 @@ body > main > article {
       z-index: -10;
       inline-size: calc(100vw - 2rem);
       transition: .15s all ease-out;
+      backdrop-filter: blur(10px);
     }
     &:nth-child(odd) {
       dt {
@@ -166,17 +158,23 @@ body > main > article {
   [data-font-name='shanggu-sans'] dt {
     font-family: 'Shanggu Sans', sans-serif;
   }
-  [data-font-name='genyo-min'] dt {
-    font-family: 'Genyo Min', serif;
+  [data-font-name='shanggu-serif-tc'] dt {
+    font-family: 'Shanggu Serif TC', serif;
   }
-  [data-font-name='genyo-min-tc'] dt {
-    font-family: 'Genyo Min TC', serif;
+  [data-font-name='shanggu-sans-tc'] dt {
+    font-family: 'Shanggu Sans TC', sans-serif;
   }
-  [data-font-name='genyo-gothic'] dt {
-    font-family: 'Genyo Gothic', sans-serif;
+  [data-font-name='genki-min'] dt {
+    font-family: 'Genki Min', serif;
   }
-  [data-font-name='genyo-gothic-tc'] dt {
-    font-family: 'Genyo Gothic TC', sans-serif;
+  [data-font-name='genki-min-tc'] dt {
+    font-family: 'Genki Min TC', serif;
+  }
+  [data-font-name='genki-gothic'] dt {
+    font-family: 'Genki Gothic', sans-serif;
+  }
+  [data-font-name='genki-gothic-tc'] dt {
+    font-family: 'Genki Gothic TC', sans-serif;
   }
   [data-font-name='lxgw-wenkai-tc'] dt {
     font-family: 'LXGW Wenkai TC', cursive, serif;

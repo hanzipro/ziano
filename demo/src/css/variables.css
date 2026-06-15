@@ -38,6 +38,7 @@
   --color-charcoal: #18181b;
   --color-black: #111; /* body-text black */
   --color-ink: #0a0a0a; /* deepest near-black surface */
+  --color-ink: #191515; /* deepest near-black surface */
   --color-ink-grey: #4e4f51;
   --color-ink-light: #4e4f519c;
   --color-red: #b00404;
@@ -95,6 +96,7 @@
   --palette-bg-3q: color-mix(in srgb, var(--color-ink) 82%, transparent);
   --palette-grid: var(--color-onyx);
   --palette-text: var(--color-mist);
+  --palette-text-inverse: var(--color-ink);
   --palette-supplement-text: var(--color-ash);
   --palette-panel: var(--color-charcoal);
   --palette-ink-grey: var(--color-silver);
