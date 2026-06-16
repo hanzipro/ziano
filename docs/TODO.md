@@ -40,3 +40,79 @@ narrow-coverage fonts; wide fonts are barely affected.
 **Test:** build `klee-one` and assert no `klee-one.*.woff2` exists for a slice
 that is purely in a block Klee lacks (e.g. a CJK Ext-B-only slice), and that
 `400.css` has fewer `@font-face` than the full 108.
+
+
+## Vertical (直排): Firefox rotates `：；` — should stay upright
+
+**Symptom:** in vertical mode Firefox rotates `：`(U+FF1A) and `；`(U+FF1B); they
+should render upright. Chrome/Safari correct. Other punctuation fine. Deemed
+可接受 to ship without — fix in a later pass. (Found 2026-06-15 via
+`demo/vert-test.html`, case 「句讀位置」.)
+
+**Cause:** both are UTR50 **Tr-class** ("rotate by default *unless* `vert`
+substitutes them"). Shanggu's `vert`/`vrt2` lookups (#42, #43) have no rule for
+them, so Firefox's strict UTR50 rotates; Chrome/Safari are lax → upright. Exactly
+diantenjeom `docs/vertical-text.md` quirk #5.
+
+**Fix:** identity self-substitution — add `uniFF1A → uniFF1A`, `uniFF1B → uniFF1B`
+to the `vert`/`vrt2` lookup (diantenjeom's `_add_upright_self_substs` sentinel
+trick). Firefox renders upright; Chrome/Safari unchanged (identity = no-op). Run
+once on each base OTF **before slicing** so it propagates to every range-slice
+containing `：；`. Re-verify with `demo/vert-test.html`.
+
+
+## Shanggu: ship base + TC, drop JP (10 → 12 families)
+
+**Decision (2026-06-15):** keep Shanggu in two cuts, drop JP entirely.
+- **base (無附加名)** — *heritage-enhanced*: force-merges 新→舊 異體字 (内→內, 兑→兌,
+  青→靑 …) even when the author typed the new codepoint. Already in roster as
+  `shanggu-serif` / `shanggu-sans` (corrected to base OTF; pending rc.2).
+- **TC (繁體中文標點版)** — *Unicode-faithful*: respects the encoded codepoint, still
+  fully 舊字形 otherwise. NEW: add `shanggu-serif-tc` / `shanggu-sans-tc`.
+- Measured difference base↔TC = **159 codepoints (0.35%)**, incl. common 内/争/兑/净/册;
+  TC↔JP only 41 → JP not worth shipping.
+
+**Cheap to add:** TC members live in the *same* `…VF_OTFs.7z` → reuse the same
+`asset` + `asset_sha256`, same serif/sans slice tables; just 2 new roster entries.
+
+**⚠️ Naming to resolve before building:** suffix direction is inverted vs GenYo —
+GenYo `-tc` (丹) is the *more*-heritage cut, but Shanggu `-tc` (TC) is the *milder*
+one. Decide: (a) suffix = upstream variant name, document per-package README
+(leaning this); or (b) a self-describing suffix for Shanggu's milder cut.
+
+**Publish:** base → rc.2 (corrected bytes); the 2 new TC → publish fresh at rc.2
+for catalog consistency. Then per-package snippet handling in `cdn.ts` (Option A).
+
+
+## 源樣 GenYo → 源起 Genki — 定案：改用體積較小的源起
+
+**決定 (2026-06-15)：ziano 預設改用源起 Genki 取代源樣 GenYo。**
+理由：兩者**視覺等同**（見下證據），但源起 woff2 **小 17–24%**⸺對主打速度的
+webfont CDN 是淨勝。源樣已上 npm（rc.1）無法下架 → 仍發 `0.1.0` 正式版收尾，
+但**不放進 demo**；demo 預設改推源起。
+
+**體積（woff2 實測，ziano 出貨格式）：**
+- 明體 L：GenYo 8.97 MB → Genki **6.80 MB（−24%）**
+- 黑體 L：GenYo 6.42 MB → Genki **5.31 MB（−17%）**
+- 為何斷筆反而小：構件一致、重複性高 → brotli 壓更兇（desub on/off 結果相同）。
+
+**視覺等同（已驗證，結論不變）：**
+- outline topology 差 86%（斷筆＝把思源連筆拆成兩段相鄰輪廓），但墨跡幾乎相同。
+- 175 常用字 bbox 對齊後像素差中位數 5%、最差 16%（多/言/走，斜筆多）；目視仍只有
+  邊緣 ≤1px 紅／青毛邊（均勻次像素位移），無結構性斷裂。
+
+**待辦：**
+- roster：新增 `genki-min`/`genki-gothic`（＋ TC：`genki-min-tc`/`genki-gothic-tc`？待確認），
+  保留 `genyo-*`（仍需 build 來發 0.1.0 收尾）。
+- ⚠️ **黑體 Genki 無 N(350) 字重**（GenYo Gothic 有）→ 換用即少掉 350。明體字重一致。
+- demo：font 清單以 genki-* 取代 genyo-*（源樣不再出現）。
+- 發佈（RC 輪，不發正式版；維持 `--tag rc`，demo 維持 `@rc`）：
+  - **尚古 base 2 包 → `0.1.0-rc.2`**（修正 bytes，接續 rc 線）；
+    **尚古 TC 2 包 → `0.1.0-rc.0`**（全新套件，從 rc.0 起）。
+  - **Genki 4 包 → `0.1.0-rc.0`**（新預設）。
+  - **GenYo → 晚點再發 `0.1.0` 正式版**（收尾、不推廣；本輪不動）。
+  - 其餘（iansui/klee/lxgw）維持 rc.1，本輪不動。
+  ⚠️ 不可逆＋2FA，由使用者執行。正式版 0.1.0（含 demo @rc→@latest）留待 GenYo 收尾時一起。
+
+**評估工具（保留）：** `demo/genki-test.html`、`demo/genki-diff.html`；
+字檔在 gitignore 的 `demo/public/genki-test/`。
