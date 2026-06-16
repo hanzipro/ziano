@@ -2,4 +2,11 @@ node_modules/
 dist/
 .vite/
 public/fonts/
+public/vert-test/        # 64MB base OTFs for vert-test.html; reproducible, never commit
+public/variant-test/     # full Shanggu variant OTFs for variant-test.html; reproducible, never commit
 *.local
+public/genki-test/       # GenYo/Genki OTFs for genki-test.html; reproducible, never commit
+# Shanggu OTF/TTF for ttf-test.html; reproducible (157MB), never commit
+public/ttf-test/
+# subset woff2 for woff2-demo.html; reproducible, never commit
+public/woff2-demo/

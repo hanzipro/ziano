@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>尚古 OTF(CFF2) vs TTF(glyf) — 小字級渲染對照</title>
+<style>
+  /* 純格式對照:同為 TC 變數版,差別只在 CFF2 vs glyf。
+     注意:上游 TTF 不含 hinting(無 gasp/fpgm/prep),
+     macOS 兩者皆忽略 hinting,差異主要來自 cubic→quad 轉換。 */
+  @font-face { font-family: 'SHG-Serif-OTF'; src: url('/ttf-test/ShangguSerifTC-VF.otf') format('opentype'); }
+  @font-face { font-family: 'SHG-Serif-TTF'; src: url('/ttf-test/ShangguSerifTC-VF.ttf') format('truetype'); }
+  @font-face { font-family: 'SHG-Sans-OTF';  src: url('/ttf-test/ShangguSansTC-VF.otf')  format('opentype'); }
+  @font-face { font-family: 'SHG-Sans-TTF';  src: url('/ttf-test/ShangguSansTC-VF.ttf')  format('truetype'); }
+  @font-face { font-family: 'GenYo-L';  src: url('/ttf-test/GenYoMin2TW-L.otf')  format('opentype'); }
+  @font-face { font-family: 'GenYo-SB'; src: url('/ttf-test/GenYoMin2TW-SB.otf') format('opentype'); }
+
+  :root { --bg: #fff; --fg: #111; --mut: #999; }
+  html { color-scheme: light dark; }
+  :root:has(#dark:checked) { --bg: #15161a; --fg: #e8e8ea; --mut: #777; }
+
+  body { margin: 0; padding: 24px 28px; background: var(--bg); color: var(--fg);
+         font: 14px/1.5 system-ui, sans-serif; }
+  h1 { font-size: 16px; margin: 0 0 4px; }
+  .note { color: var(--mut); max-inline-size: 60ch; margin: 0 0 20px; font-size: 12px; }
+  .toolbar { margin-block: 12px 20px; display: flex; gap: 16px; align-items: center; font-size: 12px; }
+
+  table { border-collapse: collapse; }
+  th, td { padding: 8px 14px; text-align: start; vertical-align: baseline;
+           border-block-end: 1px solid color-mix(in srgb, var(--fg) 12%, transparent); }
+  th { color: var(--mut); font-weight: 500; font-size: 11px; white-space: nowrap; }
+  .fmt { color: var(--mut); font: 11px ui-monospace, monospace; white-space: nowrap; }
+
+  /* sample cell — size & weight driven by data-* read into CSS vars below */
+  .smp { letter-spacing: 0.04em; }
+  .px16 { font-size: 16px; }
+  .px20 { font-size: 20px; }
+  .px24 { font-size: 24px; }
+  .w400 { font-weight: 400; }
+  .w500 { font-weight: 500; }
+  .w700 { font-weight: 700; }
+
+  .otf  { font-family: 'SHG-Serif-OTF'; }
+  .ttf  { font-family: 'SHG-Serif-TTF'; }
+  .sotf { font-family: 'SHG-Sans-OTF'; }
+  .sttf { font-family: 'SHG-Sans-TTF'; }
+  .gl   { font-family: 'GenYo-L'; }
+  .gsb  { font-family: 'GenYo-SB'; }
+</style>
+</head>
+<body>
+  <h1>尚古 OTF(CFF2) ↔ TTF(glyf) 小字級對照</h1>
+  <p class="note">
+    同一套 TC 輪廓,左右只差表格式。實測:<strong>同輪廓存成 glyf 比存成 CFF2 渲染濃 ~1.6×</strong>。
+    對照實驗已排除設計字重、變數/靜態、hinting(剝掉源起 hint 墨水量不變)——唯一變數是
+    <strong>表格式:CFF2 被畫淡,CFF 與 glyf 畫實</strong>。最可能的機制:Chrome 在 macOS 上
+    自己用 Skia/FreeType 點陣化 CFF2,繞過了 CoreText 對 CFF/TrueType 套的 font-smoothing 加粗;
+    CFF2 因此偏細,白底小字尤其慘。源起明是<strong>靜態 CFF</strong>,走 CoreText → 濃度正常,
+    所以「同是 OTF 卻沒事」。換 glyf 即解,與 hinting 無關。
+  </p>
+
+  <div class="toolbar">
+    <label><input type="checkbox" id="dark" /> 深色背景</label>
+  </div>
+
+  <table>
+    <thead>
+      <tr><th>樣本 / 字級 / 字重</th><th>格式</th><th>明體 密集字</th></tr>
+    </thead>
+    <tbody>
+      <tr><th>16px · w400</th><td class="fmt">CFF2</td><td class="smp px16 w400 otf">體講織轉龍歡鬱籲鑫贛豔釁</td></tr>
+      <tr><th>16px · w400</th><td class="fmt">glyf</td><td class="smp px16 w400 ttf">體講織轉龍歡鬱籲鑫贛豔釁</td></tr>
+      <tr><th>20px · w400</th><td class="fmt">CFF2</td><td class="smp px20 w400 otf">體講織轉龍歡鬱籲鑫贛豔釁</td></tr>
+      <tr><th>20px · w400</th><td class="fmt">glyf</td><td class="smp px20 w400 ttf">體講織轉龍歡鬱籲鑫贛豔釁</td></tr>
+      <tr><th>20px · w500</th><td class="fmt">CFF2</td><td class="smp px20 w500 otf">體講織轉龍歡鬱籲鑫贛豔釁</td></tr>
+      <tr><th>20px · w500</th><td class="fmt">glyf</td><td class="smp px20 w500 ttf">體講織轉龍歡鬱籲鑫贛豔釁</td></tr>
+      <tr><th>20px · w700</th><td class="fmt">CFF2</td><td class="smp px20 w700 otf">體講織轉龍歡鬱籲鑫贛豔釁</td></tr>
+      <tr><th>20px · w700</th><td class="fmt">glyf</td><td class="smp px20 w700 ttf">體講織轉龍歡鬱籲鑫贛豔釁</td></tr>
+      <tr><th>20px · 源起 L</th><td class="fmt">CFF</td><td class="smp px20 gl">體講織轉龍歡鬱籲鑫贛豔釁</td></tr>
+      <tr><th>20px · 源起 SB</th><td class="fmt">CFF</td><td class="smp px20 gsb">體講織轉龍歡鬱籲鑫贛豔釁</td></tr>
+      <tr><th>16px · 黑體 w400</th><td class="fmt">CFF2</td><td class="smp px16 w400 sotf">體講織轉龍歡鬱籲鑫贛豔釁</td></tr>
+      <tr><th>16px · 黑體 w400</th><td class="fmt">glyf</td><td class="smp px16 w400 sttf">體講織轉龍歡鬱籲鑫贛豔釁</td></tr>
+    </tbody>
+  </table>
+</body>
+</html>

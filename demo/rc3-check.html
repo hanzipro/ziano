@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>尚古 @0.1.0-rc.3(glyf) vs @0.1.0-rc.2(CFF2) — 固定版號實拍</title>
+<script type="module">
+  // Each column is an isolated iframe loading ONE pinned package version's CSS,
+  // so the same font-family name ('Shanggu Serif/Sans') can't collide. We load
+  // block.css (font-display: block → wait for the font, no FOUT) at an immutable
+  // @version (no floating-@rc edge-cache mismatch). This is the apples-to-apples
+  // "is rc.3 really the heavier glyf build?" view.
+  const SAMPLE = `清晨的台北，捷運緩緩駛過城市的骨幹，車窗外的天色由青轉亮。月台上，旅客的情緒交織成一片低語，有人讀著手中的書，有人望向遠方的海角。文字像一條無形的絲線，把過去與現在織在一起。每個字的形體，都承載著前人的講究與情感。傳承字形所展現的，正是這份對細節的尊重——戶的寫法、骨的轉折、靑的結構、過的走之，無一不在訴說漢字悠長的歷史。`
+
+  const frameDoc = (ver) => `<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif@${ver}/block.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans@${ver}/block.css">
+<style>
+  :root { color-scheme: light dark; }
+  body { margin: 0; padding: 14px 16px; background: var(--bg, #fff); color: var(--fg, #111);
+         font: 14px/1.5 system-ui, sans-serif; }
+  h2 { font-size: 11px; letter-spacing: .06em; color: #999; margin: 0 0 4px; text-transform: uppercase; }
+  .lab { font-size: 11px; color: #999; margin: 14px 0 6px; }
+  p { margin: 0; text-align: justify; line-height: 1.9; }
+  .serif { font-family: 'Shanggu Serif', serif; }
+  .sans  { font-family: 'Shanggu Sans', sans-serif; }
+  .w400 { font-weight: 400; } .w300 { font-weight: 300; }
+  .px18 { font-size: 18px; } .px15 { font-size: 15px; }
+</style></head><body>
+  <div class="lab">明體 · 18px · w400</div>
+  <p class="serif px18 w400">${SAMPLE}</p>
+  <div class="lab">明體 · 15px · w400</div>
+  <p class="serif px15 w400">${SAMPLE}</p>
+  <div class="lab">黑體 · 18px · w400</div>
+  <p class="sans px18 w400">${SAMPLE}</p>
+  <div class="lab">黑體 · 15px · w300</div>
+  <p class="sans px15 w300">${SAMPLE}</p>
+</body></html>`
+
+  addEventListener('DOMContentLoaded', () => {
+    for (const f of document.querySelectorAll('iframe[data-ver]')) f.srcdoc = frameDoc(f.dataset.ver)
+  })
+</script>
+<style>
+  :root { --bg: #fbfbf9; --fg: #1a1a1a; --mut: #8a8a85; --line: #e3e3dd; }
+  :root:has(#dark:checked) { --bg: #15161a; --fg: #e8e8ea; --mut: #74757a; --line: #2a2c31; }
+  html { color-scheme: light dark; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.5 system-ui, sans-serif; }
+  header { padding: 18px clamp(16px, 4vw, 48px) 14px; border-block-end: 1px solid var(--line); }
+  h1 { font-size: 16px; margin: 0 0 6px; }
+  p.note { color: var(--mut); margin: 0; max-inline-size: 70ch; font-size: 12px; }
+  .bar { margin-block-start: 12px; font-size: 12px; }
+  main { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line);
+         min-block-size: calc(100vh - 120px); }
+  section { background: var(--bg); display: flex; flex-direction: column; min-inline-size: 0; }
+  .head { padding: 10px clamp(12px, 2vw, 24px); border-block-end: 1px solid var(--line);
+          display: flex; gap: 10px; align-items: baseline; }
+  .head .v { font: 12px ui-monospace, monospace; }
+  .tag { font: 10px ui-monospace, monospace; border: 1px solid currentColor; border-radius: 4px; padding: 1px 6px; }
+  .good { color: #3a9d5d; } .bad { color: #b04a3a; }
+  iframe { border: 0; inline-size: 100%; block-size: 100%; flex: 1;
+           background: var(--bg); color-scheme: light dark; }
+</style>
+</head>
+<body>
+<header>
+  <h1>尚古 固定版號實拍:rc.3(glyf)↔ rc.2(CFF2)</h1>
+  <p class="note">
+    兩欄各用一個 iframe 載入<strong>同一個固定版號</strong>的 <code>block.css</code>(等字型載完再顯示、不閃 FOUT;
+    固定版號 = 不可變檔,避開浮動 <code>@rc</code> 的邊緣快取錯位)。左 rc.3 是新 glyf、右 rc.2 是舊 CFF2。
+    在 Chrome 看左欄應明顯比右欄黑、且<strong>均勻</strong>(整段同一濃度);右欄會偏細。
+  </p>
+  <div class="bar"><label><input type="checkbox" id="dark" /> 深色背景</label></div>
+</header>
+<main>
+  <section>
+    <div class="head"><span class="v">@0.1.0-rc.3</span><span class="tag good">glyf · 新</span></div>
+    <iframe data-ver="0.1.0-rc.3" title="rc.3 glyf"></iframe>
+  </section>
+  <section>
+    <div class="head"><span class="v">@0.1.0-rc.2</span><span class="tag bad">CFF2 · 舊</span></div>
+    <iframe data-ver="0.1.0-rc.2" title="rc.2 CFF2"></iframe>
+  </section>
+</main>
+</body>
+</html>
