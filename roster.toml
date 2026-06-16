@@ -1,15 +1,27 @@
 # Each [[family]] is one packaged face. Data only — no code.
 # format: "vf" (variable, one file spans all weights) | "static" (per-weight)
 # style:  "serif" | "sans"  → selects the slice table (data/slices.<style>.json)
-# asset:  the GitHub-release asset (a .7z archive of region variants)
+# asset:  the GitHub-release asset (a .7z archive of all variants)
 # member: the exact font file to extract from the archive
-#         → the *TC* region variant: TC heritage glyphs as default + full coverage
+#         → the *無附加名* base variant (ShangguSans-VF / ShangguSerif-VF): the
+#           "舊字形增強版" that actively merges 新→舊 異體字 (青→靑, 尚→尙, 兑→兌,
+#           温→溫) for maximal 傳承字形. NOT the TC variant — per upstream README,
+#           TC is only the "繁體中文標點版" and does NOT merge glyphs.
 # license_member: the OFL license file inside the archive
 #
 # Real values confirmed against the live GuiWonder/Shanggu 1.028 release:
 #   - tag is "1.028" (no leading "v")
-#   - assets are .7z archives of all region variants
-#   - the TC VF axis is wght 250..900 (not 100..900)
+#   - we pull the *TTF* (glyf VF) .7z archives, NOT the OTF (CFF2) ones.
+#     Why: Chrome routes CFF2 to FreeType but glyf/TrueType to the native
+#     rasterizer (CoreText/DirectWrite); the FreeType CFF2 path renders ~1.6×
+#     thinner, so the CFF2 build looked washed-out/blurry at body sizes in
+#     Chrome (Safari was fine — it uses CoreText for everything). glyf renders
+#     correctly in both. The base TTF is byte-for-byte the same coverage as the
+#     base OTF (44.8k glyphs, identical cmap) and keeps the 舊字形 merges
+#     (青→靑 both map to one glyph). Upstream glyf is unhinted (no gasp) — a
+#     ttfautohint pass for Windows 1x is a possible future, separate refinement.
+#     See memory/cff2-renders-thin-in-browsers.md + demo/ttf-test.html.
+#   - the base VF axis is wght 250..900 (not 100..900)
 #   - no Reserved Font Name is declared in the OFL → upstream-derived names kept
 
 [[family]]
@@ -22,7 +34,7 @@ weight_max      = 900
 repo            = "GuiWonder/Shanggu"
 release_tag     = "1.028"
 asset           = "ShangguSerifVF_TTFs.7z"
-member          = "ShangguSerifTC-VF.ttf"
+member          = "ShangguSerif-VF.ttf"
 license_member  = "LICENSE.txt"
 asset_sha256    = "36c26a19f159d4e388de115e222fd663dd7d0629d0dba48b289f85a7cd85c399"
 
@@ -36,7 +48,7 @@ weight_max      = 900
 repo            = "GuiWonder/Shanggu"
 release_tag     = "1.028"
 asset           = "ShangguSansVF_TTFs.7z"
-member          = "ShangguSansTC-VF.ttf"
+member          = "ShangguSans-VF.ttf"
 license_member  = "LICENSE.txt"
 asset_sha256    = "31b207a05332196ff444114d66de1c7b622d3a7244ec15a2485e8d0844cb1984"
 
@@ -269,3 +281,169 @@ local_names     = ["Klee One", "Klee"]
   weight = 600
   member = "fonts/ttf/KleeOne-SemiBold.ttf"
   sha256 = "9dbb25466c575f6dc8768a28845798f67fa5d47a5d20a6408c30c58d700a1044"
+
+# --- 尚古 TC variant (繁體中文標點版): Unicode-faithful — respects the encoded
+# codepoint, no 新→舊 merge (the base/無附加名 does merge 青→靑 etc.). SAME OTF
+# archive as base, just the TC member → reuse asset + asset_sha256. `-tc` denotes
+# the upstream variant name (NOTE: for Shanggu, -tc is the *milder* cut; for GenYo
+# -tc/丹 is the *more*-heritage cut — see README). RFN gate passed → names kept. ---
+
+[[family]]
+id              = "shanggu-serif-tc"
+font_family     = "Shanggu Serif TC"
+style           = "serif"
+format          = "vf"
+weight_min      = 250
+weight_max      = 900
+repo            = "GuiWonder/Shanggu"
+release_tag     = "1.028"
+asset           = "ShangguSerifVF_TTFs.7z"
+member          = "ShangguSerifTC-VF.ttf"
+license_member  = "LICENSE.txt"
+asset_sha256    = "36c26a19f159d4e388de115e222fd663dd7d0629d0dba48b289f85a7cd85c399"
+
+[[family]]
+id              = "shanggu-sans-tc"
+font_family     = "Shanggu Sans TC"
+style           = "sans"
+format          = "vf"
+weight_min      = 250
+weight_max      = 900
+repo            = "GuiWonder/Shanggu"
+release_tag     = "1.028"
+asset           = "ShangguSansVF_TTFs.7z"
+member          = "ShangguSansTC-VF.ttf"
+license_member  = "LICENSE.txt"
+asset_sha256    = "31b207a05332196ff444114d66de1c7b622d3a7244ec15a2485e8d0844cb1984"
+
+# --- 源起 Genki: the smaller 斷筆 cut of GenYo (source 源樣). Visually identical to
+# GenYo but woff2 17–24% smaller (consistent stroke construction → better brotli).
+# ziano's DEFAULT neutral-alt family; GenYo kept (already published) but not promoted
+# in the demo. NOTE: Genki Gothic has NO N(350) weight (GenYo Gothic did).
+# Same repos/tag as GenYo; RFN gate passed → upstream-derived names kept. ---
+
+[[family]]
+id              = "genki-min"
+font_family     = "Genki Min"
+style           = "serif"
+format          = "static"
+repo            = "ButTaiwan/genyo-font"
+release_tag     = "v2.100"
+asset           = "GenKiMin2TW-otf.zip"
+license_member  = "SIL_Open_Font_License_1.1.txt"
+asset_sha256    = "429b715989a6ebe49918cff12b4890905ddd5f6f760238694c2734eb5e2f6a8d"
+
+  [[family.weights]]
+  weight = 250
+  member = "GenKiMin2TW-EL.otf"
+  [[family.weights]]
+  weight = 300
+  member = "GenKiMin2TW-L.otf"
+  [[family.weights]]
+  weight = 400
+  member = "GenKiMin2TW-R.otf"
+  [[family.weights]]
+  weight = 500
+  member = "GenKiMin2TW-M.otf"
+  [[family.weights]]
+  weight = 600
+  member = "GenKiMin2TW-SB.otf"
+  [[family.weights]]
+  weight = 700
+  member = "GenKiMin2TW-B.otf"
+  [[family.weights]]
+  weight = 900
+  member = "GenKiMin2TW-H.otf"
+
+[[family]]
+id              = "genki-gothic"
+font_family     = "Genki Gothic"
+style           = "sans"
+format          = "static"
+repo            = "ButTaiwan/genyog-font"
+release_tag     = "v2.100"
+asset           = "GenKiGothic2TW-otf.zip"
+license_member  = "SIL_Open_Font_License_1.1.txt"
+asset_sha256    = "14ce76a4940a393830199cdfc9fa9f1fda1e5f0c8225dbfae80381b51be07817"
+
+  [[family.weights]]
+  weight = 250
+  member = "GenKiGothic2TW-EL.otf"
+  [[family.weights]]
+  weight = 300
+  member = "GenKiGothic2TW-L.otf"
+  [[family.weights]]
+  weight = 400
+  member = "GenKiGothic2TW-R.otf"
+  [[family.weights]]
+  weight = 500
+  member = "GenKiGothic2TW-M.otf"
+  [[family.weights]]
+  weight = 700
+  member = "GenKiGothic2TW-B.otf"
+  [[family.weights]]
+  weight = 900
+  member = "GenKiGothic2TW-H.otf"
+
+[[family]]
+id              = "genki-min-tc"
+font_family     = "Genki Min TC"
+style           = "serif"
+format          = "static"
+repo            = "ButTaiwan/genyo-font"
+release_tag     = "v2.100"
+asset           = "GenKiMin2TC-otf.zip"
+license_member  = "SIL_Open_Font_License_1.1.txt"
+asset_sha256    = "0bc06bf44954962e3c29c3f33bc7afc557b408d7d3295191410f14202f64a774"
+
+  [[family.weights]]
+  weight = 250
+  member = "GenKiMin2TC-EL.otf"
+  [[family.weights]]
+  weight = 300
+  member = "GenKiMin2TC-L.otf"
+  [[family.weights]]
+  weight = 400
+  member = "GenKiMin2TC-R.otf"
+  [[family.weights]]
+  weight = 500
+  member = "GenKiMin2TC-M.otf"
+  [[family.weights]]
+  weight = 600
+  member = "GenKiMin2TC-SB.otf"
+  [[family.weights]]
+  weight = 700
+  member = "GenKiMin2TC-B.otf"
+  [[family.weights]]
+  weight = 900
+  member = "GenKiMin2TC-H.otf"
+
+[[family]]
+id              = "genki-gothic-tc"
+font_family     = "Genki Gothic TC"
+style           = "sans"
+format          = "static"
+repo            = "ButTaiwan/genyog-font"
+release_tag     = "v2.100"
+asset           = "GenKiGothic2TC-otf.zip"
+license_member  = "SIL_Open_Font_License_1.1.txt"
+asset_sha256    = "c1b7a232b32358e66df7df2ea6fd9b26d02c076406514593fdd07ea6decf3892"
+
+  [[family.weights]]
+  weight = 250
+  member = "GenKiGothic2TC-EL.otf"
+  [[family.weights]]
+  weight = 300
+  member = "GenKiGothic2TC-L.otf"
+  [[family.weights]]
+  weight = 400
+  member = "GenKiGothic2TC-R.otf"
+  [[family.weights]]
+  weight = 500
+  member = "GenKiGothic2TC-M.otf"
+  [[family.weights]]
+  weight = 700
+  member = "GenKiGothic2TC-B.otf"
+  [[family.weights]]
+  weight = 900
+  member = "GenKiGothic2TC-H.otf"
