@@ -10,14 +10,22 @@ export const SOURCE_LABEL: Record<Source, string> = {
 }
 
 const SCOPE = '@hanzi.pro/webfonts-'
-// VERSION = the pinned version we recommend users copy (immutable, fast-cached).
-// DEMO_TAG = the floating dist-tag the demo itself previews, so it always shows the
-// newest publish without a code change. We publish with `--tag rc`, so it must be
-// 'rc' (NOT 'latest'/unversioned — those stay frozen at rc.0 after `--tag rc`).
-// TODO(0.1.0): when the stable 0.1.0 ships to the `latest` tag, switch DEMO_TAG
-// to 'latest' and bump VERSION to '0.1.0'. (mirror in cdn-bench.html)
-const VERSION = '0.1.0-rc.1'
-const DEMO_TAG = 'rc'
+// PINNED = the immutable per-family version used by BOTH the live preview and the
+// copyable snippet. We pin instead of the floating `@rc` tag on purpose: jsDelivr
+// edge-caches each `@rc/files/*.woff2` URL for ~12h, so after the Shanggu CFF2→glyf
+// republish `@rc` served a stale MIX of old-CFF2 + new-glyf slices (looked thin and
+// uneven). An immutable @version sidesteps that. Families are on different RCs: the
+// base Shanggu pair = rc.3 (the glyf fix; rc.0/rc.1 were unpublished mis-packaged TC
+// builds), Shanggu TC = rc.1, everything else still rc.0.
+// TODO(0.1.0): when stable 0.1.0 ships, collapse PINNED to a flat '0.1.0'.
+const DEFAULT_VERSION = '0.1.0-rc.1'
+const PINNED: Record<string, string> = {
+  'shanggu-serif': '0.1.0-rc.3',
+  'shanggu-sans': '0.1.0-rc.3',
+  'shanggu-serif-tc': '0.1.0-rc.1',
+  'shanggu-sans-tc': '0.1.0-rc.1',
+}
+const pinnedVersion = (id: string) => PINNED[id] ?? DEFAULT_VERSION
 
 const ORIGIN: Record<Source, string> = {
   jsdelivr: 'https://cdn.jsdelivr.net/npm/',
@@ -25,7 +33,7 @@ const ORIGIN: Record<Source, string> = {
   esmsh: 'https://esm.sh/',
 }
 
-export const pkgBase = (source: Source, id: string, version: string = DEMO_TAG) =>
+export const pkgBase = (source: Source, id: string, version: string = pinnedVersion(id)) =>
   `${ORIGIN[source]}${SCOPE}${id}@${version}`
 
 // swap.css is the default display-mode entry (block.css / optional.css alongside).
@@ -46,10 +54,10 @@ export const woff2Url = (source: Source, id: string, slice: number, weight?: num
 
 export const preconnectHost = (source: Source) => new URL(ORIGIN[source]).origin
 
-// the copyable <head> drop-in for a selection — pinned VERSION (best practice for
-// users), preconnect warms the connection. weight → the per-weight entry.
+// the copyable <head> drop-in for a selection — pinned per-family version (best
+// practice for users), preconnect warms the connection. weight → the per-weight entry.
 export const snippet = (source: Source, id: string, weight?: number) =>
   [
     `<link rel="preconnect" href="${preconnectHost(source)}" crossorigin />`,
-    `<link rel="stylesheet" href="${pkgBase(source, id, VERSION)}/${cssEntry(weight)}" />`,
+    `<link rel="stylesheet" href="${pkgBase(source, id, pinnedVersion(id))}/${cssEntry(weight)}" />`,
   ].join('\n')

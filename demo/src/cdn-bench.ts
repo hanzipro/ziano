@@ -34,7 +34,7 @@ const $$ = <T extends Element>(sel: string) => [...document.querySelectorAll<T>(
 // Floats with the demo (the `rc` dist-tag) so it tracks the newest publish; all
 // three npm CDNs share the spec, so the comparison stays fair.
 // TODO(0.1.0): switch @rc → @latest on the stable release (mirror cdn.ts).
-const PKG = '@hanzi.pro/webfonts-shanggu-sans@rc'
+const PKG = '@hanzi.pro/webfonts-shanggu-sans@0.1.0-rc.3'
 const PROBE = 'files/shanggu-sans.55.woff2' // a representative ~54 kB body-text slice
 const npm = (origin: string) => ({
   css: `${origin}/npm/${PKG}/swap.css`,
