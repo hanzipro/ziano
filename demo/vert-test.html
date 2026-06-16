@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ziano・直排測試 vertical harness</title>
+
+  <!-- SUBSET woff2 (舊字形增強版, CFF2 VF) — built with ziano's exact subset.py
+       options (layout_features=["*"], variations kept), sized to this page's corpus.
+       This is the truest preview of what the CDN actually ships per unicode-range. -->
+  <style>
+    @font-face {
+      font-family: 'Shanggu Serif';
+      src: url('/vert-test/ShangguSerif-VF.subset.woff2') format('woff2');
+      font-weight: 250 900;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Shanggu Sans';
+      src: url('/vert-test/ShangguSans-VF.subset.woff2') format('woff2');
+      font-weight: 250 900;
+      font-display: swap;
+    }
+
+    :root {
+      /* primitive tokens */
+      --ink: #1a1a1a;
+      --paper: #fbfbf9;
+      --line: #d8d4cc;
+      --accent: #9a3b34;
+      /* control-driven state (set from the <form> by main.js) */
+      --sample-weight: 400;
+      --sample-size: 2rem;
+      --sample-orientation: mixed;     /* mixed | upright */
+      --sample-trim: normal;           /* normal | space-all */
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding-block: 1.5rem 4rem;
+      padding-inline: clamp(1rem, 4vw, 3rem);
+      background: var(--paper);
+      color: var(--ink);
+      font-family: system-ui, sans-serif;
+      line-height: 1.6;
+    }
+
+    header { margin-block-end: 2rem; }
+    h1 { font-size: 1.4rem; margin-block: 0 .25rem; }
+    .lede { margin-block: 0 1.5rem; color: #555; max-inline-size: 60ch; }
+
+    /* --- controls --- */
+    form.controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.25rem 2rem;
+      align-items: center;
+      padding: 1rem 1.25rem;
+      border: 1px solid var(--line);
+      border-radius: .5rem;
+      background: #fff;
+      position: sticky;
+      inset-block-start: 0;
+      z-index: 1;
+    }
+    form.controls label { display: inline-flex; gap: .5rem; align-items: center; font-size: .9rem; }
+    output { font-variant-numeric: tabular-nums; min-inline-size: 3ch; color: var(--accent); }
+
+    /* --- test grid --- */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 30rem), 1fr));
+      gap: 1.5rem;
+      margin-block-start: 2rem;
+    }
+
+    figure.card {
+      margin: 0;
+      border: 1px solid var(--line);
+      border-radius: .5rem;
+      overflow: hidden;
+      background: #fff;
+    }
+    figcaption {
+      padding: .6rem .9rem;
+      font-size: .85rem;
+      font-weight: 600;
+      border-block-end: 1px solid var(--line);
+      background: #f4f2ec;
+    }
+    figcaption small { font-weight: 400; color: #777; }
+
+    /* two vertical panes per card: 明體 + 黑體 */
+    .panes { display: grid; grid-template-columns: 1fr 1fr; }
+    .pane {
+      padding: 1rem .75rem;
+      border-inline-start: 1px solid var(--line);
+    }
+    .pane:first-child { border-inline-start: 0; }
+    .pane > .style-tag {
+      writing-mode: horizontal-tb;
+      font-family: system-ui;
+      font-size: .7rem;
+      color: #999;
+      margin-block-end: .5rem;
+    }
+
+    /* the actual vertical sample */
+    .sample {
+      writing-mode: vertical-rl;
+      text-orientation: var(--sample-orientation);
+      font-weight: var(--sample-weight);
+      font-size: var(--sample-size);
+      line-height: 1.5;
+      block-size: 18rem;            /* fixed height → forces column wrap */
+      text-spacing-trim: var(--sample-trim);
+      /* baseline grid behind text to eyeball centre-axis alignment */
+      background:
+        repeating-linear-gradient(to left,
+          transparent 0, transparent calc(var(--sample-size) * 1.5 - 1px),
+          #eee calc(var(--sample-size) * 1.5 - 1px), #eee calc(var(--sample-size) * 1.5));
+    }
+    .sample[data-font='serif'] { font-family: 'Shanggu Serif', serif; }
+    .sample[data-font='sans']  { font-family: 'Shanggu Sans', sans-serif; }
+
+    /* a thin centre line per column to judge punctuation drift */
+    .sample.center-guide { position: relative; }
+  </style>
+
+  <script type="module">
+    // intents (events → state) split from apply (state → DOM)
+    const root = document.documentElement
+    const form = document.querySelector('form.controls')
+
+    const apply = (
+      state,
+    ) => {
+      root.style.setProperty('--sample-weight', String(state.weight))
+      root.style.setProperty('--sample-size', `${state.size}rem`)
+      root.style.setProperty('--sample-orientation', state.orientation)
+      root.style.setProperty('--sample-trim', state.trim)
+      document.querySelector('#weight-out').value = state.weight
+      document.querySelector('#size-out').value = state.size.toFixed(1)
+    }
+
+    const read = (
+    ) => ({
+      weight: Number(form.weight.value),
+      size: Number(form.size.value),
+      orientation: form.orientation.checked ? 'upright' : 'mixed',
+      trim: form.trim.checked ? 'space-all' : 'normal',
+    })
+
+    form.addEventListener(
+      'input',
+      () => apply(read()),
+    )
+    apply(read())
+  </script>
+</head>
+
+<body>
+  <header>
+    <h1>ziano 直排測試 — 尙古明體 / 尙古黑體</h1>
+    <p class="lede">
+      本頁載入由 ziano 切片管線產生的 <strong>subset woff2（舊字形增強版・CFF2 VF）</strong>，
+      涵蓋本頁所有字、保留 vert/vrt2 與 VORG/vmtx/BASE，即 CDN 實際出貨的型態，
+      用來逐項檢驗 diantenjeom 記錄過的直排標點分歧是否出現在尙古上。
+      漢字與假名理應三家引擎全對；問題若有，集中在標點。
+      逐一在 Chrome / Safari / Firefox 比對。
+    </p>
+
+    <form class="controls">
+      <label>
+        字重 <input type="range" name="weight" min="250" max="900" step="50" value="400" />
+        <output id="weight-out">400</output>
+      </label>
+      <label>
+        字級 <input type="range" name="size" min="1.2" max="3.5" step="0.1" value="2" />
+        <output id="size-out">2.0</output> rem
+      </label>
+      <label>
+        <input type="checkbox" name="orientation" /> text-orientation: upright
+      </label>
+      <label>
+        <input type="checkbox" name="trim" /> text-spacing-trim: space-all（不擠壓基線）
+      </label>
+    </form>
+  </header>
+
+  <!-- DOM is the data: each card declares its test string once; both panes read it. -->
+  <div class="grid"
+       data-cases='[
+         {"id":"body","label":"本文基線","note":"漢字＋假名，理應全對","text":"傳承字形天地玄黃宇宙洪荒日月盈昃あいうえおカタカナ語料庫待命中"},
+         {"id":"kuten","label":"句讀位置","note":"。，、；：！？ 是否貼頂／置中","text":"天氣晴。風和日麗，鳥語花香、生機盎然；萬物甦醒：嶄新一天！真好？"},
+         {"id":"brackets","label":"引號與括號","note":"「」『』（）〔〕【】《》 vert 形","text":"他說：「你『好』嗎？」（附註）〔校訂〕【標題】《書名》"},
+         {"id":"squeeze","label":"擠壓配對","note":"閉括號＋逗號，配合 text-spacing-trim","text":"〕，」，』，】，），》，。"},
+         {"id":"dash","label":"破折號／省略號","note":"— ⸺ … UTR50 R 類旋轉","text":"待命中⸺語料庫……兩種破折⸺如此而已。"},
+         {"id":"latin","label":"混排拉丁／數字","note":"mixed 旋轉 vs upright","text":"西元 2026 年的 Web 字體 abc ABC 測試 No.7"}
+       ]'></div>
+
+  <script type="module">
+    const grid = document.querySelector('.grid')
+    const cases = JSON.parse(grid.dataset.cases)
+
+    const pane = (
+      font,
+      tag,
+      text,
+    ) => `
+      <div class="pane">
+        <div class="style-tag">${tag}</div>
+        <div class="sample center-guide" data-font="${font}">${text}</div>
+      </div>`
+
+    grid.innerHTML = cases
+      .map(
+        (c) => `
+        <figure class="card" id="case-${c.id}">
+          <figcaption>${c.label} <small>— ${c.note}</small></figcaption>
+          <div class="panes">
+            ${pane('serif', '明體', c.text)}
+            ${pane('sans', '黑體', c.text)}
+          </div>
+        </figure>`,
+      )
+      .join('')
+  </script>
+</body>
+</html>

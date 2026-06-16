@@ -16,11 +16,8 @@
 
   /* Fonts */
   --font-default: 'Helvetica Neue', Arial, 'Shanggu Sans', sans-serif;
-  /* --font-default: 'Hiragino Sans', sans-serif; */
   --font-alternative: 'Shanggu Serif', serif;
   --font-accent: 'LXGW Wenkai TC', cursive, serif;
-
-  --font-shanggu-sans: 'Shanggu Sans', sans-serif;
 
   /* ── Colour primitives ──────────────────────────────────────────
    * Raw swatches, named by appearance, theme-INVARIANT. NEVER consume

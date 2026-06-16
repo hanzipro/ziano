@@ -23,26 +23,24 @@
     }
     > label, fieldset {
       display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
       margin-block-end: 2rem;
       inline-size: 100%;
     }
-    > label {
-      flex-direction: column;
+    > label :where(input, select) {
+      flex: 1 1 100%;
     }
     label span, fieldset legend {
       display: flex;
-      font-weight: 200;
+      font-weight: 500;
       margin-block-end: .5em;
-      text-shadow:
-        -1px 0 1px var(--palette-bg),
-        1px 0 1px var(--palette-bg),
-        0 1px 1px var(--palette-bg),
-        0 -1px 1px var(--palette-bg)
-      ;
+      background-color: var(--palette-bg-3q);
+      color: var(--palette-supplement-text);
     }
-    label span output {
-      margin-inline-start: auto;
-      color: var(--palette-accent);
+    label output {
+      font-weight: 400;
+      color: var(--palette-supplement-text-3q);
     }
     select {
       min-block-size: 2rem;
@@ -60,9 +58,6 @@
       & {
         flex-direction: row;
         flex-wrap: wrap;
-      }
-      legend {
-        width: 100%;
       }
       label {
         & {
@@ -92,11 +87,44 @@
       }
     }
     .status {
-      margin-block-start: -.25em;
+      & {
+        display: flex;
+        margin-block: -.25rem .25rem;
+      }
+      output[name='hit-slices']::before {
+        content: '命中';
+      }
+      output:not(:empty):not(:has(+ output:empty)):not(:last-child)::after {
+        content: '・';
+        opacity: .8;
+      }
+      output[name='ttf']:not(:empty)::after {
+        content: '內到位';
+      }
+    }
+    button[name='play-all'] {
+      & {
+        margin-block: -.25rem 2rem;
+        padding: .5rem .75rem;
+        font: inherit;
+        font-size: .8125rem;
+        color: var(--palette-text);
+        background: var(--palette-panel);
+        border: 1px solid var(--palette-grid);
+        border-radius: .375rem;
+        cursor: pointer;
+        transition: .15s all ease-out;
+      }
+      &:hover, &:focus-visible {
+        color: var(--palette-bg);
+        background: var(--palette-accent);
+        border-color: var(--palette-accent);
+      }
     }
     .chips {
       & {
         display: flex;
+        flex: 1 1 100%;
         flex-wrap: wrap;
         gap: .25rem;
       }
@@ -125,10 +153,20 @@
       }
     }
     .meta {
-      margin-block-start: 1rem;
-      font-size: .75rem;
-      line-height: 1.5;
-      color: var(--palette-supplement-text);
+      & {
+        display: flex;
+        flex-wrap: wrap;
+        margin-block-start: .5em;
+        font-size: .625rem;
+        line-height: 1.25;
+        color: var(--palette-supplement-text);
+      }
+      output {
+        &:not(:empty):not(:last-child)::after {
+          content: '・';
+          opacity: .8;
+        }
+      }
     }
   }
 
@@ -158,6 +196,9 @@
     }
     &:has(input[value="preview"]:checked) > .usage {
       display: none;
+    }
+    &:has(input[value="usage"]:checked) {
+      max-block-size: none;
     }
   }
 
@@ -200,7 +241,6 @@
 
   article {
     & {
-      font-family: var(--font-shanggu-sans);
       line-height: 1.5;
       text-align: justify;
     }
@@ -217,27 +257,33 @@
 
   .usage {
     & {
-      font-size: .875rem;
-      line-height: 1.6;
+      line-height: 1.5;
+      max-block-size: none;
+    }
+    h1 {
+      margin-block: 0;
+      font-size: 1.5rem;
     }
     h2 {
-      margin-block: 0 1rem;
+      margin-block: 1.75rem 0;
       font-size: 1.25rem;
-      font-weight: 200;
     }
     p {
-      margin-block: 1rem;
+      margin-block: 1em;
+    }
+    :where(h1, h2) + p {
+      margin-block-start: .25em;
     }
     :where(p, .hint) code {
       padding-inline: .25em;
       border-radius: .25rem;
       background-color: var(--palette-panel);
       font-family: ui-monospace, 'SF Mono', Menlo, Courier, monospace;
-      font-size: .85em;
+      font-size: .875rem;
     }
     .hint {
       color: var(--palette-supplement-text);
-      font-size: .8125rem;
+      font-size: .75rem;
     }
     pre {
       & {
@@ -245,8 +291,10 @@
         margin-block: 0;
         white-space: normal; /* collapse the markup indentation around button/code */
         border-radius: .25rem;
-        background-color: var(--palette-ink);
-        color: var(--palette-text-inverse-3q);
+        background-color: var(--palette-ink); /* a code "terminal" — stays dark in both themes */
+        /* its light text must ALSO not flip; --palette-text-inverse flips to ink in dark
+           mode (for the hero bands), which would make code invisible → fix to a light primitive */
+        color: color-mix(in srgb, var(--color-mist) 90%, transparent);
       }
       code {
         margin: 0;

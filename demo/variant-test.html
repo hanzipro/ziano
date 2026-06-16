@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ziano・尙古字形變體比較 無附加名 / TC / JP</title>
+
+  <!-- Full variant OTFs (CFF2 VF). Browsers download a face only when it's used,
+       so switching 明體/黑體 only fetches the 3 faces actually rendered. -->
+  <style>
+    @font-face { font-family: 'SGSerifBase'; src: url('/variant-test/ShangguSerif-VF.otf')   format('opentype'); font-weight: 250 900; font-display: swap; }
+    @font-face { font-family: 'SGSerifTC';   src: url('/variant-test/ShangguSerifTC-VF.otf') format('opentype'); font-weight: 250 900; font-display: swap; }
+    @font-face { font-family: 'SGSerifJP';   src: url('/variant-test/ShangguSerifJP-VF.otf') format('opentype'); font-weight: 250 900; font-display: swap; }
+    @font-face { font-family: 'SGSansBase';  src: url('/variant-test/ShangguSans-VF.otf')    format('opentype'); font-weight: 250 900; font-display: swap; }
+    @font-face { font-family: 'SGSansTC';    src: url('/variant-test/ShangguSansTC-VF.otf')  format('opentype'); font-weight: 250 900; font-display: swap; }
+    @font-face { font-family: 'SGSansJP';    src: url('/variant-test/ShangguSansJP-VF.otf')  format('opentype'); font-weight: 250 900; font-display: swap; }
+
+    :root {
+      --ink: #1a1a1a;
+      --paper: #fbfbf9;
+      --line: #d8d4cc;
+      --accent: #9a3b34;
+      --mark: #fff1b8;
+      --spec-weight: 400;
+      --spec-size: 1.6rem;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding-block: 1.5rem 4rem; padding-inline: clamp(1rem, 3vw, 2.5rem);
+      background: var(--paper); color: var(--ink);
+      font-family: system-ui, sans-serif; line-height: 1.6;
+    }
+    header { margin-block-end: 1.5rem; }
+    h1 { font-size: 1.35rem; margin-block: 0 .25rem; }
+    .lede { margin-block: 0 1rem; color: #555; max-inline-size: 70ch; }
+
+    form.controls {
+      display: flex; flex-wrap: wrap; gap: 1rem 2rem; align-items: center;
+      padding: .9rem 1.1rem; border: 1px solid var(--line); border-radius: .5rem;
+      background: #fff; position: sticky; inset-block-start: 0; z-index: 1;
+    }
+    form.controls label { display: inline-flex; gap: .45rem; align-items: center; font-size: .9rem; }
+    fieldset { border: 0; padding: 0; margin: 0; display: inline-flex; gap: .9rem; }
+    output { font-variant-numeric: tabular-nums; min-inline-size: 3ch; color: var(--accent); }
+
+    /* three variants, side by side */
+    .cols {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-block-start: 1.5rem;
+      align-items: start;
+    }
+    @media (max-width: 60rem) { .cols { grid-template-columns: 1fr; } }
+
+    .col { border: 1px solid var(--line); border-radius: .5rem; overflow: hidden; background: #fff; }
+    .col > h2 {
+      margin: 0; padding: .6rem .9rem; font-size: .85rem; font-family: system-ui;
+      border-block-end: 1px solid var(--line); background: #f4f2ec;
+    }
+    .col > h2 small { font-weight: 400; color: #777; }
+
+    .specimen {
+      padding: 1.1rem 1rem;
+      font-weight: var(--spec-weight);
+      font-size: var(--spec-size);
+      line-height: 1.85;
+      text-align: justify;
+    }
+    .specimen .title { font-size: 1.15em; font-weight: 600; margin-block: 0 .6em; }
+    .specimen p { margin-block: 0 .8em; }
+    .specimen p:last-child { margin-block-end: 0; }
+
+    /* style × variant → font-family (only the active style's faces get fetched) */
+    .specimen[data-style='serif'][data-variant='base'] { font-family: 'SGSerifBase', serif; }
+    .specimen[data-style='serif'][data-variant='tc']   { font-family: 'SGSerifTC', serif; }
+    .specimen[data-style='serif'][data-variant='jp']   { font-family: 'SGSerifJP', serif; }
+    .specimen[data-style='sans'][data-variant='base']  { font-family: 'SGSansBase', sans-serif; }
+    .specimen[data-style='sans'][data-variant='tc']    { font-family: 'SGSansTC', sans-serif; }
+    .specimen[data-style='sans'][data-variant='jp']    { font-family: 'SGSansJP', sans-serif; }
+
+    /* diff highlighter: marks always wrap the tell-chars; colour only when enabled */
+    mark.tell { background: none; color: inherit; }
+    body:has(#mark:checked) mark.tell { background: var(--mark); border-radius: .15em; }
+  </style>
+
+  <script type="module">
+    const root = document.documentElement
+    const form = document.querySelector('form.controls')
+
+    // chars that ACTUALLY differ across these 3 variants (measured): base swaps in
+    // older component forms (青→靑, 清→淸, 者-with-dot) where TC/JP keep modern.
+    // 戶骨直過… are heritage in ALL three, so they're NOT marked.
+    const TELLS = [...'青清靑淸緒者真眞精晴情靖菁睛請']
+    const markup = (
+      html,
+    ) => {
+      // wrap tell-chars in <mark class="tell"> without touching tags
+      const re = new RegExp(`([${TELLS.join('')}])`, 'g')
+      return html.replace(/>([^<]+)</g, (_, txt) => `>${txt.replace(re, '<mark class="tell">$1</mark>')}<`)
+    }
+
+    // playground default TC article (samples.ts → SAMPLES.tc)
+    const ARTICLE = {
+      title: '字裡行間的傳承',
+      body:
+        '<p>清晨的台北，捷運緩緩駛過城市的骨幹，車窗外的天色由青轉亮。月台上，旅客的情緒交織成一片低語，有人讀著手中的書，有人望向遠方的海角。文字像一條無形的絲線，把過去與現在織在一起。每個字的形體，都承載著前人的講究與情感。</p>' +
+        '<p>從英國到台北，從鉛字到螢幕，書寫的方式不斷改變，對美的追求卻始終如一。傳承字形所展現的，正是這份對細節的尊重⸺戶的寫法、骨的轉折、直的橫豎、青的結構、過的走之，無一不在訴說漢字悠長的歷史。當我們重新端詳這些字，彷彿能聽見時間的回響，看見文化在筆畫間靜靜流動，言語與書藝交融，從不間斷。</p>',
+    }
+
+    const VARIANTS = [
+      { id: 'base', label: '無附加名', note: '舊字形增強版（青→靑 等）' },
+      { id: 'tc',   label: 'TC',       note: '繁體中文標點版・依 Unicode 分編' },
+      { id: 'jp',   label: 'JP',       note: '日文標點版・日本字形慣例' },
+    ]
+
+    const cols = document.querySelector('.cols')
+    const render = (
+      style,
+    ) => {
+      const inner = `<div class="title">${ARTICLE.title}</div>${ARTICLE.body}`
+      cols.innerHTML = VARIANTS
+        .map(
+          (v) => `
+          <section class="col">
+            <h2>${v.label} <small>— ${v.note}</small></h2>
+            <div class="specimen" data-variant="${v.id}" data-style="${style}">${markup(inner)}</div>
+          </section>`,
+        )
+        .join('')
+    }
+
+    const apply = (
+    ) => {
+      root.style.setProperty('--spec-weight', form.weight.value)
+      root.style.setProperty('--spec-size', `${Number(form.size.value).toFixed(2)}rem`)
+      document.querySelector('#weight-out').value = form.weight.value
+      document.querySelector('#size-out').value = Number(form.size.value).toFixed(1)
+      render(form.style.value)
+    }
+
+    form.addEventListener('input', apply)
+    apply()
+  </script>
+</head>
+
+<body>
+  <header>
+    <h1>尙古字形變體比較 — 無附加名 / TC / JP</h1>
+    <p class="lede">
+      同一篇 playground 預設文章，並排三個 Shanggu 變體（完整 OTF・CFF2 VF）。實測：
+      三者差異極小 — <strong>TC 與 JP 對本文完全相同</strong>，只有<strong>無附加名</strong>（舊字形增強版）
+      把少數新舊異體字再換成舊形（青→靑、清→淸、緒的者旁等）。戶骨直過等傳承寫法是三者<em>共有</em>的，
+      不是變體差異。勾選「標記差異字」高亮 base 真正換形的青／清／者 系字。
+    </p>
+
+    <form class="controls">
+      <fieldset>
+        <label><input type="radio" name="style" value="serif" checked /> 明體</label>
+        <label><input type="radio" name="style" value="sans" /> 黑體</label>
+      </fieldset>
+      <label>字重 <input type="range" name="weight" min="250" max="900" step="50" value="400" /> <output id="weight-out">400</output></label>
+      <label>字級 <input type="range" name="size" min="1.1" max="3" step="0.1" value="1.6" /> <output id="size-out">1.6</output> rem</label>
+      <label><input type="checkbox" id="mark" /> 標記差異字</label>
+    </form>
+  </header>
+
+  <div class="cols"></div>
+</body>
+</html>

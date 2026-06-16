@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>向令人作嘔的楷書式手寫化印刷字體道掰掰</title>
+  <meta name="description" content="國字標準字體 vs 傳承字形 — 同一段文字，一翻兩瞪眼。" />
+
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <!-- 國標欄不下載任何 webfont — 直接用你裝置內建、依 MOE 國字標準字體製作的系統字
+       (mac: 蘋方／Songti TC，Windows: 微軟正黑體／新細明體，Android·Ubuntu: 系統 Noto)。
+       傳承欄 = 尙古黑體＋尙古明體，ziano 自家 CDN。 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif@0.1.0-rc.3/swap.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans@0.1.0-rc.3/swap.css" />
+
+  <style>
+    /* ── tokens ─────────────────────────────────────────────────────────────
+       Two tiers: primitive --color-* (raw swatches, theme-invariant) → semantic
+       --palatte-* (roles). Components consume --palatte-* ONLY; each column
+       re-points the semantic layer per [data-side] — the same flip-by-state idea
+       as dark mode, scoped to a side instead of the whole page. */
+    :root {
+      /* primitives */
+      --color-bile: #5f6e23;
+      --color-bile-deep: #44511a;
+      --color-bile-acid: #97aa3c;
+      --color-bile-fg: #eef3cf;
+      --color-error: #e0473a;
+      --color-paper: #f7f3ea;
+      --color-paper-edge: #e7dfcc;
+      --color-ink: #1b1813;
+      --color-zhu: #a32b22; /* 朱紅 */
+      --color-gold: #b3893f;
+      --color-white: #fff;
+
+      /* semantic (default = the elegant 傳承/paper context) */
+      --palatte-bg: var(--color-paper);
+      --palatte-text: var(--color-ink);
+      --palatte-accent: var(--color-zhu);
+      --palatte-edge: var(--color-paper-edge);
+
+      --measure: 38rem;
+      --font-hei: 'Shanggu Sans', sans-serif;
+      --font-ming: 'Shanggu Serif', serif;
+      /* 國標 = your device's own CJK fonts; Noto is only the Linux/Android system fallback */
+      --font-sys-hei: 'PingFang TC', 'PingFang SC', 'Microsoft JhengHei', '微軟正黑體',
+        'Heiti TC', 'Noto Sans TC', 'Noto Sans CJK TC', sans-serif;
+      --font-sys-ming: 'Songti TC', 'Songti SC', '宋體-繁', 'LiSong Pro', 'PMingLiU',
+        '新細明體', 'Noto Serif TC', 'Noto Serif CJK TC', serif;
+    }
+
+    /* ── base ───────────────────────────────────────────────────────────────
+       :where() keeps the reset at zero specificity so components win freely. */
+    :where(*, *::before, *::after) { box-sizing: border-box; }
+    :where(h1, h2, h3, p) { margin: 0; }
+    :where(body) {
+      margin: 0;
+      padding-block: clamp(2rem, 6vw, 5rem) 5rem;
+      padding-inline: clamp(1rem, 4vw, 3rem);
+      background: var(--color-paper);
+      color: var(--color-ink);
+      font-family: var(--font-ming);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── hero ───────────────────────────────────────────────────────────── */
+    header {
+      & {
+        max-inline-size: 52rem;
+        margin-inline: auto;
+        margin-block-end: clamp(2rem, 5vw, 3.5rem);
+        text-align: center;
+      }
+      h1 {
+        & {
+          font-size: clamp(1.9rem, 6vw, 3.6rem);
+          font-weight: 600;
+          line-height: 1.25;
+          text-wrap: balance; /* Baseline 2024 — even ragging on the headline */
+        }
+        [data-tone='bile'] { color: var(--color-bile); }
+        [data-tone='accent'] { color: var(--color-zhu); }
+      }
+      p {
+        margin-block-start: 1rem;
+        color: color-mix(in srgb, var(--color-ink) 64%, transparent);
+        font-size: clamp(1rem, 2.2vw, 1.15rem);
+      }
+      /* the 標記病灶 toggle — native control in a label; state drives CSS via :has() */
+      label {
+        display: inline-flex;
+        gap: .5rem;
+        align-items: center;
+        margin-block-start: 1.5rem;
+        padding: .5rem .9rem;
+        border: 1px solid var(--palatte-edge);
+        border-radius: 2rem;
+        font-family: system-ui, sans-serif;
+        font-size: .9rem;
+        cursor: pointer;
+        user-select: none;
+      }
+    }
+
+    /* ── comparison sections (the ones carrying a specimen) ───────────────── */
+    main > section[data-specimen] {
+      & {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: clamp(1rem, 2.5vw, 1.75rem);
+        max-inline-size: 78rem;
+        margin-inline: auto;
+      }
+      & + section { margin-block-start: clamp(1.5rem, 4vw, 2.5rem); }
+      /* the group title spans both columns */
+      > h2 {
+        grid-column: 1 / -1;
+        font-family: system-ui, sans-serif;
+        font-size: .95rem;
+        font-weight: 600;
+        letter-spacing: .06em;
+        color: color-mix(in srgb, var(--color-ink) 55%, transparent);
+      }
+      @media (width < 48rem) {
+        & { grid-template-columns: 1fr; }
+      }
+    }
+
+    /* a column: palette comes from the re-pointed semantic tokens */
+    article[data-side] {
+      & {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+        padding: clamp(1.25rem, 3vw, 2.25rem);
+        border-radius: 1rem;
+        overflow: clip;
+        background: var(--palatte-bg);
+        color: var(--palatte-text);
+      }
+      h3 {
+        & {
+          display: flex;
+          align-items: baseline;
+          justify-content: space-between;
+          gap: .5rem;
+          font-family: system-ui, sans-serif;
+          font-size: 1rem;
+          font-weight: 600;
+          color: var(--palatte-accent);
+        }
+        small { font-weight: 400; opacity: .72; }
+      }
+      p {
+        font-size: clamp(1.45rem, 3.4vw, 2.3rem);
+        line-height: 2.05;
+        text-align: justify;
+        text-justify: inter-character;
+      }
+    }
+
+    /* 國標欄 — 病態膽汁綠 + 反胃；semantic layer re-pointed, plus a system font */
+    article[data-side='moe'] {
+      & {
+        --palatte-bg: radial-gradient(120% 140% at 30% 0%, var(--color-bile-acid) 0%, var(--color-bile) 45%, var(--color-bile-deep) 100%);
+        --palatte-text: var(--color-bile-fg);
+        --palatte-accent: var(--color-white);
+        position: relative;
+      }
+      /* scattered nausea behind the text — pseudo-element, no extra DOM */
+      &::before {
+        content: '🤮';
+        position: absolute;
+        inset-block-start: -.3em;
+        inset-inline-end: -.1em;
+        font-size: 7rem;
+        opacity: .14;
+        rotate: 12deg;
+        pointer-events: none;
+      }
+      /* a faint queasy sway — just enough to feel unwell */
+      p { animation: queasy 7s ease-in-out infinite; }
+      &[data-face='sans'] p { font-family: var(--font-sys-hei); }
+      &[data-face='serif'] p { font-family: var(--font-sys-ming); }
+    }
+
+    /* 傳承欄 — 雅緻紙本 (default semantic tokens already fit) */
+    article[data-side='sg'] {
+      & {
+        border: 1px solid var(--palatte-edge);
+        box-shadow: 0 1px 0 var(--color-white) inset,
+          0 18px 40px -28px color-mix(in srgb, var(--color-ink) 60%, transparent);
+      }
+      /* 朱紅印章 before the label — pseudo-element */
+      h3::before {
+        content: '';
+        flex: none;
+        inline-size: .8em;
+        block-size: .8em;
+        align-self: center;
+        border-radius: .15em;
+        background: var(--palatte-accent);
+      }
+      &[data-face='sans'] p { font-family: var(--font-hei); }
+      &[data-face='serif'] p { font-family: var(--font-ming); }
+    }
+
+    /* tell-characters: inert <mark> until 標記病灶 is on — then errors get a red
+       wavy underline (國標) and gems a gold wash (傳承). Selected by side + state. */
+    mark {
+      background: none;
+      color: inherit;
+      text-decoration: none;
+    }
+    body:has(input[name='mark']:checked) {
+      article[data-side='moe'] mark {
+        text-decoration: underline wavy var(--color-error);
+        text-decoration-thickness: 2px;
+        text-underline-offset: .18em;
+      }
+      article[data-side='sg'] mark {
+        background: color-mix(in srgb, var(--color-gold) 30%, transparent);
+        border-radius: .12em;
+      }
+    }
+
+    /* ── 文案 (the closing argument) ───────────────────────────────────────── */
+    main > section:not([data-specimen]) {
+      & {
+        max-inline-size: var(--measure);
+        margin: clamp(3rem, 7vw, 5rem) auto 0;
+      }
+      h2 {
+        font-size: clamp(1.4rem, 3.5vw, 2rem);
+        font-weight: 600;
+        color: var(--color-zhu);
+        margin-block-end: 1.25rem;
+        text-wrap: balance;
+      }
+      p {
+        & { margin-block-end: 1.1rem; font-size: 1.1rem; }
+        &:first-of-type::first-letter {
+          float: inline-start;
+          font-size: 3.4em;
+          line-height: .82;
+          padding-inline-end: .12em;
+          color: var(--color-zhu);
+        }
+      }
+      p[data-tone='bye'] {
+        & {
+          margin-block-start: 2rem;
+          font-size: clamp(1.6rem, 5vw, 2.6rem);
+          font-weight: 600;
+          text-align: center;
+          color: var(--color-bile);
+        }
+        [data-tone='accent'] { color: var(--color-zhu); }
+      }
+    }
+
+    @keyframes queasy {
+      0%, 100% { transform: rotate(-.4deg) translateY(0); filter: hue-rotate(0); }
+      50% { transform: rotate(.5deg) translateY(2px); filter: hue-rotate(-12deg); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      article[data-side='moe'] p { animation: none; }
+    }
+  </style>
+
+  <script type="module">
+    // DOM is the data: each comparison <section> carries its specimen text and the
+    // offending tell-characters in data-*. Both its columns render the SAME marked
+    // HTML, so the only on-screen difference is the glyph forms.
+    const $$ = (
+      sel,
+      root = document,
+    ) => [...root.querySelectorAll(sel)]
+
+    // pure: wrap every tell-character of `text` in <mark> (data → string, no DOM)
+    const mark = (
+      text,
+      tells,
+    ) => text.replace(new RegExp(`([${tells}])`, 'g'), '<mark>$1</mark>')
+
+    // imperative shell: fill each column's specimen <p>
+    for (const section of $$('section[data-specimen]')) {
+      const html = mark(section.dataset.specimen, section.dataset.tells)
+      for (const p of $$('article > p', section)) p.innerHTML = html
+    }
+  </script>
+</head>
+
+<body>
+  <header>
+    <h1>向<span data-tone="bile">令人作嘔</span>的楷書式<br />手寫化印刷字體<span data-tone="accent">道掰掰</span> 👋</h1>
+    <p>同一段文字，左欄是<strong>你裝置內建的系統字</strong>（蘋方／微軟正黑／Songti／新細明體，全依國字標準字體），右欄是<strong>傳承字形・尙古</strong>。黑體、明體各比一次。</p>
+    <label><input type="checkbox" name="mark" /> 標記病灶（看部件差在哪）</label>
+  </header>
+
+  <main>
+    <section
+      data-tells="飲青雨過草骨言糸綉邊戶強細疏躍信體說"
+      data-specimen="清晨啜飲一盞青茶，信手翻閱古籍。雨過天青，草木扶疏；骨董般的字形躍然紙上，言語之美盡在細節⸺糸旁的綉、辵部的邊、骨架的轉折、戶牖的開闔。國字標準字體強行將印刷體楷化，每個部件都像被手寫扭曲，說不出的彆扭。"
+    >
+      <h2><span lang="en">SANS</span>・黑體 — 你的系統黑體 vs 尙古黑體</h2>
+      <article data-side="moe" data-face="sans">
+        <h3>你的系統黑體 <small>蘋方／微軟正黑 🤢🤮</small></h3>
+        <p></p>
+      </article>
+      <article data-side="sg" data-face="sans">
+        <h3>尙古黑體 <small>傳承字形 ✨</small></h3>
+        <p></p>
+      </article>
+    </section>
+
+    <section
+      data-tells="飲青雨過草骨言糸綉邊戶強細疏躍信體說"
+      data-specimen="清晨啜飲一盞青茶，信手翻閱古籍。雨過天青，草木扶疏；骨董般的字形躍然紙上，言語之美盡在細節⸺糸旁的綉、辵部的邊、骨架的轉折、戶牖的開闔。國字標準字體強行將印刷體楷化，每個部件都像被手寫扭曲，說不出的彆扭。"
+    >
+      <h2><span lang="en">SERIF</span>・明體 — 你的系統明體 vs 尙古明體</h2>
+      <article data-side="moe" data-face="serif">
+        <h3>你的系統明體 <small>Songti TC／新細明體 🤢🤮</small></h3>
+        <p></p>
+      </article>
+      <article data-side="sg" data-face="serif">
+        <h3>尙古明體 <small>傳承字形 ✨</small></h3>
+        <p></p>
+      </article>
+    </section>
+
+    <section>
+      <h2>為什麼要跟國字標準字體說掰掰？</h2>
+      <p>國字標準字體假「標準」之名，行「楷化」之實：把端莊的印刷明體，硬掰成楷書手寫的模樣⸺橫畫帶鉤、豎筆出腳、點挑撇捺處處模仿毛筆。數百年雕版與鑄字凝鍊出的骨架，被退化成習字簿上的描紅。</p>
+      <p>傳承字形（尙古）承襲康熙字典以降的印刷傳統：「青」的下半作「丹」、草字頭三筆完成、辵部從容不迫、糸腳如三點綴珠。每一筆都為了<strong>閱讀</strong>而設計，而非遷就<strong>書寫</strong>。</p>
+      <p>螢幕上的漢字，不必再忍受這份令人作嘔的「標準」。把它留在小學的習字簿裡就好⸺至於印刷與排版，是時候迎回真正的傳承字形了。</p>
+      <p data-tone="bye">國標楷化，<span data-tone="accent">掰掰</span>。👋</p>
+    </section>
+  </main>
+</body>
+</html>

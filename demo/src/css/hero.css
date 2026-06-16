@@ -3,6 +3,59 @@
  * Hero
  * ================================================================================
  */
+@property --hero-accent-rect-x {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 0;
+}
+@property --hero-accent-rect-y {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 0;
+}
+@property --hero-accent-rect-w {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 0;
+}
+@property --hero-accent-rect-h {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 0;
+}
+
+@keyframes hero-accent-transform {
+  /* Closed breathing loop: 0% and 72%/100% are identical (the figure's base w/h),
+     so the cycle restarts seamlessly — no width snap at the seam. The motion is
+     packed into 0–72% (~18s); 72–100% holds the base state, giving a ~7s pause
+     before the next breath. Paired with ease-in-out, velocity eases to ~0 at the
+     seam, making the wrap invisible. */
+  0% {
+    --hero-accent-rect-x: .675rem;
+    --hero-accent-rect-y: 100%;
+    --hero-accent-rect-w: 8.75rem;
+    --hero-accent-rect-h: 22.25rem;
+  }
+  18% {
+    --hero-accent-rect-w: 7rem;
+    --hero-accent-rect-h: 16rem;
+  }
+  36% {
+    --hero-accent-rect-w: 14em;
+    --hero-accent-rect-h: 30rem;
+  }
+  42%, 52% {
+    --hero-accent-rect-w: 13rem;
+  }
+  68% {
+    --hero-accent-rect-w: 8.75rem;
+    --hero-accent-rect-h: 30rem;
+  }
+  72%, 100% {
+    --hero-accent-rect-h: 22.25rem;
+  }
+}
+
 body > main > article {
   :where(h1, h2, h3, h4, h5, h6) {
     margin: 0;
@@ -17,17 +70,36 @@ body > main > article {
        blur; the glyphs all share one centred grid cell so they stack dead-centre, and
        overflow:clip keeps the blur(100px) exit from bleeding onto the roster below. */
     & {
-      --bg-rect: .675rem bottom / 9.5rem 20rem no-repeat;
+      --hero-accent-rect-x: .675rem;
+      --hero-accent-rect-y: 100%;
+      --hero-accent-rect-w: 8.75rem;
+      --hero-accent-rect-h: 22.25rem;
+      --hero-accent-rect:
+        linear-gradient(var(--palette-accent), var(--palette-accent))
+        var(--hero-accent-rect-x) var(--hero-accent-rect-y) / var(--hero-accent-rect-w) var(--hero-accent-rect-h) no-repeat
+      ;
+      --hero-accent-rect-fore:
+        /* The text inside the rect */
+        linear-gradient(var(--palette-text-inverse), var(--palette-text-inverse))
+        var(--hero-accent-rect-x) var(--hero-accent-rect-y) / var(--hero-accent-rect-w) var(--hero-accent-rect-h) no-repeat,
+        /* The text in the first paragraph */
+        linear-gradient(var(--palette-text), var(--palette-text))
+        9rem var(--hero-accent-rect-y) / 10rem 30rem no-repeat,
+        /* The text outside the rect */
+        linear-gradient(var(--palette-accent), var(--palette-accent))
+        0 0 / 100% 100% no-repeat
+      ;
 
       position: relative;
       z-index: -10;
       display: grid;
       place-items: center;
-      margin: 0;
+      margin: 0 0 -.25rem 0;
       inline-size: 100%;
       block-size: min(60vh, 30rem);
       /* overflow-y: clip; */
-      background: linear-gradient(var(--palette-accent), var(--palette-accent)) var(--bg-rect);
+      background: var(--hero-accent-rect);
+      animation: hero-accent-transform 50s ease-in-out infinite;
     }
     ul {
       display: grid;
@@ -49,6 +121,9 @@ body > main > article {
       color: var(--palette-text);
       opacity: 0; /* carousel.ts reveals the active glyph; :first-child is the no-JS fallback */
       will-change: transform, filter, opacity;
+      /* the glyph is a layered wash — it multiplies with the figure's red block + page
+         behind it; the figcaption (z-index 1) stays crisp on top. */
+      mix-blend-mode: multiply;
     }
     li:first-child {
       opacity: 1;
@@ -58,26 +133,46 @@ body > main > article {
          writing-mode (vertical-rl) — so inline runs top→bottom and block runs
          right→left: inline-end = bottom, block-start = right. */
       position: absolute;
-      inset-inline-end: 0rem;
-      inset-block-end: .75rem;
+      inset-inline-end: 0;
       inset-block-end: 0;
-      z-index: 1; /* sit above the blurred glyph */
-      margin-inline: 2em -.125em;
-      inline-size: 12em;
+      z-index: 1;
+      margin-inline: 0 0;
+      inline-size: 100%;
       font-size: 2rem;
       font-weight: 800;
       line-height: 1.5;
       writing-mode: vertical-rl;
-      text-align: justify;
-      text-indent: 1em;
-      background: var(--palette-text) linear-gradient(var(--palette-text-inverse), var(--palette-text-inverse)) var(--bg-rect);
+      background: var(--hero-accent-rect-fore);
       background-clip: text;
       color: transparent;
+    }
+    p {
+      & {
+        margin: 1em 0 0;
+        text-align: justify;
+        text-indent: 1em;
+      }
+      &:first-child::first-line {
+        color: var(--palette-text);
+        text-shadow: 0 0 3px var(--palette-bg);
+        /* text-shadow: 0 0 3px red; */
+      }
+    }
+    .google-fonts {
+      writing-mode: horizontal-tb;
+      display: inline-block;
+      inline-size: 3.5em;
+      margin-inline: .25em;
+      text-indent: 0;
+      line-height: 1.05;
+      text-shadow: none;
+      vertical-align: text-bottom;
+      background: var(--color-ink) linear-gradient(var(--palette-accent), var(--palette-accent)) 0 0 / 3.5em .95em no-repeat;
+      color: var(--color-snow);
     }
     abbr {
       writing-mode: horizontal-tb;
       display: inline-block;
-      margin-block: .125em;
       inline-size: 1em;
       line-height: 1;
       text-align: center;

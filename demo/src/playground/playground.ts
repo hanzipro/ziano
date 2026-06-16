@@ -5,10 +5,11 @@
 import type { Font, Generic, Script } from '../fonts/fonts'
 import { byId } from '../fonts/fonts'
 import type { Source } from '../cdn/cdn'
-import { SOURCE_LABEL, snippet, woff2Url } from '../cdn/cdn'
+import { snippet } from '../cdn/cdn'
 import { useSource, useWeight } from '../cdn/fontLink'
 import { mountFontSelect } from '../fonts/fontSelect'
 import { setPianoScript } from './piano'
+import { PLAY_ALL_TITLE, PLAY_ALL_BODY } from './play120'
 import { SAMPLES, type Sample } from '../fonts/samples'
 
 const $ = <T extends Element>(sel: string, root: ParentNode = document) =>
@@ -91,7 +92,11 @@ export const mountPlayground = (fonts: readonly Font[]): Playground => {
   const $snippet = $<HTMLElement>('#playground .snippet')
   const $cssUsage = $<HTMLElement>('#playground .css-usage')
   const $copy = $<HTMLButtonElement>('#playground .copy')
-  const $meta = $<HTMLElement>('#playground .meta')
+  const $metaFamily = $<HTMLElement>('#playground .meta output[for="font"]:not(.generic):not(.variable)')
+  const $metaGeneric = $<HTMLElement>('#playground .meta output.generic')
+  const $metaVariable = $<HTMLElement>('#playground .meta output.variable')
+  const $metaWeight = $<HTMLElement>('#playground .meta output[for="font-weight"]')
+  const $metaSize = $<HTMLElement>('#playground .meta output[for="font-size"]')
   const ids = fonts.map((f) => f.id)
 
   const saved = loadSaved()
@@ -139,8 +144,11 @@ export const mountPlayground = (fonts: readonly Font[]): Playground => {
 
   const applyMeta = () => {
     const f = font()
-    if ($meta)
-      $meta.textContent = `${f.family}・${GENERIC_LABEL[f.generic]}・${f.variable ? 'VF' : 'Static'}・字重 ${state.weight}・${state.size}px・${SOURCE_LABEL[state.source]}`
+    if ($metaFamily) $metaFamily.textContent = f.family
+    if ($metaGeneric) $metaGeneric.textContent = GENERIC_LABEL[f.generic]
+    if ($metaVariable) $metaVariable.textContent = f.variable ? '可變字體' : '靜態字體'
+    if ($metaWeight) $metaWeight.textContent = `字重${state.weight}`
+    if ($metaSize) $metaSize.textContent = `內文${state.size}px／標題${Math.round(state.size * 1.5)}px`
   }
 
   const applySnippet = () => {
@@ -184,11 +192,42 @@ export const mountPlayground = (fonts: readonly Font[]): Playground => {
     }
   }
 
+  // ── load readout (time-to-finish): time the CURRENT font's slices for the CURRENT
+  // specimen text via document.fonts.load — a self-contained measure with its own t0 →
+  // awaited promise, so it can't measure a bogus global "everything-settled" span (the
+  // old loading/loadingdone approach got hijacked by the carousel → 35000ms).
+  //   • Typing usually hits already-cached slices (common chars cluster in a few),
+  //     which would read ~1ms and clobber the real figure — so on typing we skip when
+  //     `document.fonts.check` says it's all cached, leaving the last genuine number;
+  //     only a freshly-needed (uncached) slice refreshes it.
+  //   • Deliberate switches (font / weight / CDN) pass force=true and always refresh
+  //     (a cached switch honestly reads ~0 ms).
+  // Writes just the number; CSS appends 「ms內到位」 once non-empty. Token guards races.
+  const $ms = $<HTMLElement>('#playground output[name="ttf"]')
+  let measureToken = 0
+  const measureLoad = async (force = false) => {
+    if (!$ms) return
+    const f = font()
+    const text = $spec?.textContent ?? ''
+    const spec = `${state.weight} 1em '${f.family}'`
+    if (!force && document.fonts.check(spec, text)) return
+    const token = ++measureToken
+    const t0 = performance.now()
+    try {
+      await document.fonts.load(spec, text)
+    } catch {
+      return
+    }
+    if (token !== measureToken) return // a newer measure superseded this one
+    $ms.textContent = `${Math.max(0, Math.round(performance.now() - t0))}ms`
+  }
+
   const render = () => {
     applyWeightField()
     applyType()
     applySnippet()
     applyMeta()
+    void measureLoad(true)
   }
 
   // ── intents (events → state) ─────────────────────────────────
@@ -209,6 +248,7 @@ export const mountPlayground = (fonts: readonly Font[]): Playground => {
     applyType()
     applySnippet()
     applyMeta()
+    void measureLoad(true)
     save()
   }
 
@@ -245,30 +285,15 @@ export const mountPlayground = (fonts: readonly Font[]): Playground => {
     useWeight(source, state.fontId, weightFile()) // re-add the per-weight extra on the new origin
     applySnippet()
     applyMeta()
+    void measureLoad(true)
     save()
-  }
-
-  // ── KB readout (piano → here): actual downloaded bytes of the hit slices ──
-  const measureKB = async (slices: readonly number[]) => {
-    const $kb = $<HTMLElement>('#playground .kb')
-    if (!$kb) return
-    const f = font()
-    const weight = f.variable ? undefined : state.weight
-    const urls = slices.map(
-      (i) => new URL(woff2Url(state.source, f.id, i, weight), location.href).href,
-    )
-    await document.fonts.ready
-    const seen = urls
-      .map((u) => performance.getEntriesByName(u).at(-1) as PerformanceResourceTiming | undefined)
-      .filter((e): e is PerformanceResourceTiming => !!e?.encodedBodySize)
-    const kb = Math.round(seen.reduce((sum, e) => sum + e.encodedBodySize, 0) / 1024)
-    $kb.textContent = seen.length === 0 ? '—' : `${kb} KB${seen.length < urls.length ? '+' : ''}`
   }
 
   // ── wire ─────────────────────────────────────────────────────
   useSource(state.source, ids)
   useWeight(state.source, state.fontId, weightFile()) // restore a saved per-weight pick
   mountFontSelect($select, fonts, pickFont)
+
 
   $weight?.addEventListener('input', () => setWeight(Number($weight.value)))
   const applySizeOutput = () => {
@@ -322,6 +347,20 @@ export const mountPlayground = (fonts: readonly Font[]): Playground => {
   }
   $title?.addEventListener('paste', onPaste)
   $body?.addEventListener('paste', onPaste)
+
+  // 「彈奏全部120鍵」 — drop in the showcase specimen (play120.ts) and repaint. Setting
+  // textContent/innerHTML programmatically does NOT NFC-normalise, so its four font-internal
+  // keys (the CJK-compat 樂 + three PUA codepoints) survive and the piano lights all 120.
+  $<HTMLButtonElement>('#playground button[name="play-all"]')?.addEventListener(
+    'click',
+    () => {
+      if ($previewTab) $previewTab.checked = true
+      if ($title) $title.textContent = PLAY_ALL_TITLE
+      if ($body) $body.innerHTML = PLAY_ALL_BODY
+      // bubbles up to #playground article → piano repaint; also runs $body's onEdit (persist)
+      $body?.dispatchEvent(new InputEvent('input', { bubbles: true }))
+    },
+  )
   $copy?.addEventListener(
     'click',
     async () => {
@@ -341,7 +380,7 @@ export const mountPlayground = (fonts: readonly Font[]): Playground => {
   render()
 
   return {
-    onHits: (slices) => void measureKB(slices),
+    onHits: () => void measureLoad(),
     selectFont: pickFont,
     // jump back to the 預覽 tab — used when a hero card picks a font to show it
     showPreview: () => {

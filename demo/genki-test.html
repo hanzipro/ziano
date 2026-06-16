@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ziano・源樣 GenYo vs 源起 Genki（明體）</title>
+
+  <!-- ButTaiwan GenYo/Genki Min (TW/月版), static OTF, weights L(300) & SB(600).
+       源樣 = Source Han original strokes; 源起 = +斷筆處理 (stroke-breaking) at
+       楷化 transitions for a more uniform 印刷體. ~99.8% of glyphs differ. -->
+  <style>
+    @font-face { font-family: 'GenYoMin'; src: url('/genki-test/GenYoMin2TW-L.otf')  format('opentype'); font-weight: 300; font-display: swap; }
+    @font-face { font-family: 'GenYoMin'; src: url('/genki-test/GenYoMin2TW-SB.otf') format('opentype'); font-weight: 600; font-display: swap; }
+    @font-face { font-family: 'GenKiMin'; src: url('/genki-test/GenKiMin2TW-L.otf')  format('opentype'); font-weight: 300; font-display: swap; }
+    @font-face { font-family: 'GenKiMin'; src: url('/genki-test/GenKiMin2TW-SB.otf') format('opentype'); font-weight: 600; font-display: swap; }
+    /* 黑體 (sans) has no SB/600 → use B/700 as the heavy weight */
+    @font-face { font-family: 'GenYoGothic'; src: url('/genki-test/GenYoGothic2TW-L.otf') format('opentype'); font-weight: 300; font-display: swap; }
+    @font-face { font-family: 'GenYoGothic'; src: url('/genki-test/GenYoGothic2TW-B.otf') format('opentype'); font-weight: 700; font-display: swap; }
+    @font-face { font-family: 'GenKiGothic'; src: url('/genki-test/GenKiGothic2TW-L.otf') format('opentype'); font-weight: 300; font-display: swap; }
+    @font-face { font-family: 'GenKiGothic'; src: url('/genki-test/GenKiGothic2TW-B.otf') format('opentype'); font-weight: 700; font-display: swap; }
+
+    :root {
+      --ink: #1a1a1a; --paper: #fbfbf9; --line: #d8d4cc; --accent: #9a3b34;
+      --spec-weight: 300; --spec-size: 1.7rem;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding-block: 1.5rem 4rem; padding-inline: clamp(1rem, 3vw, 2.5rem);
+      background: var(--paper); color: var(--ink);
+      font-family: system-ui, sans-serif; line-height: 1.6;
+    }
+    header { margin-block-end: 1.5rem; }
+    h1 { font-size: 1.35rem; margin-block: 0 .25rem; }
+    .lede { margin-block: 0 1rem; color: #555; max-inline-size: 72ch; }
+
+    form.controls {
+      display: flex; flex-wrap: wrap; gap: 1rem 2rem; align-items: center;
+      padding: .9rem 1.1rem; border: 1px solid var(--line); border-radius: .5rem;
+      background: #fff; position: sticky; inset-block-start: 0; z-index: 1;
+    }
+    form.controls label { display: inline-flex; gap: .45rem; align-items: center; font-size: .9rem; }
+    fieldset { border: 0; padding: 0; margin: 0; display: inline-flex; gap: .9rem; }
+    output { font-variant-numeric: tabular-nums; min-inline-size: 3ch; color: var(--accent); }
+
+    .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-block-start: 1.5rem; align-items: start; }
+    @media (max-width: 52rem) { .cols { grid-template-columns: 1fr; } }
+
+    .col { border: 1px solid var(--line); border-radius: .5rem; overflow: hidden; background: #fff; }
+    .col > h2 {
+      margin: 0; padding: .6rem .9rem; font-size: .9rem; font-family: system-ui;
+      border-block-end: 1px solid var(--line); background: #f4f2ec;
+    }
+    .col > h2 small { font-weight: 400; color: #777; }
+
+    .specimen {
+      padding: 1.2rem 1.1rem;
+      font-weight: var(--spec-weight); font-size: var(--spec-size);
+      line-height: 1.95; text-align: justify;
+    }
+    .specimen .title { font-size: 1.15em; font-weight: 600; margin-block: 0 .6em; }
+    .specimen p { margin-block: 0 .85em; }
+    .specimen p:last-child { margin-block-end: 0; }
+    .specimen[data-style='serif'][data-face='genyo'] { font-family: 'GenYoMin', serif; }
+    .specimen[data-style='serif'][data-face='genki'] { font-family: 'GenKiMin', serif; }
+    .specimen[data-style='sans'][data-face='genyo']  { font-family: 'GenYoGothic', sans-serif; }
+    .specimen[data-style='sans'][data-face='genki']  { font-family: 'GenKiGothic', sans-serif; }
+  </style>
+
+  <script type="module">
+    const root = document.documentElement
+    const form = document.querySelector('form.controls')
+
+    const ARTICLE = {
+      title: '字裡行間的傳承',
+      body:
+        '<p>清晨的台北，捷運緩緩駛過城市的骨幹，車窗外的天色由青轉亮。月台上，旅客的情緒交織成一片低語，有人讀著手中的書，有人望向遠方的海角。文字像一條無形的絲線，把過去與現在織在一起。每個字的形體，都承載著前人的講究與情感。</p>' +
+        '<p>從英國到台北，從鉛字到螢幕，書寫的方式不斷改變，對美的追求卻始終如一。傳承字形所展現的，正是這份對細節的尊重⸺戶的寫法、骨的轉折、直的橫豎、青的結構、過的走之，無一不在訴說漢字悠長的歷史。當我們重新端詳這些字，彷彿能聽見時間的回響，看見文化在筆畫間靜靜流動，言語與書藝交融，從不間斷。</p>',
+    }
+    const FACES = [
+      { id: 'genyo', label: '源樣 GenYo', note: '維持思源原有造形' },
+      { id: 'genki', label: '源起 Genki', note: '斷筆處理・轉折更一致' },
+    ]
+
+    // 明體 has L(300)/SB(600); 黑體 has no 600 → L(300)/B(700)
+    const WEIGHTS = {
+      serif: [['300', '300 (L)'], ['600', '600 (SB)']],
+      sans: [['300', '300 (L)'], ['700', '700 (B)']],
+    }
+
+    const cols = document.querySelector('.cols')
+    const weightsBox = document.querySelector('#weights')
+    const inner = `<div class="title">${ARTICLE.title}</div>${ARTICLE.body}`
+
+    let lastWeight = '300'
+    let curStyle = ''
+
+    const renderWeights = (
+      style,
+    ) => {
+      const opts = WEIGHTS[style]
+      const keep = opts.some(([v]) => v === lastWeight) ? lastWeight : opts[0][0]
+      weightsBox.innerHTML = opts
+        .map(([v, l]) => `<label><input type="radio" name="weight" value="${v}" ${v === keep ? 'checked' : ''} /> ${l}</label>`)
+        .join('')
+    }
+
+    const renderCols = (
+      style,
+    ) => {
+      cols.innerHTML = FACES
+        .map(
+          (f) => `
+          <section class="col">
+            <h2>${f.label} <small>— ${f.note}</small></h2>
+            <div class="specimen" data-style="${style}" data-face="${f.id}">${inner}</div>
+          </section>`,
+        )
+        .join('')
+    }
+
+    const apply = (
+    ) => {
+      const style = form.style.value
+      if (style !== curStyle) {
+        curStyle = style
+        renderWeights(style)
+        renderCols(style)
+      }
+      lastWeight = form.weight.value
+      root.style.setProperty('--spec-weight', lastWeight)
+      root.style.setProperty('--spec-size', `${Number(form.size.value).toFixed(2)}rem`)
+      document.querySelector('#size-out').value = Number(form.size.value).toFixed(1)
+    }
+
+    form.addEventListener('input', apply)
+    apply()
+  </script>
+</head>
+
+<body>
+  <header>
+    <h1>源樣 GenYo vs 源起 Genki — 明體 / 黑體 (TW/月版)</h1>
+    <p class="lede">
+      同一篇 playground 預設文章，左 <strong>源樣 GenYo</strong>（維持思源原有造形）、
+      右 <strong>源起 Genki</strong>（Ver 2.0 新增，對楷化轉折做<strong>斷筆處理</strong>，視覺更一致）。
+      兩者骨架相同但筆畫處理幾乎<strong>全面不同</strong>（明體 ≈99.8%、黑體 ≈100% 字形有別），故不標記個別字 —
+      請看辶、糸、言、走之 等轉折處的斷與連。放大字級最清楚。
+      切換明體／黑體；黑體無 600，重量改用 700 (B)。
+    </p>
+
+    <form class="controls">
+      <fieldset>
+        <label><input type="radio" name="style" value="serif" checked /> 明體</label>
+        <label><input type="radio" name="style" value="sans" /> 黑體</label>
+      </fieldset>
+      <fieldset id="weights"></fieldset>
+      <label>字級 <input type="range" name="size" min="1.2" max="3.5" step="0.1" value="1.7" /> <output id="size-out">1.7</output> rem</label>
+    </form>
+  </header>
+
+  <div class="cols"></div>
+</body>
+</html>

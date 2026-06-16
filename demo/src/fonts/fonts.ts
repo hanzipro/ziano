@@ -9,7 +9,7 @@ export type Script = 'tc' | 'sc' | 'jp'
 export type Font = {
   readonly id: string
   readonly generic: Generic
-  readonly name: string // 中文 name (e.g. 尚古宋)
+  readonly name: string // 中文 name (e.g. 尙古明體)
   readonly family: string // CSS font-family (e.g. Shanggu Serif)
   readonly variable: boolean
   readonly weights: readonly number[]

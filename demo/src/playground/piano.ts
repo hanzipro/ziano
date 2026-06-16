@@ -67,9 +67,9 @@ const paint = (text: string): void => {
   lastText = text
   const hit = slicesOf(text)
   keys.forEach((k, i) => k.classList.toggle('on', hit.has(i)))
-  // write only the count into its <output>; the rest of the status is static markup
+  // the hit-slices <output> carries the whole phrase 「命中N／120片」
   const $hits = document.querySelector('#playground output[name="hit-slices"]')
-  if ($hits) $hits.textContent = String(hit.size)
+  if ($hits) $hits.textContent = `${hit.size}／${SLICE_N}片`
   onHits?.([...hit])
 }
 

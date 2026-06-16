@@ -84,7 +84,7 @@ body > header {
       }
     }
     input[type='checkbox']:checked + span::before {
-      content: '🌞';
+      content: '🌻';      content: '🌞';
     }
   }
 }
