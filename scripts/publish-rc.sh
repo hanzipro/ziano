@@ -9,9 +9,14 @@
 # now prunes every slice's unicode-range to the font's real cmap and drops empty slices
 # (see ziano/slices.py::prune_slices). So all the demo families need a rebuild + republish.
 #
+# This is a CSS-ONLY fix: the woff2 already contain exactly the covered glyphs (the
+# subsetter dropped the rest at build time), so we DON'T re-slice. recss_dist() reads each
+# @font-face's unicode-range back from the existing woff2's cmap, drops the now-empty
+# slices' woff2, and bumps the version — kept woff2 stay byte-identical. (Needs a prior
+# full build in dist/; for a from-scratch build use build_family instead.)
+#
 # Versioning: each package bumps to one past its highest published rc (no version burning,
-# see memory/publish-workflow). The build is driven through build_family() directly so the
-# version is set at build time (the `python -m ziano.build` CLI hardcodes 0.1.0).
+# see memory/publish-workflow).
 #
 # Auth (hard-won, see memory/publish-workflow): account ethantw enforces 2FA on writes.
 # A plain token hits EOTP. Use a classic *Automation* token, or set 2FA to "Authorization
@@ -47,9 +52,9 @@ next_rc() {
 for id in "${ids[@]}"; do
   pkg="@hanzi.pro/webfonts-$id"
   ver=$(next_rc "$pkg")
-  echo "→ build $pkg@$ver"
-  python -c "from ziano.build import build_family; build_family('$id', roster_path='roster.toml', dest='dist', version='$ver')" \
-    || { echo "  ✗ build failed — skip"; continue; }
+  echo "→ regen CSS $pkg@$ver"
+  python -c "from ziano.build import recss_dist; recss_dist('$id', roster_path='roster.toml', dest='dist', version='$ver')" \
+    || { echo "  ✗ recss failed — skip"; continue; }
   echo "  publishing…"
   ( cd "dist/$id" && npm publish --tag rc --access public ) \
     && echo "  ✓ $pkg@$ver" \

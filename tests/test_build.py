@@ -6,6 +6,24 @@ import pytest
 from ziano.build import build_family
 
 
+def test_css_only_prune_drops_woff2_for_pruned_slices(tmp_path):
+    # css_only reuses the existing woff2 as-is; it must delete only the files whose slice
+    # was pruned away (now unreferenced), for both vf (<id>.<idx>) and static
+    # (<id>.<weight>.<idx>) naming — and leave kept slices untouched.
+    from ziano.build import prune_dist_woff2
+    from ziano.slices import Slice
+
+    files = tmp_path / "files"
+    files.mkdir()
+    for n in ("shg.5.woff2", "shg.6.woff2", "gen.400.5.woff2", "gen.400.6.woff2"):
+        (files / n).write_bytes(b"wOF2")
+    prune_dist_woff2(tmp_path, [Slice(6, "U+30f8")])  # keep only slice 6
+    assert not (files / "shg.5.woff2").exists()
+    assert not (files / "gen.400.5.woff2").exists()
+    assert (files / "shg.6.woff2").exists()
+    assert (files / "gen.400.6.woff2").exists()
+
+
 def _range_covers(rng: str, cp: int) -> bool:
     for tok in rng.split(","):
         t = tok.strip().lower().removeprefix("u+")

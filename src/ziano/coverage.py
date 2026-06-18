@@ -2,7 +2,8 @@ from fontTools.ttLib import TTFont
 
 
 def cmap_codepoints(font_path: str) -> set[int]:
-    return set(TTFont(font_path).getBestCmap().keys())
+    # getBestCmap() returns None for a glyphless font (e.g. an empty emoji-slice woff2)
+    return set((TTFont(font_path).getBestCmap() or {}).keys())
 
 
 def coverage_report(cmap: set[int], target_chars: str) -> dict:
