@@ -1,8 +1,21 @@
 import json
+import re
 
 import pytest
 
 from ziano.build import build_family
+
+
+def _range_covers(rng: str, cp: int) -> bool:
+    for tok in rng.split(","):
+        t = tok.strip().lower().removeprefix("u+")
+        if "-" in t:
+            lo, hi = t.split("-")
+            if int(lo, 16) <= cp <= int(hi, 16):
+                return True
+        elif t and int(t, 16) == cp:
+            return True
+    return False
 
 
 @pytest.mark.integration
@@ -30,6 +43,14 @@ def test_build_shanggu_serif_produces_installable_package(tmp_path):
 
     # OFL bundled from inside the archive
     assert "SIL Open Font License" in (root / "LICENSE").read_text()
+
+    # unicode-range is pruned to the font's real coverage: the CJK source has no glyph
+    # for 🌞 U+1F31E, so no @font-face may claim it (Safari renders tofu for an
+    # unrenderable codepoint inside a claimed range instead of falling through to the
+    # system emoji font), and the now-empty all-emoji slice 5 isn't shipped at all.
+    ranges = re.findall(r"unicode-range:\s*([^;]+);", css)
+    assert not any(_range_covers(r, 0x1F31E) for r in ranges)
+    assert not (root / "files" / "shanggu-serif.5.woff2").exists()
 
 
 @pytest.mark.integration

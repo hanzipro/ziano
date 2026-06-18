@@ -16,7 +16,7 @@ def test_load_roster_returns_typed_families():
     assert serif.repo == "GuiWonder/Shanggu"
     assert serif.release_tag == "1.028"
     assert serif.asset == "ShangguSerifVF_TTFs.7z"
-    assert serif.member == "ShangguSerifTC-VF.ttf"
+    assert serif.member == "ShangguSerif-VF.ttf"  # base 無附加名 cut, not TC (see shanggu-variant)
     assert serif.license_member == "LICENSE.txt"
     assert serif.weights == ()  # vf carries no per-weight table
 

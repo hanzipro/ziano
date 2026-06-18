@@ -33,6 +33,23 @@ def format_unicode_range(cps: set[int]) -> str:
     return ", ".join(out)
 
 
+def prune_slices(slices: list[Slice], cmap: set[int]) -> list[Slice]:
+    """Restrict each slice's unicode-range to what the font's cmap actually covers,
+    dropping any slice the font can't render at all (keeping original indices).
+
+    An @font-face must not claim a codepoint its woff2 lacks: Safari honours the bare
+    unicode-range and renders .notdef rather than falling through to the next font — so
+    e.g. the all-emoji slices (a CJK font has zero glyphs there) would swallow 🌞 instead
+    of letting it reach the system emoji font.
+    """
+    out: list[Slice] = []
+    for s in slices:
+        covered = s.codepoints() & cmap
+        if covered:
+            out.append(Slice(index=s.index, unicode_range=format_unicode_range(covered)))
+    return out
+
+
 def parse_slicing_strategy(text: str) -> list[Slice]:
     """Parse a Google Fonts nam-files slicing-strategy text-proto into slices.
 

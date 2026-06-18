@@ -5,6 +5,7 @@ from ziano.slices import (
     format_unicode_range,
     load_slices,
     parse_slicing_strategy,
+    prune_slices,
     save_slices,
 )
 
@@ -51,3 +52,27 @@ def test_save_then_load_roundtrips(tmp_path):
     path = tmp_path / "slices.json"
     save_slices(original, str(path))
     assert load_slices(str(path)) == original
+
+
+# --- prune_slices: drop/trim a slice's unicode-range to the font's actual cmap, so an
+# --- @font-face never claims codepoints it can't render (Safari honours the bare range
+# --- → tofu; e.g. the all-emoji slices the CJK fonts have zero glyphs for).
+def test_prune_drops_slices_the_font_cannot_render():
+    slices = [
+        Slice(index=5, unicode_range="U+1f31a-1f321"),  # emoji — font has none
+        Slice(index=6, unicode_range="U+30f8-30fa"),  # katakana — font has these
+    ]
+    out = prune_slices(slices, {0x30F8, 0x30F9, 0x30FA})
+    assert [s.index for s in out] == [6]
+
+
+def test_prune_trims_a_partially_covered_slice_to_its_cmap():
+    out = prune_slices([Slice(index=7, unicode_range="U+4e00-4e02")], {0x4E00, 0x4E02})
+    assert len(out) == 1
+    assert out[0].index == 7  # index preserved, no renumbering
+    assert out[0].unicode_range == "U+4e00, U+4e02"
+
+
+def test_prune_keeps_a_fully_covered_slice_unchanged():
+    s = Slice(index=3, unicode_range="U+4e00-4e02")
+    assert prune_slices([s], {0x4E00, 0x4E01, 0x4E02}) == [s]

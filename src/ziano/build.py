@@ -2,6 +2,7 @@ import sys
 from pathlib import Path
 
 from .acquire import download, download_raw, extract_member
+from .coverage import cmap_codepoints
 from .cssgen import (
     DISPLAY_MODES,
     generate_aggregate_css,
@@ -12,7 +13,7 @@ from .cssgen import (
 )
 from .package import write_package_skeleton
 from .roster import FamilyConfig, load_roster, slice_table_name
-from .slices import Slice, load_slices
+from .slices import Slice, load_slices, prune_slices
 from .subset import subset_to_woff2
 
 _EXTRACT_DIR = Path(".cache/extracted")
@@ -75,6 +76,16 @@ def build_family(family_id: str, *, roster_path: str, dest: str, version: str,
     license_text = Path(_acquire(fam, work, fam.license_member)).read_text(
         encoding="utf-8", errors="replace")
     slices = load_slices(f"data/slices.{slice_table_name(fam.style, fam.slice_table)}.json")
+
+    # Prune each slice's unicode-range to the font's real cmap so no @font-face claims a
+    # codepoint its woff2 lacks. Safari honours the bare unicode-range and renders .notdef
+    # instead of falling through — so the all-emoji slices (a CJK font has zero glyphs
+    # there) would otherwise swallow 🌞 etc. rather than letting the system emoji font
+    # render them. Empty slices are dropped entirely. (See slices.prune_slices.)
+    repr_member = fam.member if fam.format == "vf" else fam.weights[0].member
+    repr_sha = "" if fam.format == "vf" else fam.weights[0].sha256
+    cmap = cmap_codepoints(str(_acquire(fam, work, repr_member, repr_sha)))
+    slices = prune_slices(slices, cmap)
 
     if fam.format == "vf":
         return _build_vf(fam, work, slices,
