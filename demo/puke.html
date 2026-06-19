@@ -4,14 +4,14 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>向令人作嘔的楷書式手寫化印刷字體道掰掰</title>
-  <meta name="description" content="國字標準字體 vs 傳承字形 — 同一段文字，一翻兩瞪眼。" />
+  <meta name="description" content="國字標準字體vs傳承字形⸺同一段文字，一翻兩瞪眼。" />
 
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
   <!-- 國標欄不下載任何 webfont — 直接用你裝置內建、依 MOE 國字標準字體製作的系統字
        (mac: 蘋方／Songti TC，Windows: 微軟正黑體／新細明體，Android·Ubuntu: 系統 Noto)。
        傳承欄 = 尙古黑體＋尙古明體，ziano 自家 CDN。 -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif@0.1.0-rc.3/swap.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans@0.1.0-rc.3/swap.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif@0.1.0-rc.5/swap.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans@0.1.0-rc.5/swap.css" />
 
   <style>
     /* ── tokens ─────────────────────────────────────────────────────────────
@@ -40,8 +40,12 @@
       --palatte-edge: var(--color-paper-edge);
 
       --measure: 38rem;
-      --font-hei: 'Shanggu Sans', sans-serif;
-      --font-ming: 'Shanggu Serif', serif;
+      /* heritage first (copy-style.md rule 4); the system fonts after it are a
+         whole-webfont-failure fallback only — style-matched (gothic↔黑體, mincho↔明體),
+         Mac (Hiragino) then Windows (Yu*). 黑體 keeps the GB cut for wider codepoints;
+         明體 has no GB cut, so Hiragino Mincho ProN → YuMincho. */
+      --font-hei: 'Shanggu Sans', 'Hiragino Sans', 'Hiragino Sans GB', 'YuGothic', sans-serif;
+      --font-ming: 'Shanggu Serif', 'Hiragino Mincho ProN', 'YuMincho', serif;
       /* 國標 = your device's own CJK fonts; Noto is only the Linux/Android system fallback */
       --font-sys-hei: 'PingFang TC', 'PingFang SC', 'Microsoft JhengHei', '微軟正黑體',
         'Heiti TC', 'Noto Sans TC', 'Noto Sans CJK TC', sans-serif;
@@ -61,6 +65,9 @@
       color: var(--color-ink);
       font-family: var(--font-ming);
       line-height: 1.7;
+      /* Han↔Latin spacing comes from CSS, not space characters (copy-style.md rule 3).
+         CSS Text 4; unsupported engines just render slightly tighter. */
+      text-autospace: normal;
       -webkit-font-smoothing: antialiased;
     }
 
@@ -96,7 +103,7 @@
         padding: .5rem .9rem;
         border: 1px solid var(--palatte-edge);
         border-radius: 2rem;
-        font-family: system-ui, sans-serif;
+        font-family: var(--font-hei);
         font-size: .9rem;
         cursor: pointer;
         user-select: none;
@@ -116,7 +123,7 @@
       /* the group title spans both columns */
       > h2 {
         grid-column: 1 / -1;
-        font-family: system-ui, sans-serif;
+        font-family: var(--font-hei);
         font-size: .95rem;
         font-weight: 600;
         letter-spacing: .06em;
@@ -145,7 +152,7 @@
           align-items: baseline;
           justify-content: space-between;
           gap: .5rem;
-          font-family: system-ui, sans-serif;
+          font-family: var(--font-hei);
           font-size: 1rem;
           font-weight: 600;
           color: var(--palatte-accent);
@@ -296,7 +303,7 @@
   <header>
     <h1>向<span data-tone="bile">令人作嘔</span>的楷書式<br />手寫化印刷字體<span data-tone="accent">道掰掰</span> 👋</h1>
     <p>同一段文字，左欄是<strong>你裝置內建的系統字</strong>（蘋方／微軟正黑／Songti／新細明體，全依國字標準字體），右欄是<strong>傳承字形・尙古</strong>。黑體、明體各比一次。</p>
-    <label><input type="checkbox" name="mark" /> 標記病灶（看部件差在哪）</label>
+    <label><input type="checkbox" name="mark" />標記病灶（看部件差在哪）</label>
   </header>
 
   <main>
@@ -304,7 +311,7 @@
       data-tells="飲青雨過草骨言糸綉邊戶強細疏躍信體說"
       data-specimen="清晨啜飲一盞青茶，信手翻閱古籍。雨過天青，草木扶疏；骨董般的字形躍然紙上，言語之美盡在細節⸺糸旁的綉、辵部的邊、骨架的轉折、戶牖的開闔。國字標準字體強行將印刷體楷化，每個部件都像被手寫扭曲，說不出的彆扭。"
     >
-      <h2><span lang="en">SANS</span>・黑體 — 你的系統黑體 vs 尙古黑體</h2>
+      <h2><span lang="en">SANS</span>・黑體⸺你的系統黑體vs尙古黑體</h2>
       <article data-side="moe" data-face="sans">
         <h3>你的系統黑體 <small>蘋方／微軟正黑 🤢🤮</small></h3>
         <p></p>
@@ -319,7 +326,7 @@
       data-tells="飲青雨過草骨言糸綉邊戶強細疏躍信體說"
       data-specimen="清晨啜飲一盞青茶，信手翻閱古籍。雨過天青，草木扶疏；骨董般的字形躍然紙上，言語之美盡在細節⸺糸旁的綉、辵部的邊、骨架的轉折、戶牖的開闔。國字標準字體強行將印刷體楷化，每個部件都像被手寫扭曲，說不出的彆扭。"
     >
-      <h2><span lang="en">SERIF</span>・明體 — 你的系統明體 vs 尙古明體</h2>
+      <h2><span lang="en">SERIF</span>・明體⸺你的系統明體vs尙古明體</h2>
       <article data-side="moe" data-face="serif">
         <h3>你的系統明體 <small>Songti TC／新細明體 🤢🤮</small></h3>
         <p></p>
