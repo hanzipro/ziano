@@ -34,15 +34,19 @@ const $$ = <T extends Element>(sel: string) => [...document.querySelectorAll<T>(
 // Floats with the demo (the `rc` dist-tag) so it tracks the newest publish; all
 // three npm CDNs share the spec, so the comparison stays fair.
 // TODO(0.1.0): switch @rc → @latest on the stable release (mirror cdn.ts).
-const PKG = '@hanzi.pro/webfonts-shanggu-sans@0.1.0-rc.3'
+const PKG = '@hanzi.pro/webfonts-shanggu-sans@0.1.0-rc.5'
 const PROBE = 'files/shanggu-sans.55.woff2' // a representative ~54 kB body-text slice
-const npm = (origin: string) => ({
-  css: `${origin}/npm/${PKG}/swap.css`,
-  probe: `${origin}/npm/${PKG}/${PROBE}`,
+// `base` already includes any registry path prefix: ONLY jsDelivr serves npm packages
+// under /npm/ — unpkg and esm.sh serve them at the root. (mirrors cdn.ts ORIGIN.) Passing
+// /npm to unpkg made it resolve the package literally named `npm` → the real path 404'd →
+// link error, which looked like the CDN being down. It wasn't.
+const npm = (base: string) => ({
+  css: `${base}/${PKG}/swap.css`,
+  probe: `${base}/${PKG}/${PROBE}`,
   family: 'Shanggu Sans',
 })
 const CDNS: Record<CdnKey, Cdn> = {
-  jsdelivr: { label: 'jsDelivr', tao: true, ...npm('https://cdn.jsdelivr.net') },
+  jsdelivr: { label: 'jsDelivr', tao: true, ...npm('https://cdn.jsdelivr.net/npm') },
   unpkg: { label: 'unpkg', tao: false, ...npm('https://unpkg.com') },
   esmsh: { label: 'esm.sh', tao: false, ...npm('https://esm.sh') },
   // Google Fonts serves a DIFFERENT font (Noto Sans TC) via its own dynamic subset
@@ -102,7 +106,7 @@ const log = (line: string): void => {
 
 // cold: ?bust per run → URL never cached → always network. warm: no bust → served
 // from the browser cache after the first run.
-const isCold = () => $<HTMLInputElement>('#cold')?.checked ?? true
+const isCold = () => $<HTMLInputElement>('input[name="cold"]')?.checked ?? true
 const bust = (url: string) =>
   isCold() ? `${url}${url.includes('?') ? '&' : '?'}bust=${rnd()}` : url
 
@@ -122,8 +126,8 @@ const timeCss = (cdn: Cdn): Promise<number> =>
   })
 
 const showSpecimen = async (cdn: Cdn): Promise<number> => {
-  const $title = $<HTMLElement>('#spec-title')
-  const $body = $<HTMLElement>('#spec-body')
+  const $title = $<HTMLElement>('#specimen p:first-of-type')
+  const $body = $<HTMLElement>('#specimen p:nth-of-type(2)')
   if ($title) $title.style.fontFamily = `'${cdn.family}'`
   if ($body) $body.style.fontFamily = `'${cdn.family}'`
   const t0 = performance.now()
@@ -133,7 +137,7 @@ const showSpecimen = async (cdn: Cdn): Promise<number> => {
     /* font load races are fine; we still timestamp below */
   }
   await document.fonts.ready
-  const $tag = $<HTMLElement>('#spec-tag')
+  const $tag = $<HTMLElement>('#specimen figcaption')
   if ($tag) $tag.textContent = `現以 ${cdn.label} 提供 ${cdn.family}`
   return performance.now() - t0
 }
@@ -234,7 +238,7 @@ const setBusy = (busy: boolean) =>
   $$<HTMLButtonElement>('button').forEach((b) => (b.disabled = busy))
 
 const runClicked = ($btn: HTMLButtonElement) => async (): Promise<void> => {
-  const reps = Math.max(1, Math.min(50, Number($<HTMLInputElement>('#reps')?.value) || 1))
+  const reps = Math.max(1, Math.min(50, Number($<HTMLInputElement>('input[name="reps"]')?.value) || 1))
   const key = $btn.dataset.run as CdnKey | 'all'
   setBusy(true)
   log(`\n▶ ${key === 'all' ? '四家' : CDNS[key].label}　${reps} 次/家　[${isCold() ? '冷抓' : '暖抓'}]`)
@@ -247,7 +251,7 @@ $$<HTMLButtonElement>('[data-run]').forEach(($btn) =>
   $btn.addEventListener('click', runClicked($btn)),
 )
 
-$('#reset')?.addEventListener(
+$('[data-reset]')?.addEventListener(
   'click',
   () => {
     saveRuns({})

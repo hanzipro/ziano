@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
-  <title>ziano・CDN競速 — jsDelivr vs unpkg vs esm.sh vs Google Fonts</title>
+  <title>ziano・CDN競速⸺jsDelivr vs unpkg vs esm.sh vs Google Fonts</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta
@@ -18,6 +18,11 @@
   <link rel="preconnect" href="https://esm.sh" crossorigin />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <!-- the bench chrome renders in a heritage face (copy-style.md rule 4). NOT Shanggu
+       Sans — that's the family being benchmarked, so preloading it would pollute the
+       cold/warm timing; Shanggu Serif is a safe heritage face for the UI. -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif@0.1.0-rc.5/swap.css" />
 
   <link rel="stylesheet" href="/src/bench.css" />
 
@@ -54,50 +59,56 @@
   </header>
 
   <main>
-    <h1>CDN競速 — jsDelivr vs unpkg vs esm.sh vs Google Fonts</h1>
-    <p class="sub">
-      用真正的 <code>&lt;link rel="stylesheet"&gt;</code>（各家皆已 <code>preconnect</code>）載入
-      <code>@hanzi.pro/webfonts-shanggu-sans</code> 的 <code>swap.css</code>，
-      以 <code>performance.now()</code> 量 link 的 onload 牆鐘時間（跨域公平）。一次只測一家，避免 <code>font-family</code> 撞名。
-      <strong>Google Fonts 是拿 Noto Sans TC 當「速度標竿」</strong>⸺它是不同的字、走自家動態 subset 服務，
-      所以只有「CSS／字體就緒」兩欄能跟前三家對比，woff2 切片那欄只有 npm 三家有。
-      數據存在本機 <code>localStorage</code>，你可以自己多跑幾輪。
-    </p>
+    <hgroup>
+      <h1>CDN競速⸺jsDelivr vs unpkg vs esm.sh vs Google Fonts</h1>
+      <p>
+        用真正的<code>&lt;link rel="stylesheet"&gt;</code>（各家皆已<code>preconnect</code>）載入<code>@hanzi.pro/webfonts-shanggu-sans</code>的<code>swap.css</code>，以<code>performance.now()</code>量link的onload牆鐘時間（跨域公平）。一次只測一家，避免<code>font-family</code>撞名。<strong>Google Fonts是拿Noto Sans TC當「速度標竿」</strong>⸺它是不同的字、走自家動態subset服務，所以只有「CSS／字體就緒」兩欄能跟前三家對比，woff2切片那欄只有npm三家有。數據存在本機<code>localStorage</code>，你可以自己多跑幾輪。
+      </p>
+    </hgroup>
 
-    <div class="controls">
-      <button data-run="jsdelivr">測 jsDelivr</button>
-      <button data-run="unpkg">測 unpkg</button>
-      <button data-run="esmsh">測 esm.sh</button>
-      <button data-run="gfonts">測 Google Fonts</button>
-      <button data-run="all">四家各跑一輪</button>
-      <label><input type="number" id="reps" value="5" min="1" max="50" /> 次/輪</label>
-      <label><input type="checkbox" id="cold" checked /> 繞過快取（冷抓）</label>
-      <button id="reset">重置數據</button>
-    </div>
+    <!-- a control panel: the run commands are a <menu> (a toolbar of actions), the
+         knobs a <fieldset>; type="button" so a stray Enter never submits the form. -->
+    <form>
+      <menu>
+        <li><button type="button" data-run="jsdelivr">測jsDelivr</button></li>
+        <li><button type="button" data-run="unpkg">測unpkg</button></li>
+        <li><button type="button" data-run="esmsh">測esm.sh</button></li>
+        <li><button type="button" data-run="gfonts">測Google Fonts</button></li>
+        <li><button type="button" data-run="all">四家各跑一輪</button></li>
+      </menu>
+      <fieldset>
+        <legend>選項</legend>
+        <label>每輪<input type="number" name="reps" value="5" min="1" max="50" />次</label>
+        <label><input type="checkbox" name="cold" checked />繞過快取（冷抓）</label>
+      </fieldset>
+      <button type="button" data-reset>重置數據</button>
+    </form>
 
     <table id="results">
       <thead>
         <tr>
           <th>CDN</th><th>樣本數</th>
-          <th>CSS 最快</th><th>CSS 中位</th><th>CSS 平均</th>
-          <th>字體就緒 中位</th><th>woff2 中位 (54k)</th>
+          <th>CSS最快</th><th>CSS中位</th><th>CSS平均</th>
+          <th>字體就緒中位</th><th>woff2中位（54k）</th>
         </tr>
       </thead>
       <tbody></tbody>
     </table>
 
-    <div class="specimen">
-      <div class="title" id="spec-title">傳承字形・尙古黑體</div>
-      <div class="body" id="spec-body">永東國酬鬱靈龜鑫淼焱垚 ⸺ 山巔一寺一壺酒，爾樂苦煞吾。把酒問青天，不知天上宮闕，今夕是何年。橫豎撇捺折，篆隸楷行草。</div>
-      <div class="tag" id="spec-tag">（尚未載入字體）</div>
-    </div>
+    <!-- the live specimen: two registers (display title + body) read structurally as
+         p:first/second-of-type; <figcaption> carries the 「現以 X 提供 Y」 attribution. -->
+    <figure id="specimen">
+      <p>傳承字形・尙古黑體</p>
+      <p>永東國酬鬱靈龜鑫淼焱垚⸺山巔一寺一壺酒，爾樂苦煞吾。把酒問青天，不知天上宮闕，今夕是何年。橫豎撇捺折，篆隸楷行草。</p>
+      <figcaption>（尚未載入字體）</figcaption>
+    </figure>
 
-    <pre class="log" id="log"></pre>
+    <pre id="log"></pre>
   </main>
 
   <footer>
     <p>
-      OFL 1.1 字體・<a href="https://github.com/hanzipro/ziano">GitHub</a>・量測值因網路、地理位置與 CDN 邊緣快取而異，僅供參考。
+      OFL 1.1字體・<a href="https://github.com/hanzipro/ziano">GitHub</a>・量測值因網路、地理位置與CDN邊緣快取而異，僅供參考。
     </p>
   </footer>
 </body>

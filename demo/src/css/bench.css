@@ -6,6 +6,15 @@
  * free via :root:has(input[name='dark-mode']:checked).
  * ================================================================================
  */
+/* rule 4 (copy-style.md): the chrome renders in a heritage face. It can't be Shanggu
+   Sans — that's the benchmarked family, and preloading it would pollute the timing — so
+   lead with Shanggu Serif. The mincho after it is a whole-webfont-failure fallback only
+   (Shanggu covers more than it, so it never catches per-glyph); style-matched, Mac (Hiragino
+   Mincho ProN) then Windows (YuMincho). Overrides --font-default from variables.css. */
+:root {
+  --font-default: 'Shanggu Serif', 'Hiragino Mincho ProN', 'YuMincho', serif;
+}
+
 body > main {
   & {
     display: flex;
@@ -13,14 +22,17 @@ body > main {
     padding-block: 2.5rem 1rem;
   }
 
+  hgroup {
+    margin-block: 0 1.75rem;
+    max-inline-size: 52rem;
+  }
   h1 {
     margin-block: 0 .4rem;
     font-size: clamp(1.3rem, 3.5vw, 1.8rem);
     font-weight: 250;
   }
-  .sub {
-    margin-block: 0 1.75rem;
-    max-inline-size: 52rem;
+  hgroup p {
+    margin-block: 0;
     font-size: .9rem;
     color: var(--palette-supplement-text);
   }
@@ -34,14 +46,37 @@ body > main {
   }
 }
 
-/* ── controls ──────────────────────────────────────────────────── */
-.controls {
+/* ── controls (a <form>: run-command <menu> + options <fieldset>) ──── */
+main > form {
   & {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: .6rem;
     margin-block-end: 1.25rem;
+  }
+  menu {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .6rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  li {
+    display: contents; /* the <button> is the flex item, not the <li> */
+  }
+  /* fieldset as a flex container; its <legend> participates as the first flex item
+     (Baseline 2021: fieldset accepts display:flex and the legend flows inline). */
+  fieldset {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .6rem;
+  }
+  legend {
+    font-size: .85rem;
+    color: var(--palette-supplement-text);
   }
   button {
     & {
@@ -144,8 +179,11 @@ body > main {
 }
 
 /* ── specimen (renders only after a run loads the font) ─────────── */
-.specimen {
+/* two registers read structurally: p:first-of-type = display title, the next = body;
+   <figcaption> is the attribution. <figure> carries UA margin, so it's zeroed. */
+#specimen {
   & {
+    margin: 0;
     margin-block-start: .5rem;
     padding: 1.5rem;
     min-block-size: 7rem;
@@ -153,18 +191,19 @@ body > main {
     border-radius: .625rem;
     background-color: var(--palette-bg);
   }
-  .title {
+  p:first-of-type {
+    margin-block: 0;
     font-size: 1.9rem;
     font-weight: 700;
     line-height: 1.3;
   }
-  .body {
-    margin-block-start: .6rem;
+  p:nth-of-type(2) {
+    margin-block: .6rem 0;
     font-size: 1.15rem;
     line-height: 1.9;
     text-align: justify;
   }
-  .tag {
+  figcaption {
     margin-block-start: .8rem;
     font-size: .75rem;
     color: var(--palette-supplement-text);
@@ -172,8 +211,8 @@ body > main {
 }
 
 /* ── run log ───────────────────────────────────────────────────── */
-.log {
-  margin-block-start: 1.25rem;
+#log {
+  margin-block: 1.25rem 0;
   padding-block: .9rem;
   padding-inline: 1rem;
   max-block-size: 14rem;
