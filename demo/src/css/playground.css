@@ -89,6 +89,7 @@
     .status {
       & {
         display: flex;
+        align-items: center;
         margin-block: -.25rem .25rem;
       }
       output[name='hit-slices']::before {
@@ -100,25 +101,6 @@
       }
       output[name='ttf']:not(:empty)::after {
         content: '內到位';
-      }
-    }
-    button[name='play-all'] {
-      & {
-        margin-block: -.25rem 2rem;
-        padding: .5rem .75rem;
-        font: inherit;
-        font-size: .8125rem;
-        color: var(--palette-text);
-        background: var(--palette-panel);
-        border: 1px solid var(--palette-grid);
-        border-radius: .375rem;
-        cursor: pointer;
-        transition: .15s all ease-out;
-      }
-      &:hover, &:focus-visible {
-        color: var(--palette-bg);
-        background: var(--palette-accent);
-        border-color: var(--palette-accent);
       }
     }
     .chips {
@@ -237,6 +219,26 @@
         color: var(--palette-bg);
       }
     }
+    /* 「彈奏全部120鍵」 — an action, not a tab; pushed to the far right of the row */
+    button.play-all {
+      & {
+        margin-inline-start: auto;
+        padding-block: .35rem;
+        padding-inline: 1rem;
+        border: 1px solid var(--palette-rule);
+        border-radius: .25rem;
+        background-color: var(--palette-panel);
+        font: inherit;
+        font-size: .8125rem;
+        cursor: pointer;
+        transition: .15s all ease-out;
+      }
+      &:hover, &:focus-visible {
+        background-color: var(--palette-accent);
+        border-color: var(--palette-accent);
+        color: var(--palette-bg);
+      }
+    }
   }
 
   article {
@@ -305,6 +307,10 @@
         word-break: break-all;
         font-family: ui-monospace, 'SF Mono', Menlo, Courier, monospace;
         line-height: 1.5;
+      }
+      /* stacked lines in one terminal (npm install + import): drop the doubled gap */
+      code + code {
+        padding-block-start: 0;
       }
       button.copy {
         position: absolute;

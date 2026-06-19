@@ -4,7 +4,7 @@
  * ================================================================================
  */
 @container fullscreen-pseudo-elmts {
-  :where(body > *, #playground, main > article > dl) {
+  :where(body > *, #playground, #faq, main > article > dl) {
     & {
       position: relative;
       margin: auto;

@@ -5,7 +5,7 @@
 import type { Font, Generic, Script } from '../fonts/fonts'
 import { byId } from '../fonts/fonts'
 import type { Source } from '../cdn/cdn'
-import { snippet } from '../cdn/cdn'
+import { snippet, npmInstall, npmImport } from '../cdn/cdn'
 import { useSource, useWeight } from '../cdn/fontLink'
 import { mountFontSelect } from '../fonts/fontSelect'
 import { setPianoScript } from './piano'
@@ -90,8 +90,11 @@ export const mountPlayground = (fonts: readonly Font[]): Playground => {
   const $size = $<HTMLInputElement>('#playground input[name="font-size"]')
   const $sizeOut = $size?.closest('label')?.querySelector('output') ?? null
   const $snippet = $<HTMLElement>('#playground .snippet')
+  const $npmInstall = $<HTMLElement>('#playground .npm-install')
+  const $npmImport = $<HTMLElement>('#playground .npm-import')
   const $cssUsage = $<HTMLElement>('#playground .css-usage')
   const $copy = $<HTMLButtonElement>('#playground .copy')
+  const $playAll = $<HTMLButtonElement>('#playground button.play-all')
   const $metaFamily = $<HTMLElement>('#playground .meta output[for="font"]:not(.generic):not(.variable)')
   const $metaGeneric = $<HTMLElement>('#playground .meta output.generic')
   const $metaVariable = $<HTMLElement>('#playground .meta output.variable')
@@ -152,8 +155,11 @@ export const mountPlayground = (fonts: readonly Font[]): Playground => {
   }
 
   const applySnippet = () => {
-    if ($snippet)
-      $snippet.textContent = snippet(state.source, state.fontId, weightFile() ?? undefined)
+    const w = weightFile() ?? undefined
+    if ($snippet) $snippet.textContent = snippet(state.source, state.fontId, w)
+    // self-host (npm) is registry-based — independent of the chosen CDN source
+    if ($npmInstall) $npmInstall.textContent = npmInstall(state.fontId)
+    if ($npmImport) $npmImport.textContent = npmImport(state.fontId, w)
     const f = font()
     if ($cssUsage)
       $cssUsage.textContent = `body {\n  font-family: '${f.family}', ${GENERIC_FALLBACK[f.generic]};\n}`
@@ -348,17 +354,28 @@ export const mountPlayground = (fonts: readonly Font[]): Playground => {
   $title?.addEventListener('paste', onPaste)
   $body?.addEventListener('paste', onPaste)
 
-  // 「彈奏全部120鍵」 — drop in the showcase specimen (play120.ts) and repaint. Setting
-  // textContent/innerHTML programmatically does NOT NFC-normalise, so its four font-internal
-  // keys (the CJK-compat 樂 + three PUA codepoints) survive and the piano lights all 120.
-  $<HTMLButtonElement>('#playground button[name="play-all"]')?.addEventListener(
+  // 「彈奏全部120鍵」⇄「只彈奏常用鍵」 — a toggle. Filling the showcase (play120.ts) lights
+  // all 120 slices; filling the default sample drops back to the common keys. The label
+  // tracks the lit count (set in onHits below). textContent/innerHTML set programmatically
+  // don't NFC-normalise, so the showcase's four font-internal keys (compat 樂 + three PUA
+  // codepoints) survive — a real paste would lose them.
+  const PLAY_ALL_LABEL = '彈奏全部120鍵'
+  const COMMON_LABEL = '只彈奏常用鍵'
+  let allLit = false
+  const fillSpecimen = (title: string, bodyHtml: string): void => {
+    if ($previewTab) $previewTab.checked = true
+    if ($title) $title.textContent = title
+    if ($body) $body.innerHTML = bodyHtml
+    // bubbles up to #playground article → piano repaint; also runs $body's onEdit (persist)
+    $body?.dispatchEvent(new InputEvent('input', { bubbles: true }))
+  }
+  $playAll?.addEventListener(
     'click',
     () => {
-      if ($previewTab) $previewTab.checked = true
-      if ($title) $title.textContent = PLAY_ALL_TITLE
-      if ($body) $body.innerHTML = PLAY_ALL_BODY
-      // bubbles up to #playground article → piano repaint; also runs $body's onEdit (persist)
-      $body?.dispatchEvent(new InputEvent('input', { bubbles: true }))
+      if (allLit) {
+        const def = SAMPLES[font().script] // back to the original demo sample
+        fillSpecimen(def.title, def.body)
+      } else fillSpecimen(PLAY_ALL_TITLE, PLAY_ALL_BODY)
     },
   )
   $copy?.addEventListener(
@@ -380,7 +397,12 @@ export const mountPlayground = (fonts: readonly Font[]): Playground => {
   render()
 
   return {
-    onHits: () => void measureLoad(),
+    onHits: (slices) => {
+      void measureLoad()
+      // all 120 slices lit → the showcase is up, so the button offers the reverse
+      allLit = slices.length === 120
+      if ($playAll) $playAll.textContent = allLit ? COMMON_LABEL : PLAY_ALL_LABEL
+    },
     selectFont: pickFont,
     // jump back to the 預覽 tab — used when a hero card picks a font to show it
     showPreview: () => {

@@ -1,0 +1,104 @@
+/**
+ * ================================================================================
+ * FAQ — the third screen: the explainer pulled out of the 用法 tab, with the OFL credits
+ * as a strip beneath it. Width + full-bleed pseudo come from container.css (#faq listed
+ * there). The two blocks keep SEPARATE layouts — the explainer is a 3-column magazine
+ * (one topic per column); the credits is a plain horizontal row, not in those columns.
+ * ================================================================================
+ */
+#faq {
+  & {
+    padding-block: 3rem 5rem;
+    min-block-size: calc(100vh - var(--h-header));
+    line-height: 1.8;
+  }
+  /* the chunky top divider every screen carries (drawn on the full-bleed container::before) */
+  &::before {
+    margin-block-start: -1rem;
+    border-block-start: 1rem solid var(--palette-ink-grey);
+  }
+
+  /* explainer: magazine columns — one FAQ topic per column */
+  .explainer {
+    & {
+      column-count: 3;
+      column-gap: 3rem;
+    }
+    h2 {
+      margin-block: 0 .25rem;
+      break-before: column; /* each topic starts its own column */
+      break-after: avoid;
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+    h2 + p {
+      margin-block-start: -.5em;
+    }
+    p {
+      margin-block: 1em;
+      text-align: justify;
+      color: var(--palette-text);
+      break-inside: avoid;
+    }
+  }
+
+  /* credits: a full-width strip below the columns — its own row, OFL thanks */
+  .credits {
+    & {
+      margin-block-start: 3.5rem;
+      padding-block-start: 2rem;
+      border-block-start: 1px solid var(--palette-grid);
+    }
+    h2 {
+      display: inline;
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+    /* the lead sits inline after the 致謝 heading */
+    > p {
+      display: inline;
+      margin: 0 0 0 1rem;
+      font-size: .9375rem;
+      color: var(--palette-supplement-text);
+    }
+    ul {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.25rem 3rem;
+      margin-block: 1.5rem 0;
+      padding: 0;
+      list-style: none;
+    }
+    li {
+      display: flex;
+      flex-direction: column;
+      gap: .15rem;
+    }
+    a {
+      align-self: start; /* underline hugs the name */
+      color: var(--palette-text);
+      text-decoration: none;
+      font-weight: 600;
+      border-block-end: 2px solid var(--palette-accent);
+    }
+    a:hover, a:focus-visible {
+      color: var(--palette-accent);
+    }
+    span {
+      color: var(--palette-supplement-text);
+      font-size: .875rem;
+    }
+  }
+
+  strong {
+    font-weight: 600;
+  }
+  code {
+    padding-inline: .25em;
+    border-radius: .25rem;
+    background-color: var(--palette-panel);
+    font-family: ui-monospace, 'SF Mono', Menlo, Courier, monospace;
+    font-size: .875rem;
+  }
+}

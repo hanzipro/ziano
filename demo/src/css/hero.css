@@ -25,34 +25,86 @@
 }
 
 @keyframes hero-accent-transform {
-  /* Closed breathing loop: 0% and 72%/100% are identical (the figure's base w/h),
-     so the cycle restarts seamlessly — no width snap at the seam. The motion is
-     packed into 0–72% (~18s); 72–100% holds the base state, giving a ~7s pause
-     before the next breath. Paired with ease-in-out, velocity eases to ~0 at the
-     seam, making the wrap invisible. */
+  /* === A 段：0s-38s = 0%～62.5% === */
   0% {
-    --hero-accent-rect-x: .675rem;
-    --hero-accent-rect-y: 100%;
+    --hero-accent-rect-w: 2em;
+    --hero-accent-rect-h: 6.25em;
+  }
+  4.17% {
     --hero-accent-rect-w: 8.75rem;
     --hero-accent-rect-h: 22.25rem;
   }
-  18% {
+  15% {
     --hero-accent-rect-w: 7rem;
     --hero-accent-rect-h: 16rem;
   }
-  36% {
+  30% {
     --hero-accent-rect-w: 14em;
     --hero-accent-rect-h: 30rem;
   }
-  42%, 52% {
+  35%, 43.33% {
     --hero-accent-rect-w: 13rem;
   }
-  68% {
+  56.67% {
     --hero-accent-rect-w: 8.75rem;
     --hero-accent-rect-h: 30rem;
   }
-  72%, 100% {
-    --hero-accent-rect-h: 22.25rem;
+  62.5%, 100% {
+    --hero-accent-rect-w: 2em;
+    --hero-accent-rect-h: 6.25em;
+  }
+
+  /* === B 段：三遍各 9.17%（5.5s），只動 h === */
+  /* 第一遍：淺而慢，像快睡著 */
+  64.06% {
+    --hero-accent-rect-h: 5.9em;
+  }
+  65.26% {
+    --hero-accent-rect-h: 7em;
+  }
+  67.28% {
+    --hero-accent-rect-h: 5.6em;
+  }
+  70.09% {
+    --hero-accent-rect-h: 6.6em;
+  }
+  71.21%, 71.67% {
+    --hero-accent-rect-h: 6.25em;
+  }
+
+  /* 第二遍：大幅衝高，慢落 */
+  73.5% {
+    --hero-accent-rect-h: 4.8em;
+  }
+  74.33% {
+    --hero-accent-rect-h: 9.5em;
+  }
+  76.42% {
+    --hero-accent-rect-h: 5.8em;
+  }
+  79.31% {
+    --hero-accent-rect-h: 7em;
+  }
+  80.38%, 80.83% {
+    --hero-accent-rect-h: 6.25em;
+  }
+
+  /* 第三遍：節奏不對稱，中段停頓再快收 */
+  82.39% {
+    --hero-accent-rect-h: 5.2em;
+  }
+  83.48% {
+    --hero-accent-rect-h: 8.8em;
+  }
+  87.22% {
+    --hero-accent-rect-h: 8.5em;
+  }
+  89.54% {
+    --hero-accent-rect-h: 6.25em;
+  }
+  /* 凍結最後 10% */
+  90%, 100% {
+    --hero-accent-rect-h: 6em;
   }
 }
 
@@ -70,10 +122,10 @@ body > main > article {
        blur; the glyphs all share one centred grid cell so they stack dead-centre, and
        overflow:clip keeps the blur(100px) exit from bleeding onto the roster below. */
     & {
-      --hero-accent-rect-x: .675rem;
+      --hero-accent-rect-x: .6rem;
       --hero-accent-rect-y: 100%;
-      --hero-accent-rect-w: 8.75rem;
-      --hero-accent-rect-h: 22.25rem;
+      --hero-accent-rect-w: 2em;
+      --hero-accent-rect-h: 6.25em;
       --hero-accent-rect:
         linear-gradient(var(--palette-accent), var(--palette-accent))
         var(--hero-accent-rect-x) var(--hero-accent-rect-y) / var(--hero-accent-rect-w) var(--hero-accent-rect-h) no-repeat
@@ -99,7 +151,8 @@ body > main > article {
       block-size: min(60vh, 30rem);
       /* overflow-y: clip; */
       background: var(--hero-accent-rect);
-      animation: hero-accent-transform 50s ease-in-out infinite;
+      animation: hero-accent-transform 60s ease-in-out infinite;
+      /* animation-delay: 2s; */
     }
     ul {
       display: grid;
@@ -154,8 +207,7 @@ body > main > article {
       }
       &:first-child::first-line {
         color: var(--palette-text);
-        text-shadow: 0 0 3px var(--palette-bg);
-        /* text-shadow: 0 0 3px red; */
+        text-shadow: 0 0 1px var(--palette-bg);
       }
     }
     .google-fonts {

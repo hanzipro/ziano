@@ -14,16 +14,20 @@ const SCOPE = '@hanzi.pro/webfonts-'
 // copyable snippet. We pin instead of the floating `@rc` tag on purpose: jsDelivr
 // edge-caches each `@rc/files/*.woff2` URL for ~12h, so after the Shanggu CFF2→glyf
 // republish `@rc` served a stale MIX of old-CFF2 + new-glyf slices (looked thin and
-// uneven). An immutable @version sidesteps that. Families are on different RCs: the
-// base Shanggu pair = rc.3 (the glyf fix; rc.0/rc.1 were unpublished mis-packaged TC
-// builds), Shanggu TC = rc.1, everything else still rc.0.
+// uneven). An immutable @version sidesteps that. Families sit on different RCs; latest
+// round = the emoji unicode-range prune (docs/safari-unicode-range-emoji-tofu.md).
+// KEEP IN SYNC with the <link> pins in index.html — both match `npm view … dist-tags`.
 // TODO(0.1.0): when stable 0.1.0 ships, collapse PINNED to a flat '0.1.0'.
-const DEFAULT_VERSION = '0.1.0-rc.1'
+const DEFAULT_VERSION = '0.1.0-rc.2'
 const PINNED: Record<string, string> = {
-  'shanggu-serif': '0.1.0-rc.3',
-  'shanggu-sans': '0.1.0-rc.3',
-  'shanggu-serif-tc': '0.1.0-rc.1',
-  'shanggu-sans-tc': '0.1.0-rc.1',
+  'shanggu-serif': '0.1.0-rc.5',
+  'shanggu-sans': '0.1.0-rc.5',
+  'shanggu-serif-tc': '0.1.0-rc.3',
+  'shanggu-sans-tc': '0.1.0-rc.3',
+  'genki-min': '0.1.0-rc.1',
+  'genki-min-tc': '0.1.0-rc.1',
+  'genki-gothic': '0.1.0-rc.1',
+  'genki-gothic-tc': '0.1.0-rc.1',
 }
 const pinnedVersion = (id: string) => PINNED[id] ?? DEFAULT_VERSION
 
@@ -61,3 +65,15 @@ export const snippet = (source: Source, id: string, weight?: number) =>
     `<link rel="preconnect" href="${preconnectHost(source)}" crossorigin />`,
     `<link rel="stylesheet" href="${pkgBase(source, id, pinnedVersion(id))}/${cssEntry(weight)}" />`,
   ].join('\n')
+
+// ── self-host (npm) ────────────────────────────────────────────
+// For users who'd rather serve the fonts themselves: install the package, then import
+// its CSS through a bundler — the woff2 ship in the package's own files/, so there's no
+// extra asset wiring. Pinned to the same per-family version as the CDN snippet: the
+// packages publish under the `rc` dist-tag, so `latest` hasn't moved and a bare
+// `npm i @hanzi.pro/webfonts-…` wouldn't resolve.
+export const npmInstall = (id: string) => `npm i ${SCOPE}${id}@${pinnedVersion(id)}`
+// the bundler import for the chosen display mode + weight (mirrors cssEntry — omit the
+// weight for the whole family, pass it for the smaller per-weight entry).
+export const npmImport = (id: string, weight?: number) =>
+  `import '${SCOPE}${id}/${cssEntry(weight)}'`

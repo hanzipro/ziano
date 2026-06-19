@@ -11,18 +11,18 @@
   <link rel="preconnect" href="https://esm.sh" crossorigin />
 
   <link rel="stylesheet" href="/src/main.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif@0.1.0-rc.3/swap.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans@0.1.0-rc.3/swap.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif-tc@0.1.0-rc.1/swap.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans-tc@0.1.0-rc.1/swap.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-genki-min@0.1.0-rc.0/swap.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-genki-gothic@0.1.0-rc.0/swap.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-genki-min-tc@0.1.0-rc.0/swap.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-genki-gothic-tc@0.1.0-rc.0/swap.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-lxgw-wenkai-tc@0.1.0-rc.0/swap.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-lxgw-wenkai@0.1.0-rc.0/swap.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-iansui@0.1.0-rc.0/swap.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-klee-one@0.1.0-rc.0/swap.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif@0.1.0-rc.5/swap.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans@0.1.0-rc.5/swap.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif-tc@0.1.0-rc.3/swap.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans-tc@0.1.0-rc.3/swap.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-genki-min@0.1.0-rc.1/swap.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-genki-gothic@0.1.0-rc.1/swap.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-genki-min-tc@0.1.0-rc.1/swap.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-genki-gothic-tc@0.1.0-rc.1/swap.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-lxgw-wenkai-tc@0.1.0-rc.2/swap.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-lxgw-wenkai@0.1.0-rc.2/swap.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-iansui@0.1.0-rc.2/swap.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-klee-one@0.1.0-rc.2/swap.css" />
 
   <script type="module" src="/src/main.ts"></script>
 </head>
@@ -73,7 +73,10 @@
           <li>雨</li>
           <li>言</li>
           <li>青</li>
+          <li>育</li>
+          <li>漢</li>
           <li>英</li>
+          <li>美</li>
         </ul>
         <figcaption>
           <p>以最新的<span class="google-fonts">Google Fonts</span>字體切片技術，重現千年淬鍊的傳承字形。
@@ -219,11 +222,6 @@
           <output name="ttf"></output>
         </p>
 
-        <!-- Fills the specimen with a showcase text that lights all 120 slices at once.
-             Wired in playground.ts; the text lives in play120.ts (injected via textContent
-             so its 4 font-internal keys survive — paste would NFC-normalise them away). -->
-        <button type="button" name="play-all">彈奏全部120鍵</button>
-
         <p class="meta">
           <output for="font"></output>
           <output for="font" class="generic"></output>
@@ -246,6 +244,7 @@
             <input type="radio" name="pane" value="usage" />
             <span>用法</span>
           </label>
+          <button class="play-all">彈奏全部120鍵</button>
         </fieldset>
 
         <article>
@@ -258,31 +257,56 @@
 
         <article class="usage">
           <h1>用法</h1>
+
+          <h2>用CDN</h2>
           <p>把這兩行加進<code>&lt;head&gt;</code>：<code>preconnect</code>先暖好CDN連線，stylesheet只會拉下頁面實際用到的切片。</p>
           <pre>
             <button class="copy">Copy</button>
             <code class="snippet"></code>
           </pre>
-          <p>然後在CSS指定字族，後面接同類generic當fallback⸺webfont載入前、或遇到切片外的字時，能優雅回落：</p>
+
+          <h2>自行托管</h2>
+          <p>想把字體放自己的伺服器？用npm裝這個套件⸺<code>files/</code>裡的woff2會一起裝進來，再用打包工具<code>import</code>對應的CSS即可：</p>
+          <pre>
+            <code class="npm-install"></code>
+            <code class="npm-import"></code>
+          </pre>
+
+          <h2>指定字族</h2>
+          <p>不論哪種方式，都在CSS指定字族，後面接同類generic當fallback⸺webfont載入前、或遇到切片外的字時，能優雅回落：</p>
           <pre><code class="css-usage"></code></pre>
           <p class="hint">不同 <code>font-display</code>：把 <code>swap.css</code> 換成 <code>block.css</code>（標題用，不閃退化字形）或 <code>optional.css</code>（重CWV的頁面，零版位位移）。</p>
-
-          <h2>傳承字形？</h2>
-          <p>傳承字形（又稱舊字形），是漢字從雕版、鑄字時代一脈相承下來的<strong>印刷體正統造形</strong>：「青」下作丹、草字頭三筆完成、辵旁從容、骨直戶過各依其本⸺每個部件都承襲千百年印刷的審美。</p>
-          <p>後來各地推行的字形標準（台灣國字標準字體、中國大陸的新字形等），多為了規範化、或把印刷體往楷書手寫靠攏，改動了大量部件，離傳統印刷的樣貌越來越遠。ziano 收錄的，正是回到那套<strong>未被標準改寫</strong>的傳承字形，讓螢幕上的漢字也能有古籍般的端正與典雅。</p>
-
-          <h2>切片的運作方式</h2>
-          <p>整套字被切成<strong>120片</strong> <code>unicode-range</code> woff2。瀏覽器只有在頁面真的出現某片涵蓋的字時，才會下載那一片⸺<strong>沒用到的切片永遠不會被請求</strong>。</p>
-          <p>而中文的高頻常用字，在切片排序裡<strong>集中在最後那幾片</strong>；前面數十片裝的多是罕用字、古字與符號。所以一般頁面實際只會下載<strong>最後十幾片</strong>，而非全部120片⸺這也是上方「命中N／120片・Mms內到位」總是又少又快的原因。</p>
-          <p>上面那排<strong>鋼琴鍵盤就是這120片切片</strong>⸺你在預覽區打字，其實就是在<strong>彈這台鋼琴</strong>：每打一個字，它所屬的那一鍵就會<strong>亮起並彈奏</strong>一下（<strong>按下的鍵＝會被下載的切片</strong>）。看哪些鍵在響、響了幾鍵，下載的就是那幾片。</p>
-
-          <h2>可變字體與靜態字體</h2>
-          <p><strong>可變字體（variable fonts）：</strong>單一檔案涵蓋整段字重軸（如250–900），拉字重不必換檔⸺尙古明體／黑體即是。</p>
-          <p><strong>靜態字體（static fonts）：</strong>每個字重各一個檔（源起、霞鶩文楷等即是）。好處是可以只下載需要的字重⸺用 <code>swap/&lt;字重&gt;.css</code> 取代整族的 <code>swap.css</code>，下載更小。</p>
         </article>
       </div>
 
       <div class="Piano" role="presentation"></div>
+    </section>
+
+    <section id="faq">
+      <div class="explainer">
+        <h2>傳承字形？</h2>
+        <p>傳承字形（又稱舊字形），是漢字從雕版、鑄字時代一脈相承下來的<strong>印刷體正統造形</strong>：「青」下作丹、草字頭三筆完成、辵旁從容、骨直戶過各依其本⸺每個部件都承襲千百年印刷的審美。</p>
+        <p>後來各地推行的字形標準（台灣國字標準字體、中國大陸的新字形等），多為了規範化、或把印刷體往楷書手寫靠攏，改動了大量部件，離傳統印刷的樣貌越來越遠。ziano 收錄的，正是回到那套<strong>未被標準改寫</strong>的傳承字形，讓螢幕上的漢字也能有古籍般的端正與典雅。</p>
+
+        <h2>切片的運作方式</h2>
+        <p>整套字被切成<strong>120片</strong> <code>unicode-range</code> woff2。瀏覽器只有在頁面真的出現某片涵蓋的字時，才會下載那一片⸺<strong>沒用到的切片永遠不會被請求</strong>。</p>
+        <p>而中文的高頻常用字，在切片排序裡<strong>集中在最後那幾片</strong>；前面數十片裝的多是罕用字、古字與符號。所以一般頁面實際只會下載<strong>最後十幾片</strong>，而非全部120片⸺這也是切片實驗室裡「命中N／120片・Mms內到位」總是又少又快的原因。</p>
+        <p>切片實驗室那排<strong>鋼琴鍵盤就是這120片切片</strong>⸺在預覽區打字，其實就是在<strong>彈這台鋼琴</strong>：每打一個字，它所屬的那一鍵就會<strong>亮起並彈奏</strong>一下（<strong>按下的鍵＝會被下載的切片</strong>）。看哪些鍵在響、響了幾鍵，下載的就是那幾片。</p>
+
+        <h2>可變字體與靜態字體</h2>
+        <p><strong>可變字體（variable fonts）：</strong>單一檔案涵蓋整段字重軸（如250–900），拉字重不必換檔⸺尙古明體／黑體即是。</p>
+        <p><strong>靜態字體（static fonts）：</strong>每個字重各一個檔（源起、霞鶩文楷等即是）。好處是可以只下載需要的字重⸺用 <code>swap/&lt;字重&gt;.css</code> 取代整族的 <code>swap.css</code>，下載更小。</p>
+      </div>
+
+      <aside class="credits">
+        <h2>致謝</h2>
+        <p>感謝<a href="https://github.com/adobe-fonts" rel="noopener" target="_blank">Adobe</a> + <a href="https://github.com/notofonts" rel="noopener" target="_blank">Google</a>、<a href="https://github.com/fontworks-fonts" rel="noopener" target="_blank">Fontworks</a>開源的Noto CJK、Klee One系列字體，以及以下作者們的衍生改作和對傳承字形的堅持。</p>
+        <ul>
+          <li><a href="https://github.com/GuiWonder/Shanggu" rel="noopener" target="_blank">GuiWonder</a><span>尚古明體・黑體</span></li>
+          <li><a href="https://github.com/ButTaiwan" rel="noopener" target="_blank">ButTaiwan</a><span>源起明體・黑體、芫荽</span></li>
+          <li><a href="https://github.com/lxgw" rel="noopener" target="_blank">LXGW 落霞孤鶩</a><span>霞鶩文楷</span></li>
+        </ul>
+      </aside>
     </section>
   </main>
 
