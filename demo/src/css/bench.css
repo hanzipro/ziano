@@ -6,13 +6,13 @@
  * free via :root:has(input[name='dark-mode']:checked).
  * ================================================================================
  */
-/* rule 4 (copy-style.md): the chrome renders in a heritage face. It can't be Shanggu
-   Sans — that's the benchmarked family, and preloading it would pollute the timing — so
-   lead with Shanggu Serif. The mincho after it is a whole-webfont-failure fallback only
-   (Shanggu covers more than it, so it never catches per-glyph); style-matched, Mac (Hiragino
-   Mincho ProN) then Windows (YuMincho). Overrides --font-default from variables.css. */
+/* rule 4 (copy-style.md): web-safe serif (Georgia/Times) renders Latin; the Han layer is
+   a heritage face — Shanggu Serif, NOT the benchmarked Shanggu Sans (preloading it would
+   pollute the timing). The mincho tail is a whole-webfont-failure fallback only (Shanggu
+   covers more, so it never catches per-glyph); Mac (Hiragino Mincho ProN) then Windows
+   (YuMincho). Overrides --font-default from variables.css. */
 :root {
-  --font-default: 'Shanggu Serif', 'Hiragino Mincho ProN', 'YuMincho', serif;
+  --font-default: Georgia, 'Times New Roman', 'Shanggu Serif', 'Hiragino Mincho ProN', 'YuMincho', serif;
 }
 
 body > main {

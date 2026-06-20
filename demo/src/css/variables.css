@@ -15,9 +15,26 @@
   --h-footer: 4rem;
 
   /* Fonts */
-  --font-default: 'Helvetica Neue', Arial, 'Shanggu Sans', sans-serif;
-  --font-alternative: 'Shanggu Serif', serif;
-  --font-accent: 'LXGW Wenkai TC', cursive, serif;
+  --font-default:
+    'Avenir Next', 'Segoe UI Variable', 'Segoe UI', Roboto,
+    'Shanggu Sans',
+    'Hiragino Sans', 'Hiragino Sans GB', 'Yu Gothic',
+    system-ui, sans-serif
+  ;
+  --font-alternative:
+    Palatino, Cambria,
+    'Shanggu Serif',
+    'Hiragino Mincho ProN', 'Yu Mincho',
+    serif
+  ;
+  --font-accent:
+    Palatino, Cambria,
+    'LXGW Wenkai TC',
+    Klee, 'Klee One',
+    BiauKai, DFKai-SB, 'Kaiti TC',
+    'Hiragino Mincho ProN', 'Yu Mincho',
+    cursive, serif
+  ;
 
   /* ── Colour primitives ──────────────────────────────────────────
    * Raw swatches, named by appearance, theme-INVARIANT. NEVER consume

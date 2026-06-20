@@ -40,12 +40,11 @@
       --palatte-edge: var(--color-paper-edge);
 
       --measure: 38rem;
-      /* heritage first (copy-style.md rule 4); the system fonts after it are a
-         whole-webfont-failure fallback only — style-matched (gothic↔黑體, mincho↔明體),
-         Mac (Hiragino) then Windows (Yu*). 黑體 keeps the GB cut for wider codepoints;
-         明體 has no GB cut, so Hiragino Mincho ProN → YuMincho. */
-      --font-hei: 'Shanggu Sans', 'Hiragino Sans', 'Hiragino Sans GB', 'YuGothic', sans-serif;
-      --font-ming: 'Shanggu Serif', 'Hiragino Mincho ProN', 'YuMincho', serif;
+      /* copy-style.md rule 4: web-safe Western for Latin → heritage for Han → JP system
+         fallback (whole-webfont-failure only, style-matched, Mac Hiragino then Windows Yu*).
+         黑體 keeps the GB cut for wider codepoints; 明體 has no GB cut, so Mincho ProN → YuMincho. */
+      --font-hei: 'Helvetica Neue', Arial, 'Shanggu Sans', 'Hiragino Sans', 'Hiragino Sans GB', 'YuGothic', sans-serif;
+      --font-ming: Georgia, 'Times New Roman', 'Shanggu Serif', 'Hiragino Mincho ProN', 'YuMincho', serif;
       /* 國標 = your device's own CJK fonts; Noto is only the Linux/Android system fallback */
       --font-sys-hei: 'PingFang TC', 'PingFang SC', 'Microsoft JhengHei', '微軟正黑體',
         'Heiti TC', 'Noto Sans TC', 'Noto Sans CJK TC', sans-serif;
