@@ -8,10 +8,15 @@ import { mountRoster, readFonts } from './fonts/fonts'
 import { mountPlayground } from './playground/playground'
 import { mountPiano } from './playground/piano'
 import { mountTheme } from './theme/theme'
+import { mountUsage } from './usage/usage'
 
 mountTheme(document.querySelector<HTMLInputElement>('input[name="dark-mode"]'))
 
 mountCarousel('figure ul')
+
+// the 用法 config generator owns the code terminals — it renders them from the reader's
+// selection and runs the syntax highlighter (so no separate mountCodeHighlight here)
+mountUsage(readFonts())
 
 const playground = mountPlayground(readFonts())
 mountPiano('.Piano', playground.onHits)

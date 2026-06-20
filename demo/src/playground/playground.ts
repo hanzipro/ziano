@@ -1,11 +1,11 @@
-// Playground orchestration. One immutable-ish state + per-script specimen texts,
-// persisted to localStorage; pure-ish apply() functions push state → DOM. The
-// slice piano (piano.ts) owns hit-lighting/flash and pushes its hit set back here
-// via onHits so we can report the actual downloaded KB.
+// Playground orchestration. One immutable-ish state + three editable specimen buffers
+// (只彈常用鍵 / 彈奏全部120鍵 / 自訂內容), each persisted to localStorage and refilled with
+// its default when blanked; pure-ish apply() functions push state → DOM. The slice piano
+// (piano.ts) owns hit-lighting/flash and pushes its hit set back here via onHits so we
+// can report the actual load time.
 import type { Font, Generic, Script } from '../fonts/fonts'
 import { byId } from '../fonts/fonts'
 import type { Source } from '../cdn/cdn'
-import { snippet, npmInstall, npmImport } from '../cdn/cdn'
 import { useSource, useWeight } from '../cdn/fontLink'
 import { mountFontSelect } from '../fonts/fontSelect'
 import { setPianoScript } from './piano'
@@ -49,6 +49,22 @@ const weightRange = (font: Font): readonly [number, number] =>
 const defaultWeight = (font: Font): number =>
   font.weights.includes(400) ? 400 : font.weights[0]
 
+// the three content tabs — each an independent editable buffer with its own default
+type Tab = 'common' | 'all' | 'custom'
+const CUSTOM_SAMPLE: Sample = {
+  title: '自訂內容',
+  body: '<p>在此打上你的內容，來看看字體載入的情況。</p>',
+}
+// a tab's fallback specimen, used on first load or whenever a field is blanked:
+// 只彈常用鍵 follows the font's script (common chars only) · 彈奏全部120鍵 is the
+// 120-slice showcase (play120.ts) · 自訂內容 a placeholder prompt
+const tabDefault = (tab: Tab, script: Script): Sample =>
+  tab === 'common'
+    ? SAMPLES[script]
+    : tab === 'all'
+      ? { title: PLAY_ALL_TITLE, body: PLAY_ALL_BODY }
+      : CUSTOM_SAMPLE
+
 const LS = 'ziano-pg'
 type State = {
   source: Source
@@ -59,8 +75,9 @@ type State = {
   pickWeight: number | null
   size: number
   vertical: boolean
+  tab: Tab
 }
-type Saved = { config?: Partial<State>; texts?: Partial<Record<Script, Sample>> }
+type Saved = { config?: Partial<State>; texts?: Partial<Record<Tab, Sample>> }
 const loadSaved = (): Saved => {
   try {
     return JSON.parse(localStorage.getItem(LS) ?? '{}') as Saved
@@ -80,7 +97,6 @@ export const mountPlayground = (fonts: readonly Font[]): Playground => {
   const $spec = $<HTMLElement>('#playground article')
   const $select = $<HTMLSelectElement>('#playground select[name="font"]')
   if (!$spec || !$select || fonts.length === 0) return noop
-  const $previewTab = $<HTMLInputElement>('#playground input[name="pane"][value="preview"]')
 
   const $title = $<HTMLElement>('h1', $spec)
   const $body = $<HTMLElement>('div', $spec)
@@ -89,12 +105,6 @@ export const mountPlayground = (fonts: readonly Font[]): Playground => {
   const $weightOut = $weightField?.querySelector('output') ?? null
   const $size = $<HTMLInputElement>('#playground input[name="font-size"]')
   const $sizeOut = $size?.closest('label')?.querySelector('output') ?? null
-  const $snippet = $<HTMLElement>('#playground .snippet')
-  const $npmInstall = $<HTMLElement>('#playground .npm-install')
-  const $npmImport = $<HTMLElement>('#playground .npm-import')
-  const $cssUsage = $<HTMLElement>('#playground .css-usage')
-  const $copy = $<HTMLButtonElement>('#playground .copy')
-  const $playAll = $<HTMLButtonElement>('#playground button.play-all')
   const $metaFamily = $<HTMLElement>('#playground .meta output[for="font"]:not(.generic):not(.variable)')
   const $metaGeneric = $<HTMLElement>('#playground .meta output.generic')
   const $metaVariable = $<HTMLElement>('#playground .meta output.variable')
@@ -103,11 +113,6 @@ export const mountPlayground = (fonts: readonly Font[]): Playground => {
   const ids = fonts.map((f) => f.id)
 
   const saved = loadSaved()
-  const texts: Record<Script, Sample> = {
-    tc: withDefaults(saved.texts?.tc, SAMPLES.tc),
-    sc: withDefaults(saved.texts?.sc, SAMPLES.sc),
-    jp: withDefaults(saved.texts?.jp, SAMPLES.jp),
-  }
   let state: State = {
     source: 'jsdelivr',
     fontId: fonts[0].id,
@@ -115,12 +120,20 @@ export const mountPlayground = (fonts: readonly Font[]): Playground => {
     pickWeight: null,
     size: 18,
     vertical: false,
+    tab: 'common',
     ...saved.config,
   }
   const font = () => byId(fonts, state.fontId) ?? fonts[0]
   // the per-weight file to load/recommend: a static font's picked weight, else
   // null (VF, or static 全部 → whole-family swap.css)
   const weightFile = (): number | null => (font().variable ? null : state.pickWeight)
+
+  // one editable buffer per tab — common's default follows the starting font's script
+  const texts: Record<Tab, Sample> = {
+    common: withDefaults(saved.texts?.common, SAMPLES[font().script]),
+    all: withDefaults(saved.texts?.all, { title: PLAY_ALL_TITLE, body: PLAY_ALL_BODY }),
+    custom: withDefaults(saved.texts?.custom, CUSTOM_SAMPLE),
+  }
 
   // chips container for static weights — built once, toggled with the slider
   const $chips = document.createElement('div')
@@ -152,17 +165,6 @@ export const mountPlayground = (fonts: readonly Font[]): Playground => {
     if ($metaVariable) $metaVariable.textContent = f.variable ? '可變字體' : '靜態字體'
     if ($metaWeight) $metaWeight.textContent = `字重${state.weight}`
     if ($metaSize) $metaSize.textContent = `內文${state.size}px／標題${Math.round(state.size * 1.5)}px`
-  }
-
-  const applySnippet = () => {
-    const w = weightFile() ?? undefined
-    if ($snippet) $snippet.textContent = snippet(state.source, state.fontId, w)
-    // self-host (npm) is registry-based — independent of the chosen CDN source
-    if ($npmInstall) $npmInstall.textContent = npmInstall(state.fontId)
-    if ($npmImport) $npmImport.textContent = npmImport(state.fontId, w)
-    const f = font()
-    if ($cssUsage)
-      $cssUsage.textContent = `body {\n  font-family: '${f.family}', ${GENERIC_FALLBACK[f.generic]};\n}`
   }
 
   // a static-weight chip: 全部 (w=null → whole family) or a single weight (w=number
@@ -231,7 +233,6 @@ export const mountPlayground = (fonts: readonly Font[]): Playground => {
   const render = () => {
     applyWeightField()
     applyType()
-    applySnippet()
     applyMeta()
     void measureLoad(true)
   }
@@ -252,25 +253,15 @@ export const mountPlayground = (fonts: readonly Font[]): Playground => {
     useWeight(state.source, state.fontId, w)
     applyWeightField()
     applyType()
-    applySnippet()
     applyMeta()
     void measureLoad(true)
     save()
-  }
-
-  // stash the current specimen under `from`, load `to` (per-script editable text)
-  const swapText = (to: Script, from?: Script) => {
-    if (from && $title && $body)
-      texts[from] = { title: $title.textContent ?? '', body: $body.innerHTML }
-    if ($title) $title.textContent = texts[to].title
-    if ($body) $body.innerHTML = texts[to].body
   }
 
   const pickFont = (id: string) => {
     const prev = font()
     const next = byId(fonts, id) ?? prev
     const [lo, hi] = weightRange(next)
-    if (next.script !== prev.script) swapText(next.script, prev.script)
     // new font → back to 全部; VF keeps the slider weight, static resets to default
     state = {
       ...state,
@@ -280,7 +271,7 @@ export const mountPlayground = (fonts: readonly Font[]): Playground => {
     }
     useWeight(state.source, id, null)
     $select.value = id
-    setPianoScript(next.script)
+    setPianoScript(next.script) // re-maps the keyboard + repaints from the current text
     render()
     save()
   }
@@ -289,9 +280,58 @@ export const mountPlayground = (fonts: readonly Font[]): Playground => {
     state = { ...state, source }
     useSource(source, ids)
     useWeight(source, state.fontId, weightFile()) // re-add the per-weight extra on the new origin
-    applySnippet()
-    applyMeta()
     void measureLoad(true)
+    save()
+  }
+
+  // ── editable buffers (state ⇄ DOM) ───────────────────────────
+  const readSpec = (): Sample => ({
+    title: $title?.textContent ?? '',
+    body: $body?.innerHTML ?? '',
+  })
+  // write the displayed text back into the active tab's slot
+  const stash = () => {
+    texts[state.tab] = readSpec()
+  }
+  // show a tab's text (filling its default where blank) and persist the resolved value.
+  // body via innerHTML — set programmatically it does NOT NFC-normalise, so the 120-key
+  // showcase's four font-internal keys (compat 樂 + three PUA codepoints) survive.
+  const loadTab = (tab: Tab) => {
+    const s = withDefaults(texts[tab], tabDefault(tab, font().script))
+    texts[tab] = s
+    if ($title) $title.textContent = s.title
+    if ($body) $body.innerHTML = s.body
+  }
+  // bubbles to #playground article → piano repaint + load readout for the new text
+  const repaint = () => $body?.dispatchEvent(new InputEvent('input', { bubbles: true }))
+
+  const setTab = (tab: Tab) => {
+    const $r = $<HTMLInputElement>(`#playground input[name="pane"][value="${tab}"]`)
+    if ($r) $r.checked = true
+    if (tab === state.tab) return
+    stash() // keep the edits on the tab we're leaving
+    state = { ...state, tab }
+    loadTab(tab)
+    repaint()
+    save()
+  }
+
+  // a blanked title/body refills with the active tab's default (on blur, so it doesn't
+  // fight mid-edit)
+  const refillIfBlank = () => {
+    const def = tabDefault(state.tab, font().script)
+    let changed = false
+    if ($title && blankText($title.textContent ?? '')) {
+      $title.textContent = def.title
+      changed = true
+    }
+    if ($body && blankText($body.innerHTML)) {
+      $body.innerHTML = def.body
+      changed = true
+    }
+    if (!changed) return
+    stash()
+    repaint()
     save()
   }
 
@@ -299,7 +339,6 @@ export const mountPlayground = (fonts: readonly Font[]): Playground => {
   useSource(state.source, ids)
   useWeight(state.source, state.fontId, weightFile()) // restore a saved per-weight pick
   mountFontSelect($select, fonts, pickFont)
-
 
   $weight?.addEventListener('input', () => setWeight(Number($weight.value)))
   const applySizeOutput = () => {
@@ -335,15 +374,20 @@ export const mountPlayground = (fonts: readonly Font[]): Playground => {
     $r.checked = $r.value === state.source
     $r.addEventListener('change', () => setSource($r.value as Source))
   })
+  $$<HTMLInputElement>('#playground input[name="pane"]').forEach(($r) => {
+    $r.checked = $r.value === state.tab
+    $r.addEventListener('change', () => setTab($r.value as Tab))
+  })
 
-  // persist specimen edits into the current script's slot
+  // persist specimen edits into the active tab's slot
   const onEdit = () => {
-    if ($title && $body)
-      texts[font().script] = { title: $title.textContent ?? '', body: $body.innerHTML }
+    stash()
     save()
   }
   $title?.addEventListener('input', onEdit)
   $body?.addEventListener('input', onEdit)
+  $title?.addEventListener('blur', refillIfBlank)
+  $body?.addEventListener('blur', refillIfBlank)
 
   // paste as plain text — drop the source's fonts/colours/sizes so pasted content
   // inherits the specimen's styling like everything typed
@@ -354,59 +398,16 @@ export const mountPlayground = (fonts: readonly Font[]): Playground => {
   $title?.addEventListener('paste', onPaste)
   $body?.addEventListener('paste', onPaste)
 
-  // 「彈奏全部120鍵」⇄「只彈奏常用鍵」 — a toggle. Filling the showcase (play120.ts) lights
-  // all 120 slices; filling the default sample drops back to the common keys. The label
-  // tracks the lit count (set in onHits below). textContent/innerHTML set programmatically
-  // don't NFC-normalise, so the showcase's four font-internal keys (compat 樂 + three PUA
-  // codepoints) survive — a real paste would lose them.
-  const PLAY_ALL_LABEL = '彈奏全部120鍵'
-  const COMMON_LABEL = '只彈奏常用鍵'
-  let allLit = false
-  const fillSpecimen = (title: string, bodyHtml: string): void => {
-    if ($previewTab) $previewTab.checked = true
-    if ($title) $title.textContent = title
-    if ($body) $body.innerHTML = bodyHtml
-    // bubbles up to #playground article → piano repaint; also runs $body's onEdit (persist)
-    $body?.dispatchEvent(new InputEvent('input', { bubbles: true }))
-  }
-  $playAll?.addEventListener(
-    'click',
-    () => {
-      if (allLit) {
-        const def = SAMPLES[font().script] // back to the original demo sample
-        fillSpecimen(def.title, def.body)
-      } else fillSpecimen(PLAY_ALL_TITLE, PLAY_ALL_BODY)
-    },
-  )
-  $copy?.addEventListener(
-    'click',
-    async () => {
-      await navigator.clipboard.writeText(
-        snippet(state.source, state.fontId, weightFile() ?? undefined),
-      )
-      const label = $copy.textContent
-      $copy.textContent = 'Copied ✓'
-      setTimeout(() => ($copy.textContent = label), 1400)
-    },
-  )
-
-  // restore the saved specimen text for the starting font's script, then render
-  swapText(font().script)
+  // seed the active tab's text, then render
+  loadTab(state.tab)
   $select.value = state.fontId
   setPianoScript(font().script)
   render()
 
   return {
-    onHits: (slices) => {
-      void measureLoad()
-      // all 120 slices lit → the showcase is up, so the button offers the reverse
-      allLit = slices.length === 120
-      if ($playAll) $playAll.textContent = allLit ? COMMON_LABEL : PLAY_ALL_LABEL
-    },
+    onHits: () => void measureLoad(),
     selectFont: pickFont,
-    // jump back to the 預覽 tab — used when a hero card picks a font to show it
-    showPreview: () => {
-      if ($previewTab) $previewTab.checked = true
-    },
+    // a hero card picked a font to look at → show it on the common-sample tab
+    showPreview: () => setTab('common'),
   }
 }

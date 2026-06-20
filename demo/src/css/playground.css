@@ -152,7 +152,7 @@
     }
   }
 
-  /* main pane: tabs switch between the editable 預覽 and the 用法 (CSS) panel */
+  /* main pane: the three content tabs all drive one editable specimen (JS swaps text) */
   .panes {
     & {
       flex: 1;
@@ -162,8 +162,9 @@
       gap: .5rem;
       max-block-size: clamp(20rem, 40rem, calc(100vh - var(--h-header) - 6rem));
     }
-    /* both views share the card chrome; only the checked tab's panel shows */
-    > article, > .usage {
+    /* the editable specimen card — the three tabs all drive this one panel (JS swaps
+       its text), so there's no panel-switching, just the card chrome */
+    > article {
       flex: 1;
       min-block-size: 0;
       padding: 2rem;
@@ -172,15 +173,6 @@
       border-radius: .5rem;
       background-color: var(--palette-bg-3q);
       backdrop-filter: blur(6px) saturate(1.1);
-    }
-    &:has(input[value="usage"]:checked) > article:not(.usage) {
-      display: none;
-    }
-    &:has(input[value="preview"]:checked) > .usage {
-      display: none;
-    }
-    &:has(input[value="usage"]:checked) {
-      max-block-size: none;
     }
   }
 
@@ -219,26 +211,6 @@
         color: var(--palette-bg);
       }
     }
-    /* 「彈奏全部120鍵」 — an action, not a tab; pushed to the far right of the row */
-    button.play-all {
-      & {
-        margin-inline-start: auto;
-        padding-block: .35rem;
-        padding-inline: 1rem;
-        border: 1px solid var(--palette-rule);
-        border-radius: .25rem;
-        background-color: var(--palette-panel);
-        font: inherit;
-        font-size: .8125rem;
-        cursor: pointer;
-        transition: .15s all ease-out;
-      }
-      &:hover, &:focus-visible {
-        background-color: var(--palette-accent);
-        border-color: var(--palette-accent);
-        color: var(--palette-bg);
-      }
-    }
   }
 
   article {
@@ -257,72 +229,4 @@
     }
   }
 
-  .usage {
-    & {
-      line-height: 1.5;
-      max-block-size: none;
-    }
-    h1 {
-      margin-block: 0;
-      font-size: 1.5rem;
-    }
-    h2 {
-      margin-block: 1.75rem 0;
-      font-size: 1.25rem;
-    }
-    p {
-      margin-block: 1em;
-    }
-    :where(h1, h2) + p {
-      margin-block-start: .25em;
-    }
-    :where(p, .hint) code {
-      padding-inline: .25em;
-      border-radius: .25rem;
-      background-color: var(--palette-panel);
-      font-family: ui-monospace, 'SF Mono', Menlo, Courier, monospace;
-      font-size: .875rem;
-    }
-    .hint {
-      color: var(--palette-supplement-text);
-      font-size: .75rem;
-    }
-    pre {
-      & {
-        position: relative;
-        margin-block: 0;
-        white-space: normal; /* collapse the markup indentation around button/code */
-        border-radius: .25rem;
-        background-color: var(--palette-ink); /* a code "terminal" — stays dark in both themes */
-        /* its light text must ALSO not flip; --palette-text-inverse flips to ink in dark
-           mode (for the hero bands), which would make code invisible → fix to a light primitive */
-        color: color-mix(in srgb, var(--color-mist) 90%, transparent);
-      }
-      code {
-        margin: 0;
-        display: block;
-        padding: .75rem;
-        overflow-x: auto;
-        white-space: pre-wrap;
-        word-break: break-all;
-        font-family: ui-monospace, 'SF Mono', Menlo, Courier, monospace;
-        line-height: 1.5;
-      }
-      /* stacked lines in one terminal (npm install + import): drop the doubled gap */
-      code + code {
-        padding-block-start: 0;
-      }
-      button.copy {
-        position: absolute;
-        inset: .5rem .5rem auto auto;
-        padding: .375rem .75rem;
-        font-size: .75rem;
-        background: #1c1c1c;
-        border: 1px solid #383838;
-        border-radius: .5rem;
-        color: #d8d8d8;
-        cursor: pointer;
-      }
-    }
-  }
 }

@@ -33,6 +33,7 @@
     </h1>
     <menu>
       <li><a href="#playground">切片實驗室</a></li>
+      <li><a href="#usage">用法</a></li>
       <li><a href="cdn-bench.html">CDN競速</a></li>
       <li><a href="//github.com/hanzipro/ziano">GitHub</a></li>
       <li>
@@ -233,18 +234,22 @@
 
       <div class="panes">
         <!-- a radio group (not ARIA tabs): the <fieldset> is the group and the
-             <legend> names it natively — no role/aria needed. CSS :has() switches panels. -->
+             <legend> names it natively — no role/aria needed. Each tab is an editable
+             specimen buffer; JS (playground.ts) swaps the text and the piano lights up. -->
         <fieldset class="tabs">
-          <legend>檢視</legend>
+          <legend>內容</legend>
           <label>
-            <input type="radio" name="pane" value="preview" checked />
-            <span>預覽</span>
+            <input type="radio" name="pane" value="common" checked />
+            只彈常用鍵
           </label>
           <label>
-            <input type="radio" name="pane" value="usage" />
-            <span>用法</span>
+            <input type="radio" name="pane" value="all" />
+            彈奏全部120鍵
           </label>
-          <button class="play-all">彈奏全部120鍵</button>
+          <label>
+            <input type="radio" name="pane" value="custom" />
+            自訂內容
+          </label>
         </fieldset>
 
         <article>
@@ -254,32 +259,178 @@
             <p>從英國到台北，從鉛字到螢幕，書寫的方式不斷改變，對美的追求卻始終如一。傳承字形所展現的，正是這份對細節的尊重⸺戶的寫法、骨的轉折、直的橫豎、青的結構、過的走之，無一不在訴說漢字悠長的歷史。當我們重新端詳這些字，彷彿能聽見時間的回響，看見文化在筆畫間靜靜流動，言語與書藝交融，從不間斷。</p>
           </div>
         </article>
-
-        <article class="usage">
-          <h1>用法</h1>
-
-          <h2>用CDN</h2>
-          <p>把這兩行加進<code>&lt;head&gt;</code>：<code>preconnect</code>先暖好CDN連線，stylesheet只會拉下頁面實際用到的切片。</p>
-          <pre>
-            <button class="copy">Copy</button>
-            <code class="snippet"></code>
-          </pre>
-
-          <h2>自行托管</h2>
-          <p>想把字體放自己的伺服器？用npm裝這個套件⸺<code>files/</code>裡的woff2會一起裝進來，再用打包工具<code>import</code>對應的CSS即可：</p>
-          <pre>
-            <code class="npm-install"></code>
-            <code class="npm-import"></code>
-          </pre>
-
-          <h2>指定字族</h2>
-          <p>不論哪種方式，都在CSS指定字族，後面接同類generic當fallback⸺webfont載入前、或遇到切片外的字時，能優雅回落：</p>
-          <pre><code class="css-usage"></code></pre>
-          <p class="hint">不同 <code>font-display</code>：把 <code>swap.css</code> 換成 <code>block.css</code>（標題用，不閃退化字形）或 <code>optional.css</code>（重CWV的頁面，零版位位移）。</p>
-        </article>
       </div>
 
       <div class="Piano" role="presentation"></div>
+    </section>
+
+    <section id="usage">
+      <aside>
+        <p class="aside-title">配置產生器</p>
+        <fieldset class="role" data-role="hei">
+          <legend>黑體</legend>
+          <select name="role-hei"></select>
+          <div class="weights" hidden></div>
+        </fieldset>
+        <fieldset class="role" data-role="ming">
+          <legend>明體</legend>
+          <select name="role-ming"></select>
+          <div class="weights" hidden></div>
+        </fieldset>
+        <fieldset class="role" data-role="kai">
+          <legend>楷體</legend>
+          <select name="role-kai"></select>
+          <div class="weights" hidden></div>
+        </fieldset>
+        <fieldset class="pm">
+          <legend>套件管理器<small>自托管</small></legend>
+          <label><input type="radio" name="pm" value="npm" checked />npm</label>
+          <label><input type="radio" name="pm" value="pnpm" />pnpm</label>
+          <label><input type="radio" name="pm" value="yarn" />yarn</label>
+        </fieldset>
+        <fieldset class="cdn">
+          <legend>來源<small>CDN</small></legend>
+          <label><input type="radio" name="usage-cdn" value="jsdelivr" checked />jsDelivr</label>
+          <label><input type="radio" name="usage-cdn" value="unpkg" />unpkg</label>
+          <label><input type="radio" name="usage-cdn" value="esmsh" />esm.sh</label>
+        </fieldset>
+        <fieldset class="display">
+          <legend>載入行為<small>font-display</small></legend>
+          <label><input type="radio" name="usage-display" value="swap" checked />swap</label>
+          <label><input type="radio" name="usage-display" value="block" />block</label>
+          <label><input type="radio" name="usage-display" value="optional" />optional</label>
+        </fieldset>
+      </aside>
+      <article class="guide">
+        <hgroup>
+          <h1>用法</h1>
+          <p>對抗楷化印刷字體，沒有妥協</p>
+        </hgroup>
+        <p class="lead">Ziano將全套傳承字形字體切割為120個以用字頻率畫分、大小不等的woff2字體檔，透過CDN或npm分發。引用僅是第一步，真正決定網頁排版品質的，是<code>font-family</code>回落鏈的排列。本指南提供一套完整經過驗證的回落順序，可直接套用。</p>
+
+        <section>
+          <h2>載入字體</h2>
+
+          <h3>方法一：透過CDN</h3>
+          <p>在<code>&lt;head&gt;</code>中加入以下兩行。<code>preconnect</code>預先建立連線，stylesheet只會請求頁面<strong>實際用到</strong>的切片，未使用的切片不會被下載：</p>
+          <pre data-lang="html"><code class="out-cdn">&lt;link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin /&gt;
+&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif@0.1.0-rc.5/swap.css" /&gt;</code></pre>
+          <p>將<code>shanggu-serif</code>替換為所需的字族id，<code>@0.1.0-rc.5</code>替換為npm上的最新版本。建議固定一個明確的版本號，而非使用浮動的<code>@rc</code>：指定版本的URL在CDN邊緣不可變，可長期快取。</p>
+
+          <h3>方法二：自托管（npm）</h3>
+          <p>若需將字體部署於自有伺服器，以npm安裝對應套件，<code>files/</code>下的woff2會一併安裝，再透過打包工具<code>import</code>對應的CSS：</p>
+          <pre data-lang="bash"><code class="out-install">npm i @hanzi.pro/webfonts-shanggu-serif@0.1.0-rc.5</code></pre>
+          <pre data-lang="js"><code class="out-import">import '@hanzi.pro/webfonts-shanggu-serif/swap.css'</code></pre>
+          <p>（套件目前以<code>rc</code> dist-tag發布，<code>latest</code>尚未指向正式版本，因此安裝時須指定版本號或<code>@rc</code>。）</p>
+        </section>
+
+        <section>
+          <h2>指定字族：回落鏈的排列原則</h2>
+          <p><code>font-family</code>不是「指定單一字體」，而是定義一條<strong>回落鏈</strong>。排列得當，中西文混排自然協調、罕用字有字體承接、離線時也不致崩壞。一條完整的中文字族鏈由前到後分為<strong>四層</strong>：</p>
+          <pre data-lang="css"><code>font-family:
+  'Avenir Next', 'Segoe UI Variable', 'Segoe UI', Roboto, /* ① 西文字體在前 */
+  'Shanggu Sans',                                         /* ② Ziano收錄的中文傳承字形字體 */
+  'Hiragino Sans', 'Hiragino Sans GB', 'Yu Gothic',       /* ③ 系統日文字體墊底 */
+  system-ui, sans-serif                                   /* ④ generic 收尾 */
+;</code></pre>
+
+          <h3>① 西文字體開頭：以web-safe西文字體呈現拉丁字母與數字</h3>
+          <p>將西文字體置於最前，讓中西文混排的文本得以最精緻的效果呈現，這也是中文網頁行之有年的排版方式。</p>
+
+          <h3>② 傳承字形：漢字的主要字體</h3>
+          <p><code>'Shanggu Sans'</code>（尙古黑體）、<code>'Shanggu Serif'</code>（尙古明體）、<code>'LXGW Wenkai TC'</code>（霞鶩文楷）等。漢字由ziano收錄的webfont承接，呈現未經各地標準改寫的<strong>傳承印刷形</strong>。</p>
+
+          <h3>③ 系統日文字體：webfont載入失敗時的備援</h3>
+          <p>webfont可能因離線、CDN故障等原因<strong>整體</strong>載入失敗，此時應避免回落至系統預設的國字標準字體字型。</p>
+          <ul>
+            <li><strong>避免使用</strong>蘋方、微軟正黑體、新細明體：這些字體採用國字標準字體的字形，正是Ziano要協助避免的方向。</li>
+            <li><strong>改用日文系統字體</strong>：macOS／iOS內建的<strong>Hiragino</strong>、Windows內建的<strong>游ゴシック（YuGothic）／游明朝（YuMincho）</strong>。字形沉穩、適合印刷，是合理的備援選擇。順序為macOS字體（Hiragino）在前、Windows字體（Yu*）在後。</li>
+            <li>黑體鏈額外加入macOS上有附帶的<strong>Hiragino Sans GB</strong>：少數中文常用字（查、啟、鄉等）的日文版收錄於不同碼位，由GB版補足（雖為陸標字形，但僅用於離線備援，可接受）。明體無對應的GB版，故略。</li>
+          </ul>
+          <aside class="note">
+            <p><strong>只要webfont正常載入，這一層便不會被觸發。</strong>傳承字形的收字量遠大於這些日文字體，不存在日文字體有、而傳承字形沒有的字，因此<strong>不會逐字回落</strong>。此層僅作為webfont整體失效時的備援。</p>
+          </aside>
+
+          <h3>④ generic結尾</h3>
+          <p><code>sans-serif</code> <code>system-ui</code> <code>serif</code> <code>cursive</code>等，交由用戶端預設字體承接，作為最後一層保障。</p>
+        </section>
+
+        <section>
+          <h2>以CSS變量重用整條鏈</h2>
+          <p>回落鏈較長，逐次手寫容易遺漏或順序出錯。建議定義一次，再以<code>var()</code>重複引用：</p>
+          <pre data-lang="css"><code class="out-root">:root {
+  --font-system-ui:
+    'Avenir Next', 'Segoe UI Variable', 'Segoe UI', Roboto,
+    'Shanggu Sans',
+    'Hiragino Sans', 'Hiragino Sans GB', 'Yu Gothic',
+    system-ui, sans-serif
+  ;
+  --font-sans-serif:
+    'Avenir Next', 'Segoe UI Variable', 'Segoe UI', Roboto,
+    'Shanggu Sans',
+    'Hiragino Sans', 'Hiragino Sans GB', 'Yu Gothic',
+    sans-serif
+  ;
+  --font-serif:
+    Palatino, Cambria,
+    'Shanggu Serif',
+    'Hiragino Mincho ProN', 'Yu Mincho',
+    serif
+  ;
+  --font-cursive:
+    Palatino, Cambria,
+    'LXGW Wenkai TC',
+    Klee, 'Klee One',
+    BiauKai, DFKai-SB, 'Kaiti TC',
+    'Hiragino Mincho ProN', 'Yu Mincho',
+    cursive, serif
+  ;
+}
+
+body         { font-family: var(--font-sans-serif); }  /* 黑體：內文、UI */
+h1, .display { font-family: var(--font-serif); }       /* 明體：大標 */
+blockquote   { font-family: var(--font-cursive); }     /* 楷體：引文、詩句 */</code></pre>
+          <ul>
+            <li>三個變量對應三種generic：<code>--font-sans-serif</code>（黑體）、<code>--font-serif</code>（明體）、<code>--font-cursive</code>（楷體）。更換字族時只需修改<code>:root</code>一處，所有引用處會一併更新。</li>
+            <li>楷體（<code>--font-cursive</code>）同樣前置西文serif；若偏好霞鶩文楷自帶的手寫感拉丁字母，移除<code>Palatino, Cambria</code>即可。</li>
+          </ul>
+          <p><strong>進階</strong>：固定不變的「日文字體＋generic」結尾也可獨立抽出，組合更為精簡：</p>
+          <pre data-lang="css"><code class="out-root-adv">:root {
+  --fallback-hei:    'Hiragino Sans', 'Hiragino Sans GB', 'Yu Gothic', sans-serif;
+  --fallback-ming:   'Hiragino Mincho ProN', 'Yu Mincho', serif;
+  --font-sans-serif: 'Avenir Next', 'Segoe UI Variable', 'Segoe UI', 'Shanggu Sans', var(--fallback-hei);
+  --font-serif:       Palatino, Cambria, 'Shanggu Serif', var(--fallback-ming);
+}</code></pre>
+        </section>
+
+        <section>
+          <h2><code>font-display</code>：載入過程的行為</h2>
+          <p>每個套件提供三種<code>font-display</code>入口，切換行為只需更換CSS檔名：</p>
+          <table>
+            <thead>
+              <tr><th>檔案</th><th>行為</th><th>適合</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>swap.css</code>（預設）</td>
+                <td>先以退化字形顯示，webfont載入後替換</td>
+                <td>一般內文，對內容遮擋最小</td>
+              </tr>
+              <tr>
+                <td><code>block.css</code></td>
+                <td>短暫隱藏，待webfont載入後顯示</td>
+                <td>大標題，避免退化字形閃現</td>
+              </tr>
+              <tr>
+                <td><code>optional.css</code></td>
+                <td>webfont未即時載入則本次不替換</td>
+                <td>重視<abbr title="Core Web Vitals 核心網頁指標">CWV</abbr>的頁面，零版位位移（<abbr title="Cumulative Layout Shift 累積版位位移">CLS</abbr>＝0）</td>
+              </tr>
+            </tbody>
+          </table>
+          <p>靜態字體（源起、霞鶩文楷等）可<strong>單獨載入指定字重</strong>：以<code>swap/&lt;字重&gt;.css</code>取代整族的<code>swap.css</code>，體積更小。可變字體（尙古）單一檔案即涵蓋完整字重軸，無需分檔。</p>
+        </section>
+      </article>
     </section>
 
     <section id="faq">

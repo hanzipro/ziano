@@ -1,0 +1,323 @@
+/**
+ * ================================================================================
+ * Usage — the standalone guide screen (between #playground and #faq). This is the
+ * repo's headline pitch, so it gets its own full screen rather than hiding in the
+ * playground's 用法 tab. Content is ported from docs/usage.md; code blocks reuse the
+ * dark "terminal" look from the playground tab. Width + full-bleed pseudo come from
+ * container.css (#usage listed there); the chunky top divider is the per-screen ::before.
+ * ================================================================================
+ */
+#usage {
+  & {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; /* let the aside stick while the guide scrolls past */
+    gap: 4rem;
+    padding-block: 3rem 5rem;
+    min-block-size: calc(100vh - var(--h-header));
+    line-height: 1.8;
+  }
+  /* the chunky top divider every screen carries (drawn on the full-bleed container::before) */
+  &::before {
+    margin-block-start: -1rem;
+    border-block-start: 1rem solid var(--palette-ink-grey);
+  }
+
+  /* the long-form guide column — capped to a readable measure */
+  .guide {
+    flex: 1;
+    min-inline-size: 0; /* allow the code terminals to shrink/scroll, not blow out the row */
+  }
+
+  /* ── config generator: a sticky control rail driving the code terminals ─────── */
+  /* direct child only — the guide also holds a nested <aside class="note"> caveat */
+  > aside {
+    & {
+      position: sticky;
+      inset-block-start: calc(var(--h-header) + 1rem);
+      flex: none;
+      inline-size: 20rem;
+      font-size: .875rem;
+    }
+    .aside-title {
+      margin-block: 0 1rem;
+      font-weight: 600;
+      color: var(--palette-supplement-text);
+    }
+    fieldset {
+      display: flex;
+      flex-wrap: wrap;
+      margin-block-end: 1rem;
+      padding: 0;
+      border: 0;
+    }
+    legend {
+      & {
+        display: flex;
+        align-items: baseline;
+        gap: .5rem;
+        margin-block-end: .5rem;
+        padding: 0;
+        font-weight: 500;
+        color: var(--palette-supplement-text);
+      }
+      small {
+        font-size: .6875rem;
+        font-weight: 400;
+        opacity: .7;
+      }
+    }
+    select {
+      inline-size: 100%;
+      min-block-size: 2rem;
+      padding-inline: .5rem;
+      border: 1px solid var(--palette-rule);
+      border-radius: .25rem;
+      background-color: var(--palette-panel);
+      color: var(--palette-text);
+      font: inherit;
+      font-size: .8125rem;
+    }
+    /* static-font weight checkboxes — a small wrapping row under the select */
+    .weights {
+      & {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: .25rem;
+        margin-block-start: .5rem;
+      }
+      &[hidden] {
+        display: none;
+      }
+      .weights-hint {
+        inline-size: 100%;
+        font-size: .6875rem;
+        color: var(--palette-supplement-text);
+      }
+      button {
+        & {
+          padding-block: .15rem;
+          padding-inline: .5rem;
+          border: 1px solid var(--palette-rule);
+          border-radius: .25rem;
+          background-color: var(--palette-panel);
+          color: var(--palette-text);
+          font: inherit;
+          font-size: .75rem;
+          cursor: pointer;
+        }
+        &[aria-pressed='true'] {
+          background-color: var(--palette-text);
+          color: var(--palette-bg);
+        }
+      }
+    }
+    /* package-manager / CDN / font-display — segmented pill groups (mirror the
+       playground fieldsets) */
+    fieldset.pm,
+    fieldset.cdn,
+    fieldset.display {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    :where(fieldset.pm, fieldset.cdn, fieldset.display) legend {
+      inline-size: 100%;
+    }
+    :where(fieldset.pm, fieldset.cdn, fieldset.display) label {
+      & {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        block-size: 2rem;
+        background-color: var(--palette-panel);
+        border: 1px solid var(--palette-rule);
+        border-inline-end-width: 0;
+        font-size: .8125rem;
+        cursor: pointer;
+      }
+      &:has(:checked) {
+        background-color: var(--palette-text);
+        color: var(--palette-bg);
+      }
+      &:first-of-type {
+        border-radius: .25rem 0 0 .25rem;
+      }
+      &:last-of-type {
+        border-inline-end-width: 1px;
+        border-radius: 0 .25rem .25rem 0;
+      }
+      input {
+        position: absolute;
+        opacity: 0;
+      }
+    }
+  }
+
+  /* stack the rail above the guide on narrow viewports (no container-type on the named
+     container, so this is a plain width media query) */
+  @media (width < 52rem) {
+    & {
+      flex-direction: column;
+    }
+    > aside {
+      position: static;
+      inline-size: 100%;
+    }
+    .guide {
+      max-inline-size: none;
+    }
+  }
+
+  hgroup {
+    & {
+      margin-block-end: .5rem;
+    }
+    h1 {
+      & {
+        position: relative;
+        display: inline-block;
+        margin-block: 0;
+        font-family: var(--font-alternative); /* 明體 for the screen title */
+        font-size: 2.5rem;
+        font-weight: 500;
+      }
+      /* the same accent underline the header wordmark carries */
+      &::after {
+        content: '';
+        position: absolute;
+        inset-inline-start: 0;
+        inset-block-end: .25rem;
+        display: block;
+        inline-size: 3rem;
+        border-block-end: 3px solid var(--palette-accent);
+      }
+    }
+    p {
+      margin-block: .75rem 0;
+      text-align: justify;
+      color: var(--palette-supplement-text);
+      font-size: 1.125rem;
+    }
+  }
+
+  .lead {
+    margin-block: 0 2rem;
+  }
+
+  /* each 一/二/三 part */
+  > .guide > section {
+    margin-block-start: 2rem;
+    padding-block-start: 1rem;
+    border-block-start: 1px solid var(--palette-grid);
+  }
+  p {
+    margin-block: 1em;
+    text-align: justify;
+  }
+  h2,
+  h3 {
+    margin: 0 !important;
+  }
+  :where(h2, h3) + p {
+    margin-block-start: 0;
+  }
+  ul {
+    & {
+      margin-block: 1em;
+      padding-inline-start: 1.25rem;
+    }
+    li {
+      margin-block: .5em;
+      text-align: justify;
+    }
+  }
+
+  /* the ③ caveat — an editorial note (not a quote → <aside class="note">, not
+     <blockquote>); set in 楷 to echo the cursive fallback it discusses */
+  .note {
+    & {
+      margin-inline: 0;
+      margin-block: 1.5em;
+      padding-inline-start: 1rem;
+      border-inline-start: 3px solid var(--palette-grid);
+      font-family: var(--font-accent);
+      color: var(--palette-supplement-text);
+    }
+    p {
+      margin-block: 0;
+    }
+  }
+
+  strong {
+    font-weight: 600;
+  }
+
+  /* inline code in prose / lists / table — the pale pill */
+  :where(p, li, td, h2) code {
+    padding-inline: .25em;
+    border-radius: .25rem;
+    background-color: var(--palette-panel);
+    font-family: ui-monospace, 'SF Mono', Menlo, Courier, monospace;
+    font-size: .875em;
+  }
+
+  /* font-display table */
+  table {
+    & {
+      inline-size: 100%;
+      margin-block: 1.5em;
+      border-collapse: collapse;
+      font-size: .9375rem;
+    }
+    th, td {
+      padding: .625rem .75rem;
+      text-align: start;
+      vertical-align: top;
+      border-block-end: 1px solid var(--palette-grid);
+    }
+    thead th {
+      color: var(--palette-supplement-text);
+      font-weight: 600;
+    }
+    td:first-child {
+      white-space: nowrap;
+    }
+  }
+
+  /* code terminals — the same dark block the playground 用法 tab uses, so the two
+     read as one house style (see playground.css .usage pre). Dark in both themes. */
+  pre {
+    & {
+      margin-block: 1em;
+      border-radius: .375rem;
+      background-color: var(--palette-ink); /* stays dark in both themes */
+      /* its light text must ALSO not flip; --palette-text-inverse flips to ink in dark
+         mode (hero bands), which would hide the code → fix to a light primitive */
+      color: color-mix(in srgb, var(--color-mist) 90%, transparent);
+      overflow-x: auto;
+    }
+    code {
+      display: block;
+      padding: 1rem 1.125rem;
+      font-family: ui-monospace, 'SF Mono', Menlo, Courier, monospace;
+      font-size: .8125rem;
+      line-height: 1.6;
+      white-space: pre;
+      text-align: start;
+    }
+  }
+
+  /* Syntax highlighting — CSS Custom Highlight API (Baseline 2025: Chrome 105 /
+     Safari 17.2 / Firefox 140). Ranges are registered by code/highlight.ts; here we
+     just colour them. The terminal is dark in BOTH themes, so these token colours are
+     fixed literals (not theme-palette tokens) — and ::highlight() only honours colour /
+     background / text-decoration / text-shadow anyway, so weight/style can't apply. */
+  pre code::highlight(code-comment) { color: #6f7b8b; }
+  pre code::highlight(code-string)  { color: #b8d39a; }
+  pre code::highlight(code-keyword) { color: #88aaff; }
+  pre code::highlight(code-attr)    { color: #e8c275; }
+  pre code::highlight(code-number)  { color: #f2997a; }
+  pre code::highlight(code-punct)   { color: #8b94a3; }
+}

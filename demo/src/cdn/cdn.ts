@@ -40,12 +40,15 @@ const ORIGIN: Record<Source, string> = {
 export const pkgBase = (source: Source, id: string, version: string = pinnedVersion(id)) =>
   `${ORIGIN[source]}${SCOPE}${id}@${version}`
 
-// swap.css is the default display-mode entry (block.css / optional.css alongside).
-// A weight selects the per-weight file swap/<w>.css (smaller — one weight only);
-// omit it for the whole family. The demo loads the floating @rc so the preview is
-// always current.
-const cssEntry = (weight?: number) =>
-  weight === undefined ? 'swap.css' : `swap/${weight}.css`
+// font-display modes — each ships its own CSS entry (swap.css / block.css /
+// optional.css, and the per-weight swap/<w>.css … beside them)
+export type Display = 'swap' | 'block' | 'optional'
+
+// the CSS entry for a display mode (+ optional single weight): <mode>.css for the
+// whole family, <mode>/<w>.css for one weight (smaller). The live preview omits the
+// mode → defaults to swap; the 用法 generator passes the reader's choice.
+const cssEntry = (weight?: number, display: Display = 'swap') =>
+  weight === undefined ? `${display}.css` : `${display}/${weight}.css`
 
 export const cssUrl = (source: Source, id: string, weight?: number) =>
   `${pkgBase(source, id)}/${cssEntry(weight)}`
@@ -58,22 +61,34 @@ export const woff2Url = (source: Source, id: string, slice: number, weight?: num
 
 export const preconnectHost = (source: Source) => new URL(ORIGIN[source]).origin
 
-// the copyable <head> drop-in for a selection — pinned per-family version (best
-// practice for users), preconnect warms the connection. weight → the per-weight entry.
-export const snippet = (source: Source, id: string, weight?: number) =>
-  [
-    `<link rel="preconnect" href="${preconnectHost(source)}" crossorigin />`,
-    `<link rel="stylesheet" href="${pkgBase(source, id, pinnedVersion(id))}/${cssEntry(weight)}" />`,
-  ].join('\n')
+// the two <head> lines, as reusable pieces (so a multi-font block can interleave one
+// preconnect with many stylesheet links). weight → the per-weight entry.
+export const preconnectLine = (source: Source) =>
+  `<link rel="preconnect" href="${preconnectHost(source)}" crossorigin />`
+export const linkLine = (source: Source, id: string, weight?: number, display: Display = 'swap') =>
+  `<link rel="stylesheet" href="${pkgBase(source, id, pinnedVersion(id))}/${cssEntry(weight, display)}" />`
 
-// ── self-host (npm) ────────────────────────────────────────────
-// For users who'd rather serve the fonts themselves: install the package, then import
-// its CSS through a bundler — the woff2 ship in the package's own files/, so there's no
-// extra asset wiring. Pinned to the same per-family version as the CDN snippet: the
-// packages publish under the `rc` dist-tag, so `latest` hasn't moved and a bare
-// `npm i @hanzi.pro/webfonts-…` wouldn't resolve.
-export const npmInstall = (id: string) => `npm i ${SCOPE}${id}@${pinnedVersion(id)}`
+// the copyable <head> drop-in for a selection — pinned per-family version (best
+// practice for users), preconnect warms the connection.
+export const snippet = (source: Source, id: string, weight?: number) =>
+  [preconnectLine(source), linkLine(source, id, weight)].join('\n')
+
+// ── self-host (npm/pnpm/yarn) ──────────────────────────────────
+// For users who'd rather serve the fonts themselves: install the package(s), then
+// import the CSS through a bundler — the woff2 ship in each package's own files/, so
+// there's no extra asset wiring. Pinned to the same per-family version as the CDN
+// snippet: the packages publish under the `rc` dist-tag, so `latest` hasn't moved and a
+// bare install wouldn't resolve.
+export type PM = 'npm' | 'pnpm' | 'yarn'
+const INSTALL: Record<PM, string> = { npm: 'npm i', pnpm: 'pnpm add', yarn: 'yarn add' }
+// the @scope/name@version spec the registry resolves
+export const pkgSpec = (id: string) => `${SCOPE}${id}@${pinnedVersion(id)}`
+// one install command for any number of packages, in the chosen package manager
+export const installCmd = (pm: PM, ids: readonly string[]) =>
+  `${INSTALL[pm]} ${ids.map(pkgSpec).join(' ')}`
+// single-package npm install (the playground's one-font snippet)
+export const npmInstall = (id: string) => installCmd('npm', [id])
 // the bundler import for the chosen display mode + weight (mirrors cssEntry — omit the
 // weight for the whole family, pass it for the smaller per-weight entry).
-export const npmImport = (id: string, weight?: number) =>
-  `import '${SCOPE}${id}/${cssEntry(weight)}'`
+export const npmImport = (id: string, weight?: number, display: Display = 'swap') =>
+  `import '${SCOPE}${id}/${cssEntry(weight, display)}'`
