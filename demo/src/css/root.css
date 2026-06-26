@@ -16,6 +16,10 @@
     text-underline-offset: .125rem;
     color: var(--palette-text);
     scroll-behavior: smooth;
+    /* reserve the scrollbar's track so 100vw full-bleed elements (dividers, piano)
+       don't overflow past the viewport into a phantom horizontal scrollbar
+       (scrollbar-gutter: Baseline 2024) */
+    scrollbar-gutter: stable;
   }
 
   /* The body */
@@ -25,5 +29,8 @@
     /* re-declared (not just inherited from :root) so the dark-mode override on
        body:has(…) in variables.css actually re-resolves the text colour */
     color: var(--palette-text);
+    /* belt-and-braces against any residual 100vw overflow (clip ≠ hidden: it
+       creates no scroll container, so position:sticky keeps working) */
+    overflow-x: clip;
   }
 }

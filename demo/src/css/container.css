@@ -23,3 +23,12 @@
     }
   }
 }
+
+/* Inline gutter — pad the three top-level columns so content never touches the
+   screen edge below --max-w-layout. The inner sections (#playground/#usage/#faq,
+   hero dl) are already capped + centred WITHIN main, so they add no padding of
+   their own → no double gutter. header/footer sit outside main's flow → pad too.
+   The full-bleed ::before/::after (100vw) are positioned independently, unaffected. */
+:where(body > main, body > header, body > footer) {
+  padding-inline: var(--gutter);
+}

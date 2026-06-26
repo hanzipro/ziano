@@ -13,6 +13,7 @@
   --max-w-layout: 68rem;
   --h-header: 3rem;
   --h-footer: 4rem;
+  --gutter: clamp(1rem, 4vw, 2rem); /* 容器左右最小留白；窄螢幕收到 1rem，桌機 2rem */
 
   /* Fonts */
   --font-default:
