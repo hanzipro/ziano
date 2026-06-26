@@ -1,4 +1,34 @@
-# ziano — deferred TODO
+# ziano — TODO
+
+## 發布上線 checklist（2026-06-22 重新盤點）
+
+現況：18 套 family 全 build 完成（`dist/`，每包帶 LICENSE）；npm 全在 `rc` tag
+（shanggu rc.5、genki/lxgw/iansui/klee rc.1–2），`latest` 仍指舊 rc → **無穩定
+0.1.0**。demo build 乾淨、預設已 genyo→genki。pytest 40 pass / 1 fail（缺 `py7zr`，
+純 env）。
+
+**Blocker（上線前必做）**
+
+- [ ] **1. 定案 0.1.0 正式 roster** — genki 當預設、genyo 發 0.1.0「收尾不推廣」。
+      確認哪些包上 `latest` 穩定版（見下方「源樣→源起」段落）。
+- [ ] **2. 發 stable `0.1.0` 到 `latest` tag** — 不可逆 + 2FA，使用者執行。目前
+      latest 還停在 rc（shanggu rc.3、其餘 rc.0）。
+- [ ] **3. Demo `@rc → @latest`／收斂版本** — 見下方「switch `@rc`→`@latest`」段。
+- [ ] **4. Demo 部署管線** — 無 CI、無 host 設定。決定 host（hanzi.pro？GitHub
+      Pages `VITE_BASE=/ziano/`？）並接上自動部署。`vite build` 只打包 index +
+      cdn-bench；其餘 *-test.html 是開發 harness，不出貨。
+- [ ] **5. README + docs/usage.md 對齊** — 兩者仍列 genyo、roster 表缺 shanggu-tc
+      與 genki 全家；改成實際出貨清單。
+
+**收尾 / 決定要不要帶著上**
+
+- [ ] 6. Shanggu base/TC `-tc` 後綴方向與 genyo 相反 → 命名決策（見下）。
+- [ ] 7. Firefox 直排 `：；` 旋轉 — 已判定可接受先上（見下）。
+- [ ] 8. 窄字集（Klee）skip 空 slice — 純優化（見下）。
+- [ ] 9. `py7zr` 補進 dev deps，讓 pytest 全綠。
+- [ ] 10. Commit 目前 3 個未提交 demo 檔（index.html / hero.css / usage.css）。
+
+---
 
 ## On stable 0.1.0: switch demo's floating CDN tag `@rc` → `@latest`
 
