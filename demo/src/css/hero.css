@@ -338,4 +338,27 @@ body > main > article {
     font-family: 'Klee One', cursive, serif;
     font-weight: normal;
   }
+
+  /* phones/tablets (<52rem): the card is a big 名-glyph (dt) over the right-40% meta
+     column (padding-inline-start 60%). Once the column narrows the absolute 5rem dt
+     bleeds across the metadata → stack instead: dt in-flow on top (fluid, so 6 chars
+     never overrun the line), the dd meta below. Also shorten the hero stage so one
+     giant carousel glyph doesn't swallow the whole first screen. */
+  @media (width < 52rem) {
+    figure {
+      block-size: min(48vh, 22rem);
+    }
+    figure li {
+      font-size: min(48vh, 22rem);
+    }
+    dl {
+      padding: 2.5rem 0 1.5rem;
+    }
+    dl dt {
+      position: static;
+      margin-block-end: .25rem;
+      font-size: clamp(2.5rem, 9vw, 4rem);
+      line-height: 1.1;
+    }
+  }
 }
