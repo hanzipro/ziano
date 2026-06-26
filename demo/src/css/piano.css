@@ -69,4 +69,22 @@
   kbd.black.on {
     background: var(--palette-supplement-text);
   }
+
+  /* Phones (<34rem): 120 horizontal keys ÷ 360px ≈ 3px each — too thin to read. Turn
+     the keyboard UPRIGHT instead of hiding it (it's the page's signature decoration).
+     The geometry is all %-based + logical, so writing-mode does the rotation for free:
+     inline axis (the keys' run) flips to vertical → keys stack top-to-bottom; --pos /
+     --wkstep (%) and the logical key sizes follow. piano.ts is untouched. Only the
+     black keys' physical translateX centring must become translateY. */
+  @media (width < 34rem) {
+    & {
+      writing-mode: vertical-rl;
+      inline-size: min(34rem, 100vh); /* the keys' run — sits vertically now */
+      block-size: min(4.5rem, 24vw);  /* keyboard depth — a slim side strip */
+      margin-inline: 0;               /* drop the horizontal full-bleed pull-out */
+    }
+    kbd.black {
+      transform: translateY(-50%);    /* centre on the boundary along the new axis */
+    }
+  }
 }

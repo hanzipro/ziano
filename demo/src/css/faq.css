@@ -40,6 +40,27 @@
       color: var(--palette-text);
       break-inside: avoid;
     }
+
+    /* The 3-column magazine is unreadable once each column drops below a sane measure,
+       and — because each h2 forces its own column (break-before) — 3 topics always make
+       3 columns that spill past a narrow viewport. Below 52rem fold to 2 columns and
+       drop the forced break so topics balance; below 34rem fold to 1. (These come AFTER
+       the h2 rule above on purpose: @media adds no specificity, so the break-before
+       reset must win on source order.) */
+    @media (width < 52rem) {
+      & {
+        column-count: 2;
+        column-gap: 2rem;
+      }
+      h2 {
+        break-before: auto;
+      }
+    }
+    @media (width < 34rem) {
+      & {
+        column-count: 1;
+      }
+    }
   }
 
   /* credits: a full-width strip below the columns — its own row, OFL thanks */

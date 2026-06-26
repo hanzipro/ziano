@@ -360,5 +360,11 @@ body > main > article {
       font-size: clamp(2.5rem, 9vw, 4rem);
       line-height: 1.1;
     }
+    /* the carousel slides oversized glyphs past the stage edges by design — clip the
+       stage so they don't push the page wider than the viewport (the body's overflow-x
+       clip already blocks scrolling; this keeps the scrollWidth honest too) */
+    figure {
+      overflow: clip;
+    }
   }
 }
