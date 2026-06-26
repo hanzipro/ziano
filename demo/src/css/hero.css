@@ -149,10 +149,9 @@ body > main > article {
       margin: 0 0 -.25rem 0;
       inline-size: 100%;
       block-size: min(60vh, 30rem);
-      /* overflow-y: clip; */
+      font-family: 'Helvetica Neue', Arial, var(--font-default);
       background: var(--hero-accent-rect);
       animation: hero-accent-transform 60s ease-in-out infinite;
-      /* animation-delay: 2s; */
     }
     ul {
       display: grid;
