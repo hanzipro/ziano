@@ -312,6 +312,10 @@
       margin-block: 1em;
       border-radius: .375rem;
       background-color: var(--palette-ink); /* stays dark in both themes */
+      /* the terminal bg is fixed ink, but in dark mode the PAGE bg is ink too → the
+         block vanishes with no edge. A fixed faint-light hairline gives it a boundary:
+         invisible against the white page in light mode, the needed separation in dark. */
+      border: 1px solid color-mix(in srgb, var(--color-mist) 16%, transparent);
       /* its light text must ALSO not flip; --palette-text-inverse flips to ink in dark
          mode (hero bands), which would hide the code → fix to a light primitive */
       color: color-mix(in srgb, var(--color-mist) 90%, transparent);
