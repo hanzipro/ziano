@@ -172,6 +172,11 @@
   @media (width < 52rem) {
     & {
       flex-direction: column;
+      /* the base layout uses align-items:flex-start so the sticky rail can stick;
+         once stacked into a column that flex-start makes the guide take its CONTENT
+         width (the non-wrapping <pre> ≈ 1132px) and blow past the viewport. Stretch
+         it back to the column width — the code blocks then scroll on their own. */
+      align-items: stretch;
     }
     > aside {
       position: static;
