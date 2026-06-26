@@ -14,7 +14,9 @@ body > header {
     inset-block-start: 0;
     display: flex;
     align-items: center;
-    inline-size: var(--max-w-layout);
+    /* cap to the layout width but never wider than the viewport — a fixed 68rem
+       overflowed phones off both edges (the wordmark fell off-screen left) */
+    inline-size: min(100%, var(--max-w-layout));
     block-size: var(--h-header);
   }
   &::after {
@@ -85,6 +87,30 @@ body > header {
     }
     input[type='checkbox']:checked + span::before {
       content: '🌻';      content: '🌞';
+    }
+  }
+
+  /* phones (≤34rem ≈ 544px): drop the @hanzi.pro/ prefix, tighten the nav, and yield
+     the two OFF-page links (CDN競速→cdn-bench, GitHub) so the in-page anchors
+     (切片實驗室/用法) + the dark-mode toggle fit a 320px line with no overflow. Both
+     hidden links stay on desktop/tablet. (:has() — Baseline 2023) */
+  @media (width < 34rem) {
+    h1 small {
+      display: none;
+    }
+    h1::after {
+      inline-size: 2rem;
+      inset-inline-end: -.75rem;
+    }
+    menu {
+      gap: .75rem;
+    }
+    menu a {
+      font-size: .8125rem;
+    }
+    menu li:has(a[href$='cdn-bench.html']),
+    menu li:has(a[href*='github']) {
+      display: none;
     }
   }
 }

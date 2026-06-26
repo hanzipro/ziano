@@ -30,5 +30,11 @@
    their own → no double gutter. header/footer sit outside main's flow → pad too.
    The full-bleed ::before/::after (100vw) are positioned independently, unaffected. */
 :where(body > main, body > header, body > footer) {
+  /* border-box so the gutter padding sits INSIDE the width — the fixed header sets an
+     explicit inline-size, and under the site's (effectively content-box) default the
+     padding would otherwise add on top and overflow the viewport. NOTE: the global
+     box-sizing intent in root.css is shadowed by reset.css's :where(*) inherit — a
+     latent bug, fixed narrowly here where it bites. */
+  box-sizing: border-box;
   padding-inline: var(--gutter);
 }
