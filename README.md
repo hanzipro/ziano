@@ -19,19 +19,31 @@ See `docs/superpowers/specs/` for the full design.
 
 | Package | Family | Style | Format | Weights | Glyph forms |
 |---|---|---|---|---|---|
-| `@hanzi.pro/webfonts-shanggu-serif` | 尚古宋 Shanggu Serif | 明 serif | **VF** | 250–900 | **full 舊字形** (flagship) |
-| `@hanzi.pro/webfonts-shanggu-sans` | 尚古黑 Shanggu Sans | 黑 sans | **VF** | 250–900 | **full 舊字形** (flagship) |
-| `@hanzi.pro/webfonts-genyo-min` | 源樣明體 GenYo Min | 明 serif | static | 7 | neutral・月版/TW (milder) |
-| `@hanzi.pro/webfonts-genyo-gothic` | 源樣黑體 GenYo Gothic | 黑 sans | static | 7 | neutral・月版/TW (milder) |
-| `@hanzi.pro/webfonts-genyo-min-tc` | 源樣明體 GenYo Min TC | 明 serif | static | 7 | 丹版/TC (傳承印刷體) |
-| `@hanzi.pro/webfonts-genyo-gothic-tc` | 源樣黑體 GenYo Gothic TC | 黑 sans | static | 7 | 丹版/TC (傳承印刷體) |
+| `@hanzi.pro/webfonts-shanggu-serif` | 尚古宋 Shanggu Serif | 明 serif | **VF** | 250–900 | **full 舊字形**・丹 (異體字增強, flagship) |
+| `@hanzi.pro/webfonts-shanggu-sans` | 尚古黑 Shanggu Sans | 黑 sans | **VF** | 250–900 | **full 舊字形**・丹 (異體字增強, flagship) |
+| `@hanzi.pro/webfonts-shanggu-serif-tc` | 尚古宋 Shanggu Serif TC | 明 serif | **VF** | 250–900 | **full 舊字形**・月 (Unicode 忠實) |
+| `@hanzi.pro/webfonts-shanggu-sans-tc` | 尚古黑 Shanggu Sans TC | 黑 sans | **VF** | 250–900 | **full 舊字形**・月 (Unicode 忠實) |
+| `@hanzi.pro/webfonts-genki-min` | 源起明體 Genki Min | 明 serif | static | 7 | neutral・月 (milder, default-alt) |
+| `@hanzi.pro/webfonts-genki-gothic` | 源起黑體 Genki Gothic | 黑 sans | static | 6 | neutral・月 (milder, default-alt) |
+| `@hanzi.pro/webfonts-genki-min-tc` | 源起明體 Genki Min TC | 明 serif | static | 7 | 丹 (傳承印刷體) |
+| `@hanzi.pro/webfonts-genki-gothic-tc` | 源起黑體 Genki Gothic TC | 黑 sans | static | 6 | 丹 (傳承印刷體) |
 | `@hanzi.pro/webfonts-lxgw-wenkai-tc` | LXGW WenKai TC 霞鶩文楷 | 楷 cursive | static | 3 | 傳承字形 (TC) |
 | `@hanzi.pro/webfonts-lxgw-wenkai` | LXGW WenKai 霞鶩文楷 | 楷 cursive | static | 3 | 傳承字形 (SC) |
 | `@hanzi.pro/webfonts-iansui` | Iansui 芫荽 | 楷 cursive | static | 1 | 國字標準字體 (MOE) |
 | `@hanzi.pro/webfonts-klee-one` | Klee One | 楷 cursive | static | 2 | JP 楷 (Klee) |
 
-GenYo weights: serif `250 300 400 500 600 700 900`, sans `250 300 350 400 500 700 900`.
-LXGW weights: `300 400 500`. Klee One weights: `400 600`.
+Genki weights: min (serif) `250 300 400 500 600 700 900`, gothic (sans)
+`250 300 400 500 700 900` (no 350). LXGW weights: `300 400 500`. Klee One weights: `400 600`.
+
+**丹 vs 月:** 丹 is the more-heritage 傳承印刷體 cut, 月 the milder / Unicode-faithful
+one. The `-tc` suffix points *opposite* ways between families: Shanggu's base is 丹
+(`…-tc` = 月), Genki's base is 月 (`…-tc` = 丹). Shanggu (VF) covers the full 舊字形 in
+both cuts — its base 異體字-merges (内→內 even when you typed 内), TC stays
+codepoint-faithful. Genki is the smaller, neutral default-alt to Shanggu.
+
+> 源樣 GenYo (`@hanzi.pro/webfonts-genyo-*`) — Genki's visually-identical but
+> 17–24 % larger predecessor — stays published but is no longer promoted; reach for
+> Genki instead.
 
 楷 (cursive) is offered widest because system 楷 fonts are scarce on mobile and
 restricted in macOS Safari — webfonts are often the only option. LXGW = 傳承字形
@@ -52,7 +64,7 @@ ziano admits a 楷 font that follows the MOE standard:
 - **`@hanzi.pro/webfonts-lxgw-wenkai-tc`** (LXGW WenKai TC) — a **傳承字形** 楷 (Klee-based).
 
 Both ship side by side so users **freely choose** the kai orthography they want.
-The print faces (Shanggu, GenYo) remain heritage-only.
+The print faces (Shanggu, Genki) remain heritage-only.
 
 ## Usage
 
