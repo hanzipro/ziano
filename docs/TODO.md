@@ -17,16 +17,26 @@
 - [ ] **4. Demo 部署管線** — 無 CI、無 host 設定。決定 host（hanzi.pro？GitHub
       Pages `VITE_BASE=/ziano/`？）並接上自動部署。`vite build` 只打包 index +
       cdn-bench；其餘 *-test.html 是開發 harness，不出貨。
-- [ ] **5. README + docs/usage.md 對齊** — 兩者仍列 genyo、roster 表缺 shanggu-tc
-      與 genki 全家；改成實際出貨清單。
+- [x] **5. README + docs/usage.md 對齊** — ✅ README roster 換成 genki（min 7／
+      gothic 6 字重）＋補 Shanggu TC、加丹/月說明、GenYo 降 footnote；usage.md 早已
+      用源起。commit `b1cee03`。
 
 **收尾 / 決定要不要帶著上**
 
-- [ ] 6. Shanggu base/TC `-tc` 後綴方向與 genyo 相反 → 命名決策（見下）。
+- [ ] 6. Shanggu base/TC `-tc` 後綴方向與 genyo 相反 → 命名決策（見下）。README 已
+      就現況加註說明，但「後綴慣例」本身仍待你拍板。
 - [ ] 7. Firefox 直排 `：；` 旋轉 — 已判定可接受先上（見下）。
 - [ ] 8. 窄字集（Klee）skip 空 slice — 純優化（見下）。
 - [ ] 9. `py7zr` 補進 dev deps，讓 pytest 全綠。
-- [ ] 10. Commit 目前 3 個未提交 demo 檔（index.html / hero.css / usage.css）。
+
+**本輪已完成（demo 打磨，非上線 blocker）**
+
+- [x] Demo 小尺寸 responsive C1–C6（含直式 piano、cdn-bench 結果表橫捲）—— CDP
+      實測 320–1280px 全斷點零水平溢出、桌機不變。
+- [x] Dark mode 重構成 `light-dark()`（token 級逐一比對等價）＋ code terminal／
+      cdn-bench ink 按鈕的 dark 邊界與可讀性修復。
+- [x] box-sizing latent bug 根治（全站 border-box）。
+- [x] dark-mode 模式寫進 workspace `web-style.md`／`CLAUDE.md`（已 push knowledge repo）。
 
 ---
 

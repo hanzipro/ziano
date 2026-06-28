@@ -185,11 +185,17 @@ full-bleed `order:-1`。窄螢幕 aside（20rem）會 wrap 到 panes 下方但�
 
 ---
 
-## Step 7 — cdn-bench.html（`bench.css`）— 次要
+## Step 7 — cdn-bench.html（`bench.css`）— ✅ DONE（commit `31660be`）
 
-`@bench` 已用 `clamp()` 字級。同樣套 Step 0 gutter 思路；窄螢幕把對照欄
-（jsDelivr/unpkg…）由並排改堆疊。**本次以 index 為主，bench 視時間補**，
-不阻塞主頁上線。
+cdn-bench 透過 `src/bench.css` manifest `@import` 共用 partials，所以 header／gutter／
+overflow 守門／dark-mode 全部從 C1–C2 免費繼承。本步實際補的：
+- **結果表 7 個 nowrap 欄** 包進 `.results-scroll`（`role=region` + `tabindex=0`，可鍵盤
+  捲動），手機改框內橫向捲動而非溢出頁面。
+- **dark-mode ink 控件修復**：per-CDN 按鈕與 `.badge` 原用 `--palette-text-inverse`
+  （light-dark 重構後在 dark 翻成 ink → 深字埋進深底），改固定淺色文字 + 淡 hairline。
+- 控制列本就 `flex-wrap`、`hgroup` 已 `max-inline-size`，無需再動。
+
+驗收（CDP 375/768/1280 × 明暗）：`docScrollW==viewport` 全綠、按鈕/徽章 dark 可讀。
 
 ---
 
