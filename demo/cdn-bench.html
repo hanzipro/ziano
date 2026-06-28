@@ -84,16 +84,21 @@
       <button type="button" data-reset>重置數據</button>
     </form>
 
-    <table id="results">
-      <thead>
-        <tr>
-          <th>CDN</th><th>樣本數</th>
-          <th>CSS最快</th><th>CSS中位</th><th>CSS平均</th>
-          <th>字體就緒中位</th><th>woff2中位（54k）</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+    <!-- a focusable scroll region: 7 numeric columns can't shrink below their nowrap
+         min-content, so on phones the table scrolls sideways inside this box rather than
+         overflowing the page (role+tabindex = keyboard-scrollable, a11y table pattern) -->
+    <div class="results-scroll" role="region" aria-label="各 CDN 測速結果" tabindex="0">
+      <table id="results">
+        <thead>
+          <tr>
+            <th>CDN</th><th>樣本數</th>
+            <th>CSS最快</th><th>CSS中位</th><th>CSS平均</th>
+            <th>字體就緒中位</th><th>woff2中位（54k）</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
 
     <!-- the live specimen: two registers (display title + body) read structurally as
          p:first/second-of-type; <figcaption> carries the 「現以 X 提供 Y」 attribution. -->

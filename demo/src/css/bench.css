@@ -96,13 +96,15 @@ main > form {
       opacity: .5;
       cursor: progress;
     }
-    /* per-CDN run buttons — filled ink, like the playground's pressed chip;
-       --palette-ink + -inverse deliberately don't flip, so it reads in both
-       themes. The "run all" button (data-run='all') stays the plain panel style. */
+    /* per-CDN run buttons — filled ink in both themes, like the pre terminal. The bg
+       (--palette-ink) doesn't flip, but in dark mode the PAGE is also ink → fix the text
+       to a light primitive (NOT --palette-text-inverse, which flips to ink in dark and
+       would vanish) and give a faint hairline edge so the button reads on the dark page.
+       The "run all" button (data-run='all') stays the plain panel style. */
     &[data-run]:not([data-run='all']) {
-      border-color: var(--palette-ink);
+      border-color: color-mix(in srgb, var(--color-mist) 20%, transparent);
       background-color: var(--palette-ink);
-      color: var(--palette-text-inverse);
+      color: color-mix(in srgb, var(--color-mist) 90%, transparent);
     }
     &[data-run]:not([data-run='all']):hover {
       opacity: .85;
@@ -130,10 +132,22 @@ main > form {
 }
 
 /* ── results table ─────────────────────────────────────────────── */
+/* scroll box — the 7 nowrap columns can't fit a phone, so they scroll here instead of
+   overflowing the page (body has overflow-x: clip, which would otherwise just truncate) */
+.results-scroll {
+  & {
+    margin-block: 1rem 1.75rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+  }
+  &:focus-visible {
+    outline: 2px solid var(--palette-accent);
+    outline-offset: 2px;
+  }
+}
 #results {
   & {
     inline-size: 100%;
-    margin-block: 1rem 1.75rem;
     border-collapse: collapse;
   }
   th, td {
@@ -165,7 +179,9 @@ main > form {
     padding-inline: .5em;
     border-radius: 999px;
     background-color: var(--palette-ink);
-    color: var(--palette-text-inverse);
+    /* fixed light text — --palette-text-inverse flips to ink in dark mode and would
+       disappear on the ink badge (same reasoning as the run buttons / pre terminal) */
+    color: color-mix(in srgb, var(--color-mist) 90%, transparent);
     font-size: .68rem;
     vertical-align: .05em;
   }
