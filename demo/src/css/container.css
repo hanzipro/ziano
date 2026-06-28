@@ -35,6 +35,5 @@
      padding would otherwise add on top and overflow the viewport. NOTE: the global
      box-sizing intent in root.css is shadowed by reset.css's :where(*) inherit — a
      latent bug, fixed narrowly here where it bites. */
-  box-sizing: border-box;
   padding-inline: var(--gutter);
 }

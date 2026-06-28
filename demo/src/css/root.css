@@ -6,7 +6,6 @@
 :where(:root) {
   /* The root */
   & {
-    box-sizing: border-box;
     container-name: fullscreen-pseudo-elmts;
     font-family: var(--font-default);
     font-size: 16px;

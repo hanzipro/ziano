@@ -3,8 +3,13 @@
  * Resets
  * ================================================================================
  */
-:where(*, *::before, *::after) {
-  box-sizing: inherit;
+:root {
+  & {
+    box-sizing: border-box;
+  }
+  :where(*, *::before, *::after) {
+    box-sizing: inherit;
+  }
 }
 
 :where(a) {
