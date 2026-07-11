@@ -1,0 +1,9 @@
+<!-- Maskable variant of the Ziano favicon (1a): full-bleed ink plate, artwork
+     scaled into the 80% safe zone so circle/squircle masks never clip the Z. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <rect width="100" height="100" fill="#191515"/>
+  <g transform="translate(50 50) scale(.8) translate(-50 -50)">
+    <path fill="#f7f7f7" d="M27 22h46v15L48 63h25v15H27V63l25-26H27z"/>
+    <rect x="30" y="93" width="17" height="7" fill="#b00404"/>
+  </g>
+</svg>

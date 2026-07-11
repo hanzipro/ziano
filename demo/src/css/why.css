@@ -60,7 +60,8 @@
         text-align: center;
       }
       span {
-        font-size: clamp(2.5rem, 8vw, 4rem);
+        /* sized so all EIGHT specimens hold one line down to 390px */
+        font-size: clamp(2rem, 8vw, 4rem);
         font-weight: 400;
         line-height: 1.25;
       }
@@ -137,6 +138,11 @@
       font-size: .875rem;
       color: var(--palette-supplement-text);
     }
+  }
+  /* the further-reading line — figcaption-grade fine print */
+  .refs {
+    font-size: .875rem;
+    color: var(--palette-supplement-text);
   }
 
   /* ── the three-step why-fast strip — stacked one-liners, number in the margin
@@ -228,10 +234,10 @@
     .quickstart {
       align-self: start; /* hug the fast section, don't stretch to the row */
     }
-    /* the specimens now sit in a half-width column — one size down so all six
+    /* the specimens now sit in a half-width column — one size down so all eight
        stay on one line */
     .compare ul span {
-      font-size: clamp(2rem, 3.2vw, 3.25rem);
+      font-size: clamp(1.75rem, 2.6vw, 3rem);
     }
   }
 }

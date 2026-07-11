@@ -1,0 +1,10 @@
+<!-- Ziano favicon — “Metal sort, Z in relief” (design 1a, rebuilt by hand from the
+     Claude Design comp; the standalone export didn’t embed the assets). A single
+     鉛字 seen face-on: ink body, geometric Z in paper relief, vermilion nick cut
+     into the foot — the groove that tells a compositor the sort is right-side up.
+     Colours = the site’s own tokens (ink #191515 / snow #f7f7f7 / red #b00404). -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <rect width="100" height="100" rx="18" fill="#191515"/>
+  <path fill="#f7f7f7" d="M27 22h46v15L48 63h25v15H27V63l25-26H27z"/>
+  <rect x="30" y="93" width="17" height="7" fill="#b00404"/>
+</svg>
