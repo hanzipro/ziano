@@ -47,6 +47,7 @@ type Seed = {
   duration: number
   font: string
   baseX: number // per-cycle horizontal bias in vw (−left … +right), may overrun the edges
+  baseY: number // per-cycle vertical bias as a fraction of --hero-stage-h (0 = centre)
   accent: boolean
   // each scale axis is an independent channel (off / held squash / oscillation)
   sx: ScaleChan
@@ -119,6 +120,11 @@ const makeSeed = (): Seed => {
   const place = Math.random()
   const leftPlaced = place < 0.15
   const baseX = leftPlaced ? rand(-16, -4) : place < 0.35 ? rand(-7, 7) : rand(10, 34)
+  // vertical placement: default is centre-low; only ~30% of cycles ride higher than
+  // the middle. The glyph's ink already ~fills the stage, so the low bias is kept
+  // small (≤0.12) — #why's background starts right below the stage and the figure's
+  // overflow:clip would guillotine anything pushed further down.
+  const baseY = Math.random() < 0.7 ? rand(0.05, 0.12) : rand(-0.15, -0.05)
   const enterFrac = rand(0.1, 0.22)
   const exitFrac = 1 - exitSecs / duration
   // a dead-still hold, placed wholly inside the visible plateau (after entrance,
@@ -135,6 +141,7 @@ const makeSeed = (): Seed => {
     duration,
     font,
     baseX,
+    baseY,
     // left-placed glyphs (over the figcaption's red block) are mostly accent-coloured;
     // elsewhere an accent glyph is just an occasional touch
     accent: leftPlaced ? Math.random() < 0.75 : Math.random() < 0.15,
@@ -184,6 +191,7 @@ type Motion = {
   x: number
   y: number
   bx: number
+  by: number
   scaleX: number
   scaleY: number
   blur: number
@@ -256,6 +264,7 @@ const motion = (ms: number, s: Seed): Motion => {
     x,
     y,
     bx: s.baseX,
+    by: s.baseY,
     scaleX,
     scaleY,
     blur,
@@ -281,7 +290,7 @@ const reset = (el: HTMLElement): void => {
 
 const apply = (el: HTMLElement, m: Motion): void => {
   el.style.opacity = m.opacity.toFixed(3)
-  el.style.transform = `translate3d(calc(${m.bx.toFixed(2)}vw + ${m.x.toFixed(2)}px), ${m.y.toFixed(2)}px, 0) scale(${m.scaleX.toFixed(3)}, ${m.scaleY.toFixed(3)})`
+  el.style.transform = `translate3d(calc(${m.bx.toFixed(2)}vw + ${m.x.toFixed(2)}px), calc(${m.by.toFixed(3)} * var(--hero-stage-h) + ${m.y.toFixed(2)}px), 0) scale(${m.scaleX.toFixed(3)}, ${m.scaleY.toFixed(3)})`
   el.style.filter = `blur(${m.blur.toFixed(2)}px)`
   el.style.fontWeight = m.weight.toFixed(0)
   el.style.textShadow = `${m.sx.toFixed(1)}px ${m.sy.toFixed(1)}px ${m.sBlur.toFixed(1)}px color-mix(in srgb, currentColor ${m.shadowMix}%, transparent)`

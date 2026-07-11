@@ -148,7 +148,10 @@ body > main > article {
       place-items: center;
       margin: 0 0 -.25rem 0;
       inline-size: 100%;
-      block-size: min(60vh, 30rem);
+      /* the stage height, as a var so carousel.ts can bias glyphs vertically in
+         fractions of it (baseY) without hardcoding the dimensions in TS */
+      --hero-stage-h: min(60vh, 30rem);
+      block-size: var(--hero-stage-h);
       font-family: 'Helvetica Neue', Arial, var(--font-default);
       background: var(--hero-accent-rect);
       animation: hero-accent-transform 60s ease-in-out infinite;
