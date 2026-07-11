@@ -2,9 +2,11 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
-  <title>ziano・傳承字形 webfont CDN</title>
+  <title>Ziano・傳承字形 webfont CDN</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Modern day heritage-glyph fonts on the web." />
+  <meta name="description" content="把千年鉛字淬鍊的漢字造形，帶回網頁⸺免費開源的傳承字形webfont CDN，切片載入，毫秒到位。" />
+  <meta property="og:title" content="Ziano・傳承字形webfont CDN" />
+  <meta property="og:description" content="把千年鉛字淬鍊的漢字造形，帶回網頁⸺免費開源的傳承字形webfont CDN，切片載入，毫秒到位。" />
 
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
   <link rel="preconnect" href="https://unpkg.com" crossorigin />
@@ -25,6 +27,14 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-klee-one@0.1.0-rc.2/swap.css" />
 
   <script type="module" src="/src/main.ts"></script>
+  <!--
+    Pre-paint gate stamp: hide the page until its font slices land (fonts/gate.ts
+    reveals, with a 4s timeout fallback). The showroom must never flash PingFang —
+    the very face the #why section indicts. JS-less visitors never get the class,
+    so they fall back to a plain progressive-FOUT page. This is the site's own
+    stance, NOT the recommendation to users (usage still says swap).
+  -->
+  <script>document.documentElement.classList.add('fonts-pending')</script>
 </head>
 <body>
   <header>
@@ -32,6 +42,7 @@
       <small>@hanzi.pro/</small>ziano
     </h1>
     <menu>
+      <li><a href="#why">為什麼</a></li>
       <li><a href="#playground">切片實驗室</a></li>
       <li><a href="#usage">用法</a></li>
       <li><a href="cdn-bench.html">CDN競速</a></li>
@@ -78,12 +89,73 @@
           <li>漢</li>
           <li>英</li>
           <li>美</li>
+          <li>館</li>
         </ul>
         <figcaption>
           <p>以最新的<span class="google-fonts">Google Fonts</span>字體切片技術，重現千年淬鍊的傳承字形。
           <p>Woff2 &times; <abbr>CDN</abbr>邊緣分發，讓漢字的經典美學，用毫秒神速在網頁呈現。
         </figcaption>
       </figure>
+    </article>
+
+    <section id="why">
+      <section class="heritage">
+        <hgroup>
+          <h2>為何要用傳承字形？</h2>
+          <p>鉛字正統，與被國字標準字體殘害的系統字體</p>
+        </hgroup>
+        <p>傳承字形（舊字形），是從雕版、鑄字時代一脈相承的<strong>印刷體正統造形</strong>，鉛字一脈的端正勻稱。教育部國字標準字體強以楷書手寫筆勢改寫印刷體，<strong>破壞了傳統工匠為了印刷體傳承數百年的精美部件</strong>，千年雕印工藝美學蕩然無存。Ziano收錄的，正是未被它染指的字形。</p>
+        <figure class="compare">
+          <ul>
+            <li><span class="standard">漢</span><span class="heritage-hei">漢</span><span class="standard-ming omitted">漢</span><span class="heritage-ming">漢</span></li>
+            <li><span class="standard">骨</span><span class="heritage-hei">骨</span><span class="standard-ming omitted">骨</span><span class="heritage-ming">骨</span></li>
+            <li><span class="standard">育</span><span class="heritage-hei">育</span><span class="standard-ming omitted">育</span><span class="heritage-ming">育</span></li>
+            <li><span class="standard">北</span><span class="heritage-hei">北</span><span class="standard-ming omitted">北</span><span class="heritage-ming">北</span></li>
+            <li><span class="standard" lang="zh-Hans">山</span><span class="heritage-hei">山</span><span class="standard-ming" lang="zh-Hans">山</span><span class="heritage-ming">山</span></li>
+            <li><span class="standard">過</span><span class="heritage-hei">過</span><span class="standard-ming">過</span><span class="heritage-ming">過</span></li>
+          </ul>
+          <figcaption>同一字符、同一粗細⸺灰字是系統的國字標準字體（黑體與宋體），墨字是尙古黑體與尙古明體。標準字體的「漢」該伸展的捺硬縮成頓點，主筆截肢、儼如肌肉萎縮（英、美同病）。「骨」框內兩橫改作撇點，留白失勻。「育」頂圈出歪斜的閉三角。「過」的⻍軟沓拖尾。「北」左右各行其是。「山」的左豎被楷書連筆鋸短、右豎獨自出頭，少了支腳便站不穩。</figcaption>
+        </figure>
+        <p>國字標準字體本是<strong>手寫規範</strong>，用在楷體這類跟著手寫筆勢走的字體上，名正言順，但不應強加於明體、黑體等講求平衡對稱的印刷字體。楷書的橫畫天生左低右高，斜勢自然兜住這些不對稱。印刷體橫平豎直，字形搬了過去，<a href="https://www.ideographer.com/articles/article.php?aid=17" rel="noopener" target="_blank">平衡卻沒跟著搬</a>。</p>
+        <figure class="compare kai">
+          <ul>
+            <li><span class="kai-glyph">漢</span></li>
+            <li><span class="kai-glyph">骨</span></li>
+            <li><span class="kai-glyph">育</span></li>
+            <li><span class="kai-glyph">北</span></li>
+            <li><span class="kai-glyph">山</span></li>
+            <li><span class="kai-glyph">過</span></li>
+          </ul>
+          <figcaption>芫荽（國字標準字形的楷體）：同一套規範回到手寫體，頓點、撇捺本就是運筆的發力動作，落在楷體骨架上筆筆有出處⸺筆畫合理、鏗鏘有力。</figcaption>
+        </figure>
+      </section>
+
+      <section class="fast">
+        <hgroup>
+          <h2>為什麼快？</h2>
+          <p>120片woff2，按需下載</p>
+        </hgroup>
+        <ol class="steps">
+          <li>整套字依用字頻率切成<strong>120片</strong>woff2。</li>
+          <li>頁面沒用到的字，<strong>一位元組都不會下載</strong>。</li>
+          <li>一般頁面只取<strong>最後十幾片</strong>，毫秒到位。</li>
+        </ol>
+        <p class="cta">到<a href="#playground">切片實驗室</a>彈彈，每打一個字，它所屬的切片琴鍵就會亮起。</p>
+      </section>
+
+      <section class="quickstart">
+        <hgroup>
+          <h2>三十秒上手</h2>
+          <p>CDN快速載入，一行套用</p>
+        </hgroup>
+        <pre data-lang="html"><code>&lt;link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin /&gt;
+&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans@0.1.0-rc.5/swap.css"&gt;</code></pre>
+        <pre data-lang="css"><code>font-family: 'Avenir Next', 'Segoe UI Variable', 'Segoe UI', Roboto, 'Shanggu Sans', sans-serif;</code></pre>
+        <p>完整的四層回落鏈，見<a href="#usage">用法</a>。</p>
+      </section>
+    </section>
+
+    <article>
       <dl data-font-name="shanggu-serif" data-generics="ming" data-weights="250-900" data-variable="true" data-name="尙古明體・丹" data-font-family="Shanggu Serif" data-script="tc">
         <dt>尙古明體・丹
         <dd>Shanggu Serif
@@ -160,6 +232,10 @@
 
     <section id="playground">
       <aside>
+        <label class="sheet-grip">
+          <input type="checkbox" name="sheet" />
+          <span>展開控制面板</span>
+        </label>
         <label>
           <span>字體</span>
           <select name="font">
@@ -266,6 +342,10 @@
 
     <section id="usage">
       <aside>
+        <label class="sheet-grip">
+          <input type="checkbox" name="sheet" />
+          <span>展開配置生成面板</span>
+        </label>
         <h2>配置生成</h2>
         <fieldset class="role" data-role="hei">
           <legend>黑體</legend>
@@ -338,7 +418,7 @@
           <p>將西文字體置於最前，讓中西文混排的文本得以最精緻的效果呈現，這也是中文網頁行之有年的排版方式。</p>
 
           <h3>② 傳承字形：漢字的主要字體</h3>
-          <p><code>'Shanggu Sans'</code>（尙古黑體）、<code>'Shanggu Serif'</code>（尙古明體）、<code>'LXGW Wenkai TC'</code>（霞鶩文楷）等。漢字由ziano收錄的webfont承接，呈現未經各地標準改寫的<strong>傳承印刷形</strong>。</p>
+          <p><code>'Shanggu Sans'</code>（尙古黑體）、<code>'Shanggu Serif'</code>（尙古明體）、<code>'LXGW Wenkai TC'</code>（霞鶩文楷）等。漢字由Ziano收錄的webfont承接，呈現未經各地標準改寫的<strong>傳承印刷形</strong>。</p>
 
           <h3>③ 系統日文字體：webfont載入失敗時的備援</h3>
           <p>webfont可能因離線、CDN故障等原因<strong>整體</strong>載入失敗，此時應避免回落至系統預設的國字標準字體字型。</p>
@@ -392,7 +472,7 @@ h1, .display { font-family: var(--font-serif); }       /* 明體：大標 */
 blockquote   { font-family: var(--font-cursive); }     /* 楷體：引文、詩句 */</code></pre>
           <ul>
             <li>三個變量對應三種generic：<code>--font-sans-serif</code>（黑體）、<code>--font-serif</code>（明體）、<code>--font-cursive</code>（楷體）。更換字族時只需修改<code>:root</code>一處，所有引用處會一併更新。</li>
-            <li>楷體（<code>--font-cursive</code>）同樣前置西文serif；若偏好霞鶩文楷自帶的手寫感拉丁字母，移除<code>Palatino, Cambria</code>即可。</li>
+            <li>楷體（<code>--font-cursive</code>）同樣前置西文serif。若偏好霞鶩文楷自帶的手寫感拉丁字母，移除<code>Palatino, Cambria</code>即可。</li>
           </ul>
           <p><strong>進階</strong>：固定不變的「日文字體＋generic」結尾也可獨立抽出，組合更為精簡：</p>
           <pre data-lang="css"><code class="out-root-adv">:root {
@@ -435,14 +515,8 @@ blockquote   { font-family: var(--font-cursive); }     /* 楷體：引文、詩�
 
     <section id="faq">
       <div class="explainer">
-        <h2>傳承字形？</h2>
-        <p>傳承字形（又稱舊字形），是漢字從雕版、鑄字時代一脈相承下來的<strong>印刷體正統造形</strong>：「青」下作丹、草字頭三筆完成、辵旁從容、骨直戶過各依其本⸺每個部件都承襲千百年印刷的審美。</p>
-        <p>後來各地推行的字形標準（台灣國字標準字體、中國大陸的新字形等），多為了規範化、或把印刷體往楷書手寫靠攏，改動了大量部件，離傳統印刷的樣貌越來越遠。ziano 收錄的，正是回到那套<strong>未被標準改寫</strong>的傳承字形，讓螢幕上的漢字也能有古籍般的端正與典雅。</p>
-
-        <h2>切片的運作方式</h2>
-        <p>整套字被切成<strong>120片</strong> <code>unicode-range</code> woff2。瀏覽器只有在頁面真的出現某片涵蓋的字時，才會下載那一片⸺<strong>沒用到的切片永遠不會被請求</strong>。</p>
-        <p>而中文的高頻常用字，在切片排序裡<strong>集中在最後那幾片</strong>；前面數十片裝的多是罕用字、古字與符號。所以一般頁面實際只會下載<strong>最後十幾片</strong>，而非全部120片⸺這也是切片實驗室裡「命中N／120片・Mms內到位」總是又少又快的原因。</p>
-        <p>切片實驗室那排<strong>鋼琴鍵盤就是這120片切片</strong>⸺在預覽區打字，其實就是在<strong>彈這台鋼琴</strong>：每打一個字，它所屬的那一鍵就會<strong>亮起並彈奏</strong>一下（<strong>按下的鍵＝會被下載的切片</strong>）。看哪些鍵在響、響了幾鍵，下載的就是那幾片。</p>
+        <h2>本站為何等字體載入？</h2>
+        <p>為完整展示傳承字形，本站刻意待字體就緒才顯示內容（設有超時保底）⸺這是展示櫥窗的堅持，不是對一般網站的建議。一般內容網站仍推薦使用<code>font-dispaly: swap;</code>。文字先見為快，字形隨後升級。</p>
 
         <h2>可變字體與靜態字體</h2>
         <p><strong>可變字體（variable fonts）：</strong>單一檔案涵蓋整段字重軸（如250–900），拉字重不必換檔⸺尙古明體／黑體即是。</p>

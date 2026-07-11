@@ -167,8 +167,8 @@
     }
   }
 
-  /* stack the rail above the guide on narrow viewports (no container-type on the named
-     container, so this is a plain width media query) */
+  /* narrow viewports: neutralise the desktop sticky-top rail; sheet.css (imported
+     after, same specificity) then turns the rail into the bottom sheet */
   @media (width < 52rem) {
     & {
       flex-direction: column;

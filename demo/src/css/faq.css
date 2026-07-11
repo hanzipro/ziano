@@ -8,8 +8,9 @@
  */
 #faq {
   & {
+    /* was min-block-size: full viewport — dropped when the explainer shrank to one
+       fine-print note; a footnote strip shouldn't force an empty screen */
     padding-block: 3rem 5rem;
-    min-block-size: calc(100vh - var(--h-header));
     line-height: 1.8;
   }
   /* the chunky top divider every screen carries (drawn on the full-bleed container::before) */
@@ -18,48 +19,24 @@
     border-block-start: 1rem solid var(--palette-ink-grey);
   }
 
-  /* explainer: magazine columns — one FAQ topic per column */
+  /* explainer: down to a single topic — an apple.com-style fine-print note in the
+     supplement grey, NOT the old 3-column magazine. Fine print, but never below
+     14px (.875rem at the 16px root). */
   .explainer {
     & {
-      column-count: 3;
-      column-gap: 3rem;
+      max-inline-size: 42em;
+      color: var(--palette-supplement-text);
+      font-size: .875rem;
+      line-height: 1.7;
     }
     h2 {
       margin-block: 0 .25rem;
-      break-before: column; /* each topic starts its own column */
-      break-after: avoid;
-      font-size: 1.5rem;
+      font-size: 1.125rem; /* a notch above the note body, still note-scale */
       font-weight: 600;
     }
-    h2 + p {
-      margin-block-start: -.5em;
-    }
     p {
-      margin-block: 1em;
+      margin-block: .5em;
       text-align: justify;
-      color: var(--palette-text);
-      break-inside: avoid;
-    }
-
-    /* The 3-column magazine is unreadable once each column drops below a sane measure,
-       and — because each h2 forces its own column (break-before) — 3 topics always make
-       3 columns that spill past a narrow viewport. Below 52rem fold to 2 columns and
-       drop the forced break so topics balance; below 34rem fold to 1. (These come AFTER
-       the h2 rule above on purpose: @media adds no specificity, so the break-before
-       reset must win on source order.) */
-    @media (width < 52rem) {
-      & {
-        column-count: 2;
-        column-gap: 2rem;
-      }
-      h2 {
-        break-before: auto;
-      }
-    }
-    @media (width < 34rem) {
-      & {
-        column-count: 1;
-      }
     }
   }
 

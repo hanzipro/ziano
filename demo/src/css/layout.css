@@ -4,6 +4,12 @@
  * ================================================================================
  */
 
+/* Anchor jumps (menu links, roster→playground scrollIntoView) land below the
+   fixed header instead of under it */
+html {
+  scroll-padding-block-start: calc(var(--h-header) + .5rem);
+}
+
 /* Header */
 body > header {
   & {

@@ -1,0 +1,237 @@
+/**
+ * ================================================================================
+ * Why — the pitch screen between the hero and the roster: why heritage glyphs
+ * (with a live system-vs-Shanggu specimen), why slicing makes it fast, and a
+ * 30-second quickstart. Width cap + full-bleed pseudo come from container.css
+ * (#why listed there). Copy rules per copy-style.md; the compare figure renders
+ * the SAME codepoints twice — no images, the fonts are already on the page.
+ * ================================================================================
+ */
+#why {
+  & {
+    padding-block: 3rem 4rem;
+    line-height: 1.8;
+  }
+  &::before {
+    z-index: -10;
+    background-color: var(--palette-bg);
+    border-block-start: 1px solid var(--palette-grid);
+  }
+
+  hgroup {
+    & {
+      margin-block: 2.5rem 1rem;
+    }
+    h2 {
+      margin-block: 0;
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+    p {
+      margin-block: 0;
+      color: var(--palette-supplement-text);
+    }
+  }
+  > section:first-child hgroup {
+    margin-block-start: 0;
+  }
+  p {
+    text-align: justify;
+    max-inline-size: 42em; /* keep the measure readable on wide screens */
+  }
+
+  /* ── the movable-type specimen: standard (system font) vs heritage (Shanggu) ── */
+  .compare {
+    & {
+      margin: 2rem 0;
+    }
+    ul {
+      & {
+        display: flex;
+        flex-wrap: wrap; /* narrow screens wrap the pairs — never a scrollbar */
+        gap: clamp(.5rem, 3vw, 1.5rem);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      li {
+        display: grid;
+        gap: .125em;
+        text-align: center;
+      }
+      span {
+        font-size: clamp(2.5rem, 8vw, 4rem);
+        font-weight: 400;
+        line-height: 1.25;
+      }
+    }
+    .standard {
+      /* deliberately the national-standard system faces — the whole point of this
+         figure is showing what you get WITHOUT ziano (the one place they belong) */
+      font-family:
+        'PingFang TC', 'Microsoft JhengHei',
+        'Noto Sans TC',
+        sans-serif
+      ;
+      color: var(--palette-supplement-text);
+    }
+    .heritage-hei {
+      font-family:
+        'Shanggu Sans',
+        'Hiragino Sans',
+        sans-serif
+      ;
+    }
+    .standard-ming {
+      /* the national-standard system MING — same rogue's gallery as .standard */
+      font-family:
+        'Songti TC', PMingLiU,
+        'Noto Serif TC',
+        serif
+      ;
+      color: var(--palette-supplement-text);
+    }
+    /* Songti TC cells where that font does NOT follow the MOE standard (it leans
+       heritage for 漢/骨/育/北) — showing them would exonerate the standard. Blanked
+       ONLY when Songti TC actually renders: why/compare.ts stamps .songti-tc via
+       document.fonts.check. Elsewhere (Windows PMingLiU, Android Noto Serif TC —
+       both faithful to the standard) the specimens stay visible. visibility, not
+       display, so the four-row grid stays aligned across all six columns. */
+    &.songti-tc .omitted {
+      opacity: .125;
+    }
+    /* glyphs marked lang=zh-Hans render the SC cuts instead. NOT a bug: the MOE
+       standard mandates the asymmetric 山 (same as the mainland form), but PingFang
+       TC / Songti TC silently ignore the standard for 山 (while obeying it for 北)
+       — so the SC cut stands in to show what the standard actually prescribes. */
+    .standard:lang(zh-Hans) {
+      font-family:
+        'PingFang SC', 'Microsoft YaHei',
+        'Noto Sans SC',
+        sans-serif
+      ;
+    }
+    .standard-ming:lang(zh-Hans) {
+      font-family:
+        'Songti SC', SimSun,
+        'Noto Serif SC',
+        serif
+      ;
+    }
+    .heritage-ming {
+      font-family:
+        'Shanggu Serif',
+        'Hiragino Mincho ProN', 'Yu Mincho',
+        serif
+      ;
+    }
+    .kai-glyph {
+      font-family:
+        'Iansui',
+        BiauKai, 'Kaiti TC',
+        cursive, serif
+      ;
+    }
+    figcaption {
+      margin-block-start: .5rem;
+      font-size: .875rem;
+      color: var(--palette-supplement-text);
+    }
+  }
+
+  /* ── the three-step why-fast strip — stacked one-liners, number in the margin
+     (it lives in a half-width column on desktop, so no 3-across grid) ── */
+  .steps {
+    & {
+      display: grid;
+      gap: 1rem;
+      margin: 1.5rem 0;
+      padding: 0;
+      counter-reset: step;
+    }
+    li {
+      & {
+        position: relative;
+        list-style: none;
+        counter-increment: step;
+        padding-inline-start: 1.5rem;
+      }
+      /* the number rides the SAME line box as the text — same size, same top —
+         a big display numeral next to a one-liner reads as floating debris */
+      &::before {
+        content: counter(step);
+        position: absolute;
+        inset-block-start: 0;
+        inset-inline-start: 0;
+        font-weight: 600;
+        color: var(--palette-accent);
+      }
+    }
+  }
+  .cta a {
+    color: var(--palette-accent);
+  }
+
+  /* ── quickstart: two one-liners in the house code terminal ──
+     The recipe (and the ::highlight token colours below) mirrors usage.css
+     § code terminals — keep the two in sync. Dark in both themes; highlight
+     ranges are registered globally by code/highlight.ts on pre[data-lang]. */
+  .quickstart pre {
+    & {
+      margin-block: .75rem;
+      border-radius: .375rem;
+      background-color: var(--palette-ink); /* stays dark in both themes */
+      border: 1px solid color-mix(in srgb, var(--color-mist) 16%, transparent);
+      color: color-mix(in srgb, var(--color-mist) 90%, transparent);
+      overflow-x: auto;
+    }
+    code {
+      display: block;
+      padding: 1rem 1.125rem;
+      font-family: ui-monospace, 'SF Mono', Menlo, Courier, monospace;
+      font-size: .8125rem;
+      line-height: 1.6;
+      white-space: pre;
+      text-align: start;
+    }
+    code::highlight(code-comment) { color: #6f7b8b; }
+    code::highlight(code-string)  { color: #b8d39a; }
+    code::highlight(code-keyword) { color: #88aaff; }
+    code::highlight(code-attr)    { color: #e8c275; }
+    code::highlight(code-number)  { color: #f2997a; }
+    code::highlight(code-punct)   { color: #8b94a3; }
+  }
+
+  /* ── two-column layout: heritage fills the left column full-height; fast +
+     quickstart stack in the right one. Below 52rem (the site-wide fold point)
+     the sections simply stack in source order. The full-bleed ::before is
+     position:absolute, so it never becomes a grid item. ── */
+  @media (width >= 52rem) {
+    & {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto 1fr;
+      column-gap: 3rem;
+    }
+    /* let the fr tracks shrink below content min-width — without this the
+       quickstart's unbreakable code line blows the right column out to ~900px
+       and squeezes the left one to a sliver (the pre scrolls internally) */
+    > section {
+      min-inline-size: 0;
+    }
+    .heritage {
+      grid-row: 1 / -1;
+    }
+    .fast hgroup {
+      margin-block-start: 0; /* top-align with the heritage column */
+    }
+    .quickstart {
+      align-self: start; /* hug the fast section, don't stretch to the row */
+    }
+    /* the specimens now sit in a half-width column — one size down so all six
+       stay on one line */
+    .compare ul span {
+      font-size: clamp(2rem, 3.2vw, 3.25rem);
+    }
+  }
+}

@@ -5,12 +5,15 @@
 
 @import './css/variables.css';
 @import './css/root.css';
+@import './css/gate.css';
 @import './css/reset.css';
 @import './css/select.css';
 @import './css/container.css';
 @import './css/layout.css';
 @import './css/hero.css';
+@import './css/why.css';
 @import './css/playground.css';
 @import './css/piano.css';
 @import './css/usage.css';
 @import './css/faq.css';
+@import './css/sheet.css';

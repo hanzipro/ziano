@@ -1,0 +1,48 @@
+/**
+ * ================================================================================
+ * Font gate — the showroom's one deliberate anti-FOUT stance: content stays
+ * hidden until the page's font slices land, so the first paint is already 傳承
+ * 字形 (never a flash of PingFang). Stamped pre-paint in index.html; revealed by
+ * fonts/gate.ts (document.fonts.ready raced against a 4s timeout). visibility —
+ * not display — so layout runs and the unicode-range slices actually fetch.
+ * ================================================================================
+ */
+:root.fonts-pending body {
+  & > * {
+    visibility: hidden;
+  }
+  /* the loader: a pure-CSS echo of the hero's red accent bar — deliberately NO
+     text (any text here would FOUT inside the loader itself). The .15s animation
+     delay + backwards fill keep it invisible on cache-hit visits: fonts resolve
+     before it ever shows, and the page just opens instantly. */
+  &::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    inline-size: 1.5rem;
+    block-size: 5rem;
+    background: var(--palette-accent);
+    animation: gate-pulse .8s ease-in-out .15s infinite alternate backwards;
+  }
+}
+
+/* one-shot fade on the gated reveal (only stamped when the gate actually ran) */
+:root.fonts-ready body > * {
+  animation: gate-reveal .35s ease-out;
+}
+
+@keyframes gate-pulse {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes gate-reveal {
+  from {
+    opacity: 0;
+  }
+}

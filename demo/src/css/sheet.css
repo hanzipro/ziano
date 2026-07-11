@@ -1,0 +1,138 @@
+/**
+ * ================================================================================
+ * Sheet — the mobile tool rail. Below 52rem the #playground / #usage <aside>
+ * turns into a bottom sheet: sticky at the viewport's bottom edge WITHIN its own
+ * section (so it appears only in context and scrolls away with the section, and
+ * the two rails never fight over the same edge). Collapsed, it peeks its grip +
+ * the first, highest-frequency controls; the checkbox grip expands it into a
+ * non-modal half sheet — the preview above stays visible and live while sliders
+ * drag. Direction settled 2026-07-11 (workspace plan §RWD P1-3): "hidden when
+ * not needed" yes, hamburger overlay no — an overlay would cover the preview
+ * and turn adjusting into blind work.
+ * Must be @import-ed AFTER playground.css / usage.css: it overrides their aside
+ * rules at equal specificity by source order.
+ * ================================================================================
+ */
+/* aside-scoped for specificity: the rails' own `#… aside > label` rules (1,0,2)
+   would otherwise out-rank a bare .sheet-grip class and re-lay the grip flex-left */
+:is(#playground, #usage) aside .sheet-grip {
+  display: none; /* desktop: the rail is a plain sidebar, no sheet chrome */
+}
+
+@media (width < 52rem) {
+  /* #playground is a wrap-row flex on desktop; in that geometry the aside's flex
+     line sits high in the section, so bottom-sticky never engages (its natural
+     position is already above the viewport's bottom edge). Regrid: piano + panes
+     first (side by side under 34rem, where the piano turns vertical), and the
+     aside as the LAST full-width row — now its natural position is the section's
+     real end and the sticky bar behaves like #usage's. */
+  #playground {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'piano'
+      'panes'
+      'aside'
+    ;
+  }
+  #playground > .Piano {
+    grid-area: piano;
+  }
+  #playground > .panes {
+    grid-area: panes;
+  }
+  #playground > aside {
+    grid-area: aside;
+  }
+  @media (width < 34rem) {
+    /* the vertical piano stops hogging a column of its own: it shares the panes'
+       cell as a right-edge backdrop — it already paints at z:-10 beneath the
+       content (same layering as the desktop full-width piano), and the preview
+       card's translucent blur keeps the text legible over the keys. */
+    #playground {
+      grid-template-areas:
+        'panes'
+        'aside'
+      ;
+      padding-block-start: 1.25rem; /* air between the section rule and the tab chips */
+    }
+    #playground > .Piano {
+      grid-area: panes;
+      justify-self: end;
+      /* flush to the screen edge: the piano is vertical-rl, so its block-start
+         margin is the PHYSICAL RIGHT side — pull it across the main gutter */
+      margin-block-start: calc(-1 * var(--gutter));
+    }
+  }
+
+  :is(#playground, #usage) > aside {
+    /* after the content in flow — bottom-sticky needs room ahead to stick */
+    order: 10;
+    position: sticky;
+    inset-block-end: 0;
+    z-index: 10;
+    inline-size: auto;
+    /* full-bleed across main's gutter, then pad the content back inside */
+    margin-inline: calc(-1 * var(--gutter));
+    padding: 0 var(--gutter) env(safe-area-inset-bottom);
+    /* the header's translucent backplate, mirrored at the bottom edge */
+    background-color: var(--palette-bg-3q);
+    backdrop-filter: blur(6px) saturate(1.1);
+    border-block-start: 1px solid var(--palette-grid);
+    /* peek = grip + the first controls whole (playground: font picker + weight
+       slider — the two you touch mid-reading) */
+    max-block-size: var(--sheet-peek, 11.5rem);
+    overflow: hidden;
+    transition: max-block-size .35s ease;
+  }
+  :is(#playground, #usage) > aside:has(.sheet-grip input:checked) {
+    max-block-size: 70vh;
+    overflow-y: auto;
+  }
+
+  :is(#playground, #usage) aside .sheet-grip {
+    & {
+      display: grid;
+      place-items: center;
+      /* the rails' `> label` rule sets space-between — in grid that packs the
+         single auto track at the start and beaches the pill on the left */
+      justify-content: center;
+      margin-block-end: 0;
+      /* stays put while the expanded sheet scrolls under it */
+      position: sticky;
+      inset-block-start: 0;
+      z-index: 1;
+      margin-inline: calc(-1 * var(--gutter));
+      padding-block: .75rem;
+      background-color: inherit;
+      cursor: pointer;
+    }
+    /* the pill handle */
+    &::before {
+      content: '';
+      inline-size: 2.5rem;
+      block-size: .25rem;
+      border-radius: .125rem;
+      background-color: var(--palette-supplement-text-2q);
+    }
+    input {
+      position: absolute;
+      opacity: 0;
+    }
+    /* label text for AT only — the pill carries no words */
+    span {
+      position: absolute;
+      inline-size: 1px;
+      block-size: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+  }
+
+  /* tighten the rail's vertical rhythm inside the sheet so the peek shows the
+     first control(s) whole */
+  :is(#playground, #usage) > aside :is(> label, fieldset) {
+    margin-block-end: 1rem;
+  }
+}
