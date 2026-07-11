@@ -62,6 +62,15 @@
       /* flush to the screen edge: the piano is vertical-rl, so its block-start
          margin is the PHYSICAL RIGHT side — pull it across the main gutter */
       margin-block-start: calc(-1 * var(--gutter));
+      /* hug the section's top and bottom edges. The piano is vertical-rl, so its
+         INLINE axis is the vertical one: stretch the keys' run to the full panes
+         cell (instead of piano.css's fixed min(34rem, 100vh)), then let the
+         inline margins eat the section padding above and the grid row-gap below */
+      align-self: stretch;
+      inline-size: auto;
+      margin-inline-start: -1.25rem; /* = #playground's padding-block-start */
+      margin-inline-end: -2rem; /* = the row gap down to the tool sheet */
+      block-size: 40vw; /* a wider backdrop — was a slim 24vw side strip */
     }
   }
 

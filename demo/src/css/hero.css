@@ -264,7 +264,7 @@ body > main > article {
         background: var(--palette-bg-inverse);
       }
     }
-    &:hover, &:focus-visible {
+    &:hover, &:focus-within {
       &:nth-child(odd) {
         &, dt {
           color: var(--palette-text);
