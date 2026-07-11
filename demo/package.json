@@ -2,6 +2,7 @@
   "name": "ziano-demo",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@11.10.0",
   "scripts": {
     "dev": "vite --port 7070 --strictPort",
     "build": "vite build",
