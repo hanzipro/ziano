@@ -27,23 +27,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
-        with:
-          package_json_file: demo/package.json
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-          cache-dependency-path: demo/pnpm-lock.yaml
+      # bun over pnpm: pnpm v11's supply-chain policy hard-fails on esbuild's
+      # postinstall (ERR_PNPM_IGNORED_BUILDS); bun's approval is the
+      # trustedDependencies field the demo already ships.
+      - uses: oven-sh/setup-bun@v2
 
       - name: Install
         working-directory: demo
-        run: pnpm install --frozen-lockfile
+        run: bun install --frozen-lockfile
 
       - name: Build
         working-directory: demo
-        run: pnpm build
+        run: bun run build
         env:
           VITE_BASE: /ziano/
 

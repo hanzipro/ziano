@@ -1,2 +1,4 @@
-allowBuilds:
-  esbuild: set this to true or false
+# pnpm v10+ build-script approval — esbuild's postinstall is the only one we
+# allow (CI runs on bun, whose equivalent is package.json's trustedDependencies)
+onlyBuiltDependencies:
+  - esbuild
