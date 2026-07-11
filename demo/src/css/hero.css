@@ -236,25 +236,18 @@ body > main > article {
       word-break: break-all;
     }
   }
-  dl {
+  /* family band — the full-bleed backdrop + inverse striping, lifted from the
+     per-font dl now that the 12 fonts fold into 5 family cards (variants switch
+     inside the card, Klim-style). Width cap + pseudo geometry from container.css
+     (main > article > .family listed there). */
+  .family {
     & {
       position: relative;
-      margin-block: 0;
-      padding: 5rem 0 1rem 60%;
-      line-height: 1.5;
-      cursor: pointer; /* JS makes each card a button: pick the font + jump to #playground */
-    }
-    /* :focus-visible: Baseline 2022 — keyboard focus ring without a mouse halo */
-    &:focus-visible {
-      outline: 2px solid var(--palette-accent);
-      outline-offset: -.5rem;
     }
     &:last-child {
       margin-block-end: 3rem;
     }
     &:nth-child(odd) {
-      color: var(--palette-text-inverse);
-      color: var(--palette-text);
       color: var(--palette-bg-3q);
     }
     &::after {
@@ -288,6 +281,80 @@ body > main > article {
           background-color: var(--palette-bg-inverse-3q);
         }
       }
+    }
+    /* variant switch: only the checked variant's card renders; single-variant
+       families (no radios) just show theirs */
+    dl {
+      display: none;
+    }
+    &:not(:has(input)) dl {
+      display: block;
+    }
+  }
+  /* the active-variant map — pure CSS, radio value ↔ data-font-name */
+  .family:has(input[value='shanggu-serif']:checked) dl[data-font-name='shanggu-serif'],
+  .family:has(input[value='shanggu-serif-tc']:checked) dl[data-font-name='shanggu-serif-tc'],
+  .family:has(input[value='shanggu-sans']:checked) dl[data-font-name='shanggu-sans'],
+  .family:has(input[value='shanggu-sans-tc']:checked) dl[data-font-name='shanggu-sans-tc'],
+  .family:has(input[value='genki-min']:checked) dl[data-font-name='genki-min'],
+  .family:has(input[value='genki-min-tc']:checked) dl[data-font-name='genki-min-tc'],
+  .family:has(input[value='genki-gothic']:checked) dl[data-font-name='genki-gothic'],
+  .family:has(input[value='genki-gothic-tc']:checked) dl[data-font-name='genki-gothic-tc'],
+  .family:has(input[value='lxgw-wenkai-tc']:checked) dl[data-font-name='lxgw-wenkai-tc'],
+  .family:has(input[value='lxgw-wenkai']:checked) dl[data-font-name='lxgw-wenkai'] {
+    display: block;
+  }
+
+  /* the variant chips — plain text pills riding the band's currentColor, so the
+     inverse stripes and hover flips tint them for free */
+  .variants {
+    & {
+      position: absolute;
+      inset-block-start: 1.5rem;
+      inset-inline-start: 0;
+      z-index: 1;
+      display: flex;
+      gap: 1.25rem;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      font-size: .875rem;
+    }
+    legend {
+      position: absolute;
+      inline-size: 1px;
+      block-size: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+    label {
+      cursor: pointer;
+      opacity: .55;
+      border-block-end: 2px solid transparent;
+    }
+    label:has(input:checked) {
+      opacity: 1;
+      border-block-end-color: var(--palette-accent);
+    }
+    input {
+      position: absolute;
+      opacity: 0;
+    }
+  }
+
+  dl {
+    & {
+      position: relative;
+      margin-block: 0;
+      padding: 5rem 0 1rem 60%;
+      line-height: 1.5;
+      cursor: pointer; /* JS makes each card a button: pick the font + jump to #playground */
+    }
+    /* :focus-visible: Baseline 2022 — keyboard focus ring without a mouse halo */
+    &:focus-visible {
+      outline: 2px solid var(--palette-accent);
+      outline-offset: -.5rem;
     }
     dt {
       position: absolute;
@@ -349,13 +416,34 @@ body > main > article {
      giant carousel glyph doesn't swallow the whole first screen. */
   @media (width < 52rem) {
     figure {
-      block-size: min(48vh, 22rem);
+      /* full-bleed across main's inline gutter — squeezed by the padding the
+         figcaption's vertical columns run out of room and get truncated */
+      margin-inline: calc(-1 * var(--gutter));
+      inline-size: auto;
+      /* the shorter stage goes through the var so the carousel's baseY and the
+         figcaption's em-scaling (below) stay in sync with the real height */
+      --hero-stage-h: min(48vh, 22rem);
+      block-size: var(--hero-stage-h);
     }
     figure li {
-      font-size: min(48vh, 22rem);
+      font-size: var(--hero-stage-h);
+    }
+    /* scale the caption with the stage so every column holds the same character
+       count as the desktop composition (480px / 2rem = 15) — the background-clip
+       paint zones were tuned against THAT column grid; with fewer characters per
+       column the text slides off the inked rects (red-on-red = the "truncated"
+       glyphs). `figure figcaption` to out-rank the base rule of the same depth. */
+    figure figcaption {
+      font-size: calc(var(--hero-stage-h) / 15);
     }
     dl {
       padding: 2.5rem 0 1.5rem;
+    }
+    /* chips flow above the stacked card here — absolute would sit on the dt */
+    .variants {
+      position: static;
+      padding-block-start: 1.5rem;
+      margin-block-end: -1rem; /* tuck the card's 2.5rem top padding back in */
     }
     dl dt {
       position: static;
