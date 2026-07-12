@@ -15,7 +15,7 @@ ziano把整套OFL傳承字形（傳承／舊字形）切成`unicode-range` woff2
 
 ```html
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif@0.1.0-rc.5/swap.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif@latest/swap.css" />
 ```
 
 把`shanggu-serif`換成你要的字族id，`@0.1.0-rc.5`換成npm上的最新版（建議**釘死**一個版本號，
@@ -27,7 +27,7 @@ ziano把整套OFL傳承字形（傳承／舊字形）切成`unicode-range` woff2
 `import`對應的CSS即可：
 
 ```bash
-npm i @hanzi.pro/webfonts-shanggu-serif@0.1.0-rc.5
+npm i @hanzi.pro/webfonts-shanggu-serif@latest
 ```
 
 ```js
