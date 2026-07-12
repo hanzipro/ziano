@@ -31,9 +31,8 @@ const $ = <T extends Element>(sel: string, root: ParentNode = document) =>
 const $$ = <T extends Element>(sel: string) => [...document.querySelectorAll<T>(sel)]
 
 // ── config (pure data) ─────────────────────────────────────────
-// Floats with the demo (the `rc` dist-tag) so it tracks the newest publish; all
-// three npm CDNs share the spec, so the comparison stays fair.
-// TODO(0.1.0): switch @rc → @latest on the stable release (mirror cdn.ts).
+// Rides @latest (like cdn.ts) so it tracks the newest stable publish; all three npm
+// CDNs share the spec, so the comparison stays fair.
 const PKG = '@hanzi.pro/webfonts-shanggu-sans@latest'
 const PROBE = 'files/shanggu-sans.55.woff2' // a representative ~54 kB body-text slice
 // `base` already includes any registry path prefix: ONLY jsDelivr serves npm packages

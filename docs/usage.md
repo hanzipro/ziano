@@ -18,8 +18,8 @@ ziano把整套OFL傳承字形（傳承／舊字形）切成`unicode-range` woff2
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif@latest/swap.css" />
 ```
 
-把`shanggu-serif`換成你要的字族id，`@0.1.0-rc.5`換成npm上的最新版（建議**釘死**一個版本號，
-而非用浮動的`@rc`⸺指定版本的URL在CDN邊緣是不可變的、永遠新鮮）。
+把`shanggu-serif`換成你要的字族id。`@latest`永遠指向最新正式版；若想要 CDN 邊緣不可變、
+可長期快取的 URL，把`@latest`改釘一個明確版本號（如`@0.1.0`）即可。
 
 ### 方法二：自行托管（npm）
 
@@ -33,8 +33,6 @@ npm i @hanzi.pro/webfonts-shanggu-serif@latest
 ```js
 import '@hanzi.pro/webfonts-shanggu-serif/swap.css'
 ```
-
-（套件目前以`rc` dist-tag發布，`latest`尚未移動，所以裝的時候要帶版本號或`@rc`，否則無法解析。）
 
 ---
 

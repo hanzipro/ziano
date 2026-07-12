@@ -440,13 +440,12 @@
           <p>在<code>&lt;head&gt;</code>中加入以下兩行。<code>preconnect</code>預先建立連線，stylesheet只會請求頁面<strong>實際用到</strong>的切片，未使用的切片不會被下載：</p>
           <pre data-lang="html"><code class="out-cdn">&lt;link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin /&gt;
 &lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif@latest/swap.css" /&gt;</code></pre>
-          <p>將<code>shanggu-serif</code>替換為所需的字族id，<code>@0.1.0-rc.5</code>替換為npm上的最新版本。建議固定一個明確的版本號，而非使用浮動的<code>@rc</code>：指定版本的URL在CDN邊緣不可變，可長期快取。</p>
+          <p>將<code>shanggu-serif</code>替換為所需的字族id。<code>@latest</code>永遠取最新正式版；若需 CDN 邊緣不可變、可長期快取的 URL，把<code>@latest</code>改為明確版本號（如<code>@0.1.0</code>）即可。</p>
 
           <h3>方法二：自托管（npm）</h3>
           <p>若需將字體部署於自有伺服器，以npm安裝對應套件，<code>files/</code>下的woff2會一併安裝，再透過打包工具<code>import</code>對應的CSS：</p>
           <pre data-lang="bash"><code class="out-install">npm i @hanzi.pro/webfonts-shanggu-serif@latest</code></pre>
           <pre data-lang="js"><code class="out-import">import '@hanzi.pro/webfonts-shanggu-serif/swap.css'</code></pre>
-          <p>（套件目前以<code>rc</code> dist-tag發布，<code>latest</code>尚未指向正式版本，因此安裝時須指定版本號或<code>@rc</code>。）</p>
         </section>
 
         <section>
