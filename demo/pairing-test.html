@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>搭配檢查 — 正文 × 楷 × 標點 × 直橫排</title>
+
+<!--
+  0.2.0 的人工驗收頁。把「正文家族 × 楷體 × 標點慣例 × 書寫方向 × 度量覆寫」
+  攤成可切換的矩陣，用來看跨家族混排在同一行／同一欄裡對不對得齊。
+
+  一律吃本地 dist/，不打 CDN——要驗的正是還沒發布的東西。因為同時要讀
+  ../dist/（ziano）與 ../../diantenjeom/dist/（DTJ），**必須從 workspace 根目錄
+  起服務**：
+
+      cd ~/Workspace/hanzi.pro && python3 -m http.server 8899
+      open http://localhost:8899/ziano/demo/pairing-test.html
+
+  「度量覆寫」開關的作法：把每個家族的 swap.css 抓下來注入兩份 <style>——一份原樣
+  （＝出貨狀態），一份刪掉 ascent/descent-override，**家族名不變**——再用
+  `style.disabled` 二選一。刻意不走「複製一份改名叫 Raw」那條路：兩個家族名指向同
+  一批 woff2 時，Chromium 會把後宣告的那組當成同一份資源而拿不到不同的度量，開關
+  就變成假的（實測過，會靜靜地兩邊都顯示已修正的樣子）。
+-->
+
+<style>
+  :root {
+    color-scheme: light dark;
+
+    --palette-ink: #1b1f23;
+    --palette-paper: #fbfbf8;
+    --palette-rule: #d8d8d2;
+    --palette-zhu: #a63a2a;
+    --palette-ink-dark: #e7e7e2;
+    --palette-paper-dark: #16191c;
+    --palette-rule-dark: #2f353b;
+    --palette-zhu-dark: #e0705c;
+
+    --ui-ink: light-dark(var(--palette-ink), var(--palette-ink-dark));
+    --ui-paper: light-dark(var(--palette-paper), var(--palette-paper-dark));
+    --ui-rule: light-dark(var(--palette-rule), var(--palette-rule-dark));
+    --ui-mark: light-dark(var(--palette-zhu), var(--palette-zhu-dark));
+    --ui-soft: color-mix(in oklab, var(--ui-ink) 60%, var(--ui-paper));
+
+    --font-ui: ui-sans-serif, 'Avenir Next', 'Hiragino Sans', system-ui, sans-serif;
+    --font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
+
+    --specimen-size: 24px;
+    --specimen-leading: 2;
+
+    /* set by the composition root from the controls */
+    --font-body: serif;
+    --font-kai: cursive;
+    --font-punct: serif;
+    --emphasis-style: filled circle;
+    --emphasis-position: under right;  /* one value covers both writing modes */
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding-block: 1.5rem 4rem;
+    padding-inline: 1.5rem;
+    background: var(--ui-paper);
+    color: var(--ui-ink);
+    font-family: var(--font-ui);
+    line-height: 1.6;
+  }
+
+  h1 { margin: 0; font-size: 1.25rem; font-weight: 600; }
+  h1 + p { margin-block: .35rem 0; color: var(--ui-soft); font-size: .85rem; }
+
+  form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 1.5rem;
+    margin-block: 1.25rem;
+    padding-block: 1rem;
+    border-block: 1px solid var(--ui-rule);
+    position: sticky;
+    inset-block-start: 0;
+    background: var(--ui-paper);
+    z-index: 1;
+  }
+  fieldset { display: flex; flex-direction: column; gap: .3rem; margin: 0; padding: 0; border: 0; }
+  legend {
+    padding: 0;
+    font-size: .7rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ui-soft);
+  }
+  input[type='range'] { inline-size: 8rem; accent-color: var(--ui-mark); }
+  output { font-family: var(--font-mono); font-size: .75rem; color: var(--ui-soft); }
+  select, label:has(input[type='checkbox']) {
+    font: inherit;
+    font-size: .85rem;
+    color: inherit;
+    background: var(--ui-paper);
+    border: 1px solid var(--ui-rule);
+    border-radius: 3px;
+    padding: .3rem .45rem;
+  }
+  label:has(input[type='checkbox']) { display: flex; align-items: center; gap: .4rem; cursor: pointer; }
+  :focus-visible { outline: 2px solid var(--ui-mark); outline-offset: 2px; }
+
+  #panels {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  @media (min-width: 64rem) { #panels { grid-template-columns: 1fr 20rem; } }
+
+  /* 直排與橫排並排，才能一眼對照同一段文字 */
+  .specimens { display: grid; grid-template-columns: 1fr; gap: 1.5rem; min-inline-size: 0; }
+  @media (min-width: 48rem) { .specimens { grid-template-columns: 1fr 1fr; } }
+
+  section { display: flex; flex-direction: column; gap: .5rem; min-inline-size: 0; }
+  h2 {
+    margin: 0;
+    font-size: .72rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ui-soft);
+  }
+
+  .specimen {
+    font-family: var(--font-punct), var(--font-body);
+    font-size: var(--specimen-size);
+    line-height: var(--specimen-leading);
+    border: 1px solid var(--ui-rule);
+    padding: 1rem;
+    /* the whole point of the page is cross-family alignment inside one run —
+       so the kai run and the emphasised run sit INSIDE the body paragraph. */
+  }
+  .specimen p { margin-block: 0 .8em; }
+  .specimen p:last-child { margin-block-end: 0; }
+
+  .specimen.vertical {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    /* 直排時 inline-size 是「欄有多長」，block-size 是「排了幾欄」。先前只設了
+       block-size，欄長就跟著內容無限延伸，得捲很久才到底。這裡改成鎖欄長、讓欄數
+       往橫向長，超出就在自己的盒子裡橫捲。 */
+    inline-size: 20rem;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+  }
+  .specimen:not(.vertical) { max-block-size: 22rem; overflow-y: auto; }
+
+  /* the kai run keeps the same punctuation layer as the body — otherwise the
+     quotes inside it would come from a different font than the ones outside,
+     and the comparison would be measuring the wrong thing. */
+  q { quotes: '「' '」' '『' '』'; font-family: var(--font-punct), var(--font-kai); }
+  /* The mark font goes FIRST, not after the punctuation font: a browser picks
+     ONE font for the emphasis mark rather than falling through per character, so
+     a stack that starts with a face lacking U+FE45 can end up drawing nothing.
+     This is what `emphasis-font.md` means by "scope it with a selector". */
+  /* The stack is deliberately back to mark-font → punctuation → body, which is
+     the only order that is typographically right: `<em>` contains punctuation
+     too, and it has to come from the same face as the punctuation around it.
+     ziano's slices cover 「」。，、《：, so demoting the punctuation face below
+     the body font would hand those to ziano and quietly undo what this page
+     exists to compare.
+
+     ⚠️ KNOWN: Safari draws no emphasis marks with this order. Chromium and
+     Firefox are fine. Measured in real Safari 26.5 at 60px (ours is 0.25em =
+     30px of ink, the system's is 44px):
+
+       'Diantenjeom Emphasis', <body>              30px — ours
+       'Diantenjeom Emphasis', <body>, <punct>     30px — ours
+       'Diantenjeom Emphasis', <punct>, <body>     nothing drawn  ← we ship this
+       <body> alone                                44px — the system's
+
+     Both working orders put the punctuation face after the body font, i.e.
+     both trade this page's premise for the marks. Not worth it: the marks are
+     one control on a page about punctuation pairing.
+
+     Cause unknown. Cleared by measurement, none of them: the `:has()` gate,
+     injected and disabled stylesheets, overflow clipping, var() as the value
+     source, elements laid out before the font loaded, unicode-range slices,
+     format('woff2-variations'), declaration order, duplicate @font-face rules,
+     splitting mark font and text font across two elements, and the mark font's
+     incomplete name table / vendor ID / panose. A clean page reproducing this
+     page's stack AND its loading will not reproduce the bug, so something else
+     here is required. See diantenjeom/docs/emphasis-marks.md §5.2. */
+  em { font-style: normal; font-family: 'Diantenjeom Emphasis', var(--font-punct), var(--font-body); }
+  :root:has(#emphasis:checked) em {
+    text-emphasis: var(--emphasis-style);
+    -webkit-text-emphasis: var(--emphasis-style);
+    /* Say the position out loud: the UA default is language-dependent and the
+       engines disagree. For lang="zh-Hant" Safari and Firefox compute `under`
+       (which is the 教育部 convention for horizontal Chinese — 著重號標在字下方);
+       Chromium computes `over` and is the odd one out. Left to the defaults, the
+       same page shows the marks above the text in one browser and below it in
+       the other two, and it reads as "Safari isn't drawing them".
+
+       ONE value serves both writing modes, and the vertical panel needs no
+       override: the property is two halves that never both apply —
+       [over | under] is read only in horizontal writing, [right | left] only in
+       vertical. So `under right` means "below the line" horizontally and "right
+       of the column" vertically, which is 教育部 both times. Measured across
+       Chromium, Firefox and WebKit: `under right` and `over right` put the marks
+       on identical pixels in the vertical panel. */
+    text-emphasis-position: var(--emphasis-position);
+    -webkit-text-emphasis-position: var(--emphasis-position);
+  }
+  b { font-weight: 600; }
+
+  table { border-collapse: collapse; font-size: .78rem; inline-size: 100%; }
+  caption { text-align: start; color: var(--ui-soft); padding-block-end: .4rem; }
+  th, td { text-align: start; padding: .25rem .5rem; border-block-end: 1px solid var(--ui-rule); }
+  td { font-family: var(--font-mono); font-variant-numeric: tabular-nums; text-align: end; }
+  thead td, thead th { font-family: var(--font-ui); font-size: .72rem; color: var(--ui-soft); white-space: nowrap; }
+  tr[data-active] { color: var(--ui-mark); font-weight: 600; }
+
+  #marks td:nth-child(2), #marks td:nth-child(3) { font-size: 1.6rem; text-align: center; }
+  #marks td:nth-child(2) { font-family: 'Diantenjeom Emphasis'; }
+  #marks th { font-family: var(--font-mono); font-size: .7rem; text-align: start; }
+  #marks td:last-child { font-family: var(--font-mono); font-size: .66rem; color: var(--ui-soft); }
+  .note { font-size: .78rem; color: var(--ui-soft); margin: 0; }
+  .note code { font-family: var(--font-mono); font-size: .92em; }
+</style>
+
+<script type="module">
+  // ---------- data ---------------------------------------------------------
+  // id → the CSS family name its swap.css declares. Kept next to the ids so the
+  // page can build both the "as shipped" and the "Raw" stylesheet from one list.
+  const ZIANO = {
+    'shanggu-serif': '尙古明體 丹　Shanggu Serif',
+    'shanggu-serif-yue': '尙古明體 月　Shanggu Serif Yue',
+    'shanggu-sans': '尙古黑體 丹　Shanggu Sans',
+    'shanggu-sans-yue': '尙古黑體 月　Shanggu Sans Yue',
+    'genki-serif-yue': '源起明體 月　Genki Serif Yue',
+    'genki-serif': '源起明體 丹　Genki Serif',
+    'genki-sans-yue': '源起黑體 月　Genki Sans Yue',
+    'genki-sans': '源起黑體 丹　Genki Sans',
+  }
+  const KAI = {
+    'lxgw-wenkai-tc': '霞鶩文楷 TC　LXGW WenKai TC',
+    iansui: '芫荽　Iansui',
+    'klee-one': 'Klee One（JP）',
+  }
+  const FAMILY_NAME = {
+    'shanggu-serif': 'Shanggu Serif', 'shanggu-serif-yue': 'Shanggu Serif Yue',
+    'shanggu-sans': 'Shanggu Sans', 'shanggu-sans-yue': 'Shanggu Sans Yue',
+    'genki-serif-yue': 'Genki Serif Yue', 'genki-serif': 'Genki Serif',
+    'genki-sans-yue': 'Genki Sans Yue', 'genki-sans': 'Genki Sans',
+    'lxgw-wenkai-tc': 'LXGW WenKai TC', iansui: 'Iansui', 'klee-one': 'Klee One',
+  }
+  // What each family's `hhea` said UPSTREAM. Every shipped woff2 now carries
+  // 1100/−340 → 0.380 instead (metrics.py), which is why the CSS toggle below no
+  // longer moves anything: the numbers live in the files. Kept as the reference
+  // column — the spread here is what the whole exercise was about.
+  const RAW_CENTRE = {
+    'shanggu-serif': 0.4325, 'shanggu-serif-yue': 0.4325,
+    'shanggu-sans': 0.4360, 'shanggu-sans-yue': 0.4360,
+    'genki-serif-yue': 0.3800, 'genki-serif': 0.3800,
+    'genki-sans-yue': 0.3800, 'genki-sans': 0.3800,
+    'lxgw-wenkai-tc': 0.3360, iansui: 0.3800, 'klee-one': 0.4360,
+    'Diantenjeom（0.2.0）': 0.3800,
+  }
+  // macOS system faces, for comparison. They are not ours to normalise, so the
+  // table prints their real centre in both columns. 楷體 is the interesting one:
+  // at 0.3475 it sits further from 0.380 than anything we ship — exactly the
+  // kind of mismatch this page exists to make visible.
+  const SYSTEM = {
+    "'Hiragino Mincho ProN', serif": ['系統明體　Hiragino Mincho ProN', 0.3800],
+    "'Hiragino Sans', sans-serif": ['系統黑體　Hiragino Sans', 0.3800],
+    "'Hiragino Sans GB', sans-serif": ['系統黑體　Hiragino Sans GB（SC）', 0.3800],
+    "'BiauKaiTC','BiauKaiHK','Kaiti TC',DFKai-SB,cursive": ['系統楷體　楷體－繁 BiauKai TC', 0.3475],
+  }
+
+  const PUNCT = { '': '不掛 DTJ', jis: 'JIS', moe: 'MOE', gb: 'GB', klr: 'KLR' }
+
+  /** A select value is either a ziano/DTJ id or a ready-made system stack. */
+  const isSystem = value => value in SYSTEM
+  const stackFor = value => isSystem(value) ? value : `'${FAMILY_NAME[value]}'`
+  const shippedCentre = value => isSystem(value) ? SYSTEM[value][1] : 0.38
+  const upstreamCentre = value => isSystem(value) ? SYSTEM[value][1] : (RAW_CENTRE[value] ?? 0.38)
+
+  // every `text-emphasis-style` keyword pair with the character it draws. Given
+  // only a fill, the spec picks circle horizontally and sesame vertically.
+  const EMPHASIS = [
+    ['filled dot', '\u2022', 'U+2022'],
+    ['open dot', '\u25E6', 'U+25E6'],
+    ['filled circle', '\u25CF', 'U+25CF'],
+    ['open circle', '\u25CB', 'U+25CB'],
+    ['filled double-circle', '\u25C9', 'U+25C9'],
+    ['open double-circle', '\u25CE', 'U+25CE'],
+    ['filled triangle', '\u25B2', 'U+25B2'],
+    ['open triangle', '\u25B3', 'U+25B3'],
+    ['filled sesame', '\uFE45', 'U+FE45'],
+    ['open sesame', '\uFE46', 'U+FE46'],
+  ]
+
+  const ZIANO_BASE = '../dist'
+  const DTJ_BASE = '../../diantenjeom/dist'
+
+  // ---------- pure ---------------------------------------------------------
+  // A cache-buster on every font URL. This page exists to look at fonts that are
+  // being edited between reloads, and the URLs never change — without this the
+  // browser keeps serving the woff2 it fetched an hour ago and you review the
+  // wrong outlines. `performance.timeOrigin` is per page load.
+  const BUST = `v=${Math.floor(performance.timeOrigin)}`
+  const absolutise = (css, base) =>
+    css.replace(/url\(\s*(['"]?)\.\/(.*?)\1\s*\)/g,
+                (_, q, rest) => `url(${base}/${rest}?${BUST})`)
+
+  /** The "before" state: same family names, no metrics overrides. */
+  const stripOverrides = css =>
+    css.replaceAll(/^\s*(ascent|descent|line-gap)-override:.*\n/gm, '')
+
+  // ---------- shell --------------------------------------------------------
+  const fetchText = url => fetch(url).then(r => (r.ok ? r.text() : Promise.reject(url)))
+
+  async function loadZiano() {
+    const ids = [...Object.keys(ZIANO), ...Object.keys(KAI)]
+    const sheets = await Promise.all(ids.map(async id =>
+      absolutise(await fetchText(`${ZIANO_BASE}/${id}/swap.css`), `${ZIANO_BASE}/${id}`)))
+    return sheets.join('\n')
+  }
+
+  async function loadDtj() {
+    const sheets = await Promise.all(
+      Object.keys(PUNCT).filter(Boolean).map(async p =>
+        absolutise(await fetchText(`${DTJ_BASE}/${p}.css`), `${DTJ_BASE}`)))
+    return sheets.join('\n')
+  }
+
+  const apply = state => {
+    const root = document.documentElement.style
+    root.setProperty('--font-body', stackFor(state.body))
+    root.setProperty('--font-kai', stackFor(state.kai))
+    sheetOn.disabled = state.raw
+    sheetOff.disabled = !state.raw
+    root.setProperty('--specimen-size', `${state.size}px`)
+    root.setProperty('--specimen-leading', state.leading)
+    form.querySelector('output[name=sizeOut]').value = `${state.size}px`
+    form.querySelector('output[name=leadingOut]').value = Number(state.leading).toFixed(2)
+    root.setProperty('--emphasis-style', state.emphasisStyle)
+    // One value for both panels — see the `text-emphasis-position` comment above.
+    root.setProperty('--emphasis-position', state.emphasisPosition)
+    root.setProperty('--font-punct', state.punct
+      ? `'Diantenjeom ${state.punctStyle} ${state.punct.toUpperCase()}', 'Diantenjeom Emphasis'`
+      : `'Diantenjeom Emphasis'`)
+
+    for (const row of document.querySelectorAll('#metrics tbody tr')) {
+      const id = row.dataset.id
+      row.toggleAttribute('data-active', id === state.body || id === state.kai)
+      const cells = row.querySelectorAll('td')
+      cells[0].textContent = upstreamCentre(id).toFixed(4)
+      // system faces are not ours to normalise, so there is no "shipped" value
+      cells[1].textContent = isSystem(id) ? '—' : shippedCentre(id).toFixed(4)
+    }
+    // The UPSTREAM gap, which is what the note next to it claims to show — every
+    // shipped ziano face is 0.380, so a shipped-vs-shipped delta is 0.0000 by
+    // construction and says nothing.
+    document.querySelector('#delta').textContent =
+      Math.abs(upstreamCentre(state.body) - upstreamCentre(state.kai)).toFixed(4)
+  }
+
+  const form = document.querySelector('form')
+  const read = () => ({
+    body: form.body.value,
+    kai: form.kai.value,
+    punct: form.punct.value,
+    punctStyle: form.punctStyle.value,
+    emphasisStyle: form.emphasisStyle.value,
+    emphasisPosition: form.emphasisPosition.value,
+    size: form.size.value,
+    leading: form.leading.value,
+    raw: !form.override.checked,
+  })
+
+  const fill = (select, entries) => {
+    select.append(...Object.entries(entries).map(([value, label]) =>
+      Object.assign(document.createElement('option'), { value, textContent: label })))
+  }
+  const SYSTEM_LABELS = Object.fromEntries(
+    Object.entries(SYSTEM).map(([value, [label]]) => [value, label]))
+  const KAI_SYSTEM = "'BiauKaiTC','BiauKaiHK','Kaiti TC',DFKai-SB,cursive"
+  fill(form.body, { ...ZIANO, ...SYSTEM_LABELS })
+  fill(form.kai, { ...KAI, [KAI_SYSTEM]: SYSTEM_LABELS[KAI_SYSTEM] })
+  fill(form.punct, PUNCT)
+  form.punct.value = 'moe'
+  fill(form.emphasisStyle, Object.fromEntries(
+    EMPHASIS.map(([kw, ch]) => [kw, `${ch}\u3000${kw}`])))
+  form.emphasisStyle.value = 'filled circle'
+
+  const metricsBody = document.querySelector('#metrics tbody')
+  const LABELS = { ...ZIANO, ...KAI, ...SYSTEM_LABELS }
+  for (const id of [...Object.keys(ZIANO), ...Object.keys(KAI),
+                    'Diantenjeom（0.2.0）', ...Object.keys(SYSTEM)]) {
+    const tr = document.createElement('tr')
+    tr.dataset.id = id
+    tr.innerHTML = `<th>${LABELS[id] ?? id}</th><td></td><td></td>`
+    metricsBody.append(tr)
+  }
+
+  const marksBody = document.querySelector('#marks tbody')
+  for (const [kw, ch, cp] of EMPHASIS) {
+    const tr = document.createElement('tr')
+    tr.innerHTML = `<th>${kw}</th><td>${ch}</td><td>${ch}</td><td>${cp}</td>`
+    marksBody.append(tr)
+  }
+
+  const [ziano, dtj] = await Promise.all([loadZiano(), loadDtj()])
+  const sheetOn = document.createElement('style')
+  const sheetOff = document.createElement('style')
+  sheetOn.textContent = `${ziano}\n${dtj}`
+  sheetOff.textContent = `${stripOverrides(ziano)}\n${dtj}`
+  sheetOff.disabled = true
+  document.head.append(sheetOn)
+  // `?single` leaves out the second (disabled) stylesheet — a bisecting aid for
+  // engine bugs that only show up on this page.
+  if (!new URLSearchParams(location.search).has('single')) document.head.append(sheetOff)
+
+  form.addEventListener('input', () => apply(read()))
+  apply(read())
+  document.body.dataset.ready = ''
+</script>
+</head>
+
+<body>
+  <h1>搭配檢查 — 正文 × 楷 × 標點 × 直橫排</h1>
+  <p>吃本地 <code>dist/</code>，不打 CDN。直排欄裡楷體與標點若與正文對不齊，就是這次要修的那個偏移。</p>
+
+  <form>
+    <fieldset><legend>正文</legend><select name="body"></select></fieldset>
+    <fieldset><legend>楷（引文）</legend><select name="kai"></select></fieldset>
+    <fieldset><legend>標點慣例</legend><select name="punct"></select></fieldset>
+    <fieldset><legend>標點風格</legend>
+      <select name="punctStyle"><option value="Serif">Serif</option><option value="Sans">Sans</option></select>
+    </fieldset>
+    <fieldset><legend>著重號</legend>
+      <label><input type="checkbox" id="emphasis"> 開啟</label>
+      <select name="emphasisStyle"></select>
+      <select name="emphasisPosition">
+        <option value="under right">under right（教育部：橫在字下、直在字右）</option>
+        <option value="over right">over right（橫在字上、直在字右）</option>
+        <option value="under left">under left（橫在字下、直在字左）</option>
+        <option value="over left">over left（橫在字上、直在字左）</option>
+      </select>
+    </fieldset>
+    <fieldset><legend>字級 <output name="sizeOut"></output></legend>
+      <input type="range" name="size" min="14" max="48" step="1" value="24">
+    </fieldset>
+    <fieldset><legend>行高 <output name="leadingOut"></output></legend>
+      <input type="range" name="leading" min="1" max="3" step="0.01" value="2">
+    </fieldset>
+    <fieldset><legend>開關</legend>
+      <label><input type="checkbox" name="override" checked> CSS 覆寫</label>
+    </fieldset>
+  </form>
+
+  <div id="panels">
+    <div class="specimens">
+      <section>
+        <h2>直排 vertical-rl</h2>
+        <article class="specimen vertical">
+          <p>歐羅巴殖民地深海採礦機器人<q>海神三號</q>本月初作業時，意外打撈一具長一點五公尺鍍金木箱，初報為<q>不明金屬廢料</q>，鑑定後確認為《聖經》記載之<em>約書亞約櫃</em>，保存近乎完好。</p>
+          <p>然而，殖民局通關系統要求填寫<q>文物原產國代碼</q>；<q>迦南</q>不在選項內：梵蒂岡、以色列文物局、伊斯蘭文物保護組織三方已同日提出所有權申請，互不承認。</p>
+        </article>
+      </section>
+
+      <section>
+        <h2>橫排 horizontal-tb</h2>
+        <article class="specimen">
+          <p>歐羅巴殖民地深海採礦機器人<q>海神三號</q>本月初作業時，意外打撈一具長一點五公尺鍍金木箱，初報為<q>不明金屬廢料</q>，鑑定後確認為《聖經》記載之<em>約書亞約櫃</em>，保存近乎完好。</p>
+          <p>然而，殖民局通關系統要求填寫<q>文物原產國代碼</q>；<q>迦南</q>不在選項內：梵蒂岡、以色列文物局、伊斯蘭文物保護組織三方已同日提出所有權申請，互不承認。</p>
+        </article>
+      </section>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:1.5rem; min-inline-size:0">
+      <section>
+        <h2>中央基線 (asc − |desc|) / 2</h2>
+        <table id="metrics">
+          <caption>出貨的 woff2 已經全部寫成 0.380em。左欄是各家上游原值——它們之間的差就是這次要修掉的直排錯位量。</caption>
+          <thead><tr><th>家族</th><td>上游</td><td>出貨</td></tr></thead>
+          <tbody></tbody>
+        </table>
+        <p class="note">目前正文↔楷的<b>上游</b>差值 <b id="delta">—</b> em（0.0965em 就是肉眼可見的那一級）；出貨後兩邊都是 0.3800。</p>
+        <p class="note">「CSS 覆寫」開關現在只切掉 <code>@font-face</code> 裡那三行 descriptor。字體檔本身已經正規化，所以<b>切換它應該什麼都不會變</b>——會變就代表 CSS 與字體檔漂移了。</p>
+      </section>
+
+      <section>
+        <h2>著重號十式 Diantenjeom Emphasis</h2>
+        <table id="marks">
+          <caption>左欄本字體、右欄系統 fallback。字元可直接選取複製。</caption>
+          <thead><tr><th>keyword</th><td>本</td><td>系統</td><td>碼位</td></tr></thead>
+          <tbody></tbody>
+        </table>
+        <p class="note"><b>三家的預設位置不一樣</b>：<code>lang="zh-Hant"</code> 下 Safari 與 Firefox 算出 <code>under</code>（＝教育部橫式著重號標在字下方的慣例），Chromium 算 <code>over</code>。所以這頁把位置寫死——不寫的話同一頁在一家標在字上、另兩家標在字下，看起來就像「Safari 沒畫」。</p>
+        <p class="note">一個值兩種書寫方向都夠：<code>over／under</code> 只在橫排讀，<code>right／left</code> 只在直排讀，所以 <code>under right</code> 橫排是字下、直排是字右，兩邊都是教育部式。上面的下拉可以把四種組合都試一遍——直排欄裡 <code>under right</code> 與 <code>over right</code> 會落在同一排像素。</p>
+        <p class="note">著重號字體 <code>hhea 880/−120</code>（＝DTJ 標點面同值）→ outset <b>0.500em</b>，不撐行的門檻 <code>line-height ≥ 2.00</code>（＝本頁行高滑桿的預設值，往下拉一格就會看到行距被標記撐開；滑桿步進 0.01，用 0.05 試會誤讀成 2.05）。那個 outset 同時是<b>標記被畫在其中的側欄寬度</b>：直排間距就是 <code>(outset − 墨跡寬)/2</code>，所以標記畫成 0.25em 而不是更大——兩項都在買同一段距離。</p>
+      </section>
+
+      <section>
+        <h2>直排 <code>：；</code></h2>
+        <p class="note">Firefox 專屬檢查：identity <code>vert</code> subst 之後，上面直排欄裡的 <code>：</code> 與 <code>；</code> 應該直立而不是橫躺。Chrome／Safari 本來就正確。</p>
+      </section>
+    </div>
+  </div>
+</body>
+</html>

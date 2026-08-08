@@ -4,6 +4,11 @@
   <meta charset="UTF-8" />
   <title>Ziano・傳承字形 webfont CDN</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- iOS Safari's data detectors read a run of spaced numbers as a phone number:
+       the weight lists (「靜態字體・250 300 400 500 700 900」) came out blue and
+       tappable, offering to call 250 300 400 500 700. This page has no phone
+       numbers at all, so turning detection off costs nothing. -->
+  <meta name="format-detection" content="telephone=no" />
   <meta name="description" content="把千年鉛字淬鍊的漢字造形，帶回網頁⸺免費開源的傳承字形webfont CDN，切片載入，毫秒到位。" />
   <meta property="og:title" content="Ziano・傳承字形webfont CDN" />
   <meta property="og:description" content="把千年鉛字淬鍊的漢字造形，帶回網頁⸺免費開源的傳承字形webfont CDN，切片載入，毫秒到位。" />
@@ -26,12 +31,12 @@
   <link rel="stylesheet" href="/src/main.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif@latest/swap.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans@latest/swap.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif-tc@latest/swap.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans-tc@latest/swap.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-genki-min@latest/swap.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-genki-gothic@latest/swap.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-genki-min-tc@latest/swap.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-genki-gothic-tc@latest/swap.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif-yue@latest/swap.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans-yue@latest/swap.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-genki-serif-yue@latest/swap.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-genki-sans-yue@latest/swap.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-genki-serif@latest/swap.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-genki-sans@latest/swap.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-lxgw-wenkai-tc@latest/swap.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-lxgw-wenkai@latest/swap.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-iansui@latest/swap.css" />
@@ -172,13 +177,14 @@
     </section>
 
     <article>
+      <!-- One card per TYPEFACE, not per foundry family: 明體 and 黑體 are
+           different faces and belong on their own plates, so the chips only ever
+           switch the 丹／月 cut and the card's own 名 is the whole answer. -->
       <section class="family">
         <fieldset class="variants">
-          <legend>尚古家族變體</legend>
-          <label><input type="radio" name="fam-shanggu" value="shanggu-serif" checked />明體・丹</label>
-          <label><input type="radio" name="fam-shanggu" value="shanggu-serif-tc" />明體・月</label>
-          <label><input type="radio" name="fam-shanggu" value="shanggu-sans" />黑體・丹</label>
-          <label><input type="radio" name="fam-shanggu" value="shanggu-sans-tc" />黑體・月</label>
+          <legend>尚古明體變體</legend>
+          <label><input type="radio" name="fam-shanggu-serif" value="shanggu-serif" checked />丹</label>
+          <label><input type="radio" name="fam-shanggu-serif" value="shanggu-serif-yue" />月</label>
         </fieldset>
       <dl data-font-name="shanggu-serif" data-generics="ming" data-weights="250-900" data-variable="true" data-name="尙古明體・丹" data-font-family="Shanggu Serif" data-script="tc">
         <dt>尙古明體・丹
@@ -186,54 +192,66 @@
         <dd>可變字體・250-900
         <dd>明體・傳承字形
       </dl>
-      <dl data-font-name="shanggu-serif-tc" data-generics="ming" data-weights="250-900" data-variable="true" data-name="尙古明體・月" data-font-family="Shanggu Serif TC" data-script="tc">
+      <dl data-font-name="shanggu-serif-yue" data-generics="ming" data-weights="250-900" data-variable="true" data-name="尙古明體・月" data-font-family="Shanggu Serif Yue" data-script="tc">
         <dt>尙古明體・月
-        <dd>Shanggu Serif TC
+        <dd>Shanggu Serif Yue
         <dd>可變字體・250-900
         <dd>明體・傳承字形
       </dl>
+      </section>
+      <section class="family">
+        <fieldset class="variants">
+          <legend>尚古黑體變體</legend>
+          <label><input type="radio" name="fam-shanggu-sans" value="shanggu-sans" checked />丹</label>
+          <label><input type="radio" name="fam-shanggu-sans" value="shanggu-sans-yue" />月</label>
+        </fieldset>
       <dl data-font-name="shanggu-sans" data-generics="hei" data-weights="250-900" data-variable="true" data-name="尙古黑體・丹" data-font-family="Shanggu Sans" data-script="tc">
         <dt>尙古黑體・丹
         <dd>Shanggu Sans
         <dd>可變字體・250-900
         <dd>黑體・傳承字形
       </dl>
-      <dl data-font-name="shanggu-sans-tc" data-generics="hei" data-weights="250-900" data-variable="true" data-name="尙古黑體・月" data-font-family="Shanggu Sans TC" data-script="tc">
+      <dl data-font-name="shanggu-sans-yue" data-generics="hei" data-weights="250-900" data-variable="true" data-name="尙古黑體・月" data-font-family="Shanggu Sans Yue" data-script="tc">
         <dt>尙古黑體・月
-        <dd>Shanggu Sans TC
+        <dd>Shanggu Sans Yue
         <dd>可變字體・250-900
         <dd>黑體・傳承字形
       </dl>
       </section>
       <section class="family">
         <fieldset class="variants">
-          <legend>源起家族變體</legend>
-          <label><input type="radio" name="fam-genki" value="genki-min" checked />明體・月</label>
-          <label><input type="radio" name="fam-genki" value="genki-min-tc" />明體・丹</label>
-          <label><input type="radio" name="fam-genki" value="genki-gothic" />黑體・月</label>
-          <label><input type="radio" name="fam-genki" value="genki-gothic-tc" />黑體・丹</label>
+          <legend>源起明體變體</legend>
+          <label><input type="radio" name="fam-genki-serif" value="genki-serif-yue" checked />月</label>
+          <label><input type="radio" name="fam-genki-serif" value="genki-serif" />丹</label>
         </fieldset>
-      <dl data-font-name="genki-min" data-generics="ming" data-weights="250,300,400,500,600,700,900" data-name="源起明體・月" data-font-family="Genki Min" data-script="tc">
+      <dl data-font-name="genki-serif-yue" data-generics="ming" data-weights="250,300,400,500,600,700,900" data-name="源起明體・月" data-font-family="Genki Serif Yue" data-script="tc">
         <dt>源起明體・月
-        <dd>Genki Min
+        <dd>Genki Serif Yue
         <dd>靜態字體・250 300 400 500 600 700 900
         <dd>明體・傳承字形
       </dl>
-      <dl data-font-name="genki-min-tc" data-generics="ming" data-weights="250,300,400,500,600,700,900" data-name="源起明體・丹" data-font-family="Genki Min TC" data-script="tc">
+      <dl data-font-name="genki-serif" data-generics="ming" data-weights="250,300,400,500,600,700,900" data-name="源起明體・丹" data-font-family="Genki Serif" data-script="tc">
         <dt>源起明體・丹
-        <dd>Genki Min TC
+        <dd>Genki Serif
         <dd>靜態字體・250 300 400 500 600 700 900
         <dd>明體・傳承字形
       </dl>
-      <dl data-font-name="genki-gothic" data-generics="hei" data-weights="250,300,400,500,700,900" data-name="源起黑體・月" data-font-family="Genki Gothic" data-script="tc">
+      </section>
+      <section class="family">
+        <fieldset class="variants">
+          <legend>源起黑體變體</legend>
+          <label><input type="radio" name="fam-genki-sans" value="genki-sans-yue" checked />月</label>
+          <label><input type="radio" name="fam-genki-sans" value="genki-sans" />丹</label>
+        </fieldset>
+      <dl data-font-name="genki-sans-yue" data-generics="hei" data-weights="250,300,400,500,700,900" data-name="源起黑體・月" data-font-family="Genki Sans Yue" data-script="tc">
         <dt>源起黑體・月
-        <dd>Genki Gothic
+        <dd>Genki Sans Yue
         <dd>靜態字體・250 300 400 500 700 900
         <dd>黑體・傳承字形
       </dl>
-      <dl data-font-name="genki-gothic-tc" data-generics="hei" data-weights="250,300,400,500,700,900" data-name="源起黑體・丹" data-font-family="Genki Gothic TC" data-script="tc">
+      <dl data-font-name="genki-sans" data-generics="hei" data-weights="250,300,400,500,700,900" data-name="源起黑體・丹" data-font-family="Genki Sans" data-script="tc">
         <dt>源起黑體・丹
-        <dd>Genki Gothic TC
+        <dd>Genki Sans
         <dd>靜態字體・250 300 400 500 700 900
         <dd>黑體・傳承字形
       </dl>
@@ -244,15 +262,15 @@
           <label><input type="radio" name="fam-lxgw" value="lxgw-wenkai-tc" checked />TC</label>
           <label><input type="radio" name="fam-lxgw" value="lxgw-wenkai" />SC</label>
         </fieldset>
-      <dl data-font-name="lxgw-wenkai-tc" data-generics="kai" data-weights="300,400,500" data-name="霞鶩文楷TC" data-font-family="LXGW Wenkai TC" data-script="tc">
+      <dl data-font-name="lxgw-wenkai-tc" data-generics="kai" data-weights="300,400,500" data-name="霞鶩文楷TC" data-font-family="LXGW WenKai TC" data-script="tc">
         <dt>霞鶩文楷TC
-        <dd>LXGW Wenkai TC
+        <dd>LXGW WenKai TC
         <dd>靜態字體・300 400 500
         <dd>楷體・傳承字形
       </dl>
-      <dl data-font-name="lxgw-wenkai" data-generics="kai" data-weights="300,400,500" data-name="霞鹜文楷SC" data-font-family="LXGW Wenkai" data-script="sc">
+      <dl data-font-name="lxgw-wenkai" data-generics="kai" data-weights="300,400,500" data-name="霞鹜文楷SC" data-font-family="LXGW WenKai" data-script="sc">
         <dt>霞鹜文楷SC
-        <dd>LXGW Wenkai
+        <dd>LXGW WenKai
         <dd>靜態字體・300 400 500
         <dd>楷體・GB簡體字形
       </dl>
@@ -462,7 +480,7 @@
           <p>將西文字體置於最前，讓中西文混排的文本得以最精緻的效果呈現，這也是中文網頁行之有年的排版方式。</p>
 
           <h3>② 傳承字形：漢字的主要字體</h3>
-          <p><code>'Shanggu Sans'</code>（尙古黑體）、<code>'Shanggu Serif'</code>（尙古明體）、<code>'LXGW Wenkai TC'</code>（霞鶩文楷）等。漢字由Ziano收錄的webfont承接，呈現未經各地標準改寫的<strong>傳承印刷形</strong>。</p>
+          <p><code>'Shanggu Sans'</code>（尙古黑體）、<code>'Shanggu Serif'</code>（尙古明體）、<code>'LXGW WenKai TC'</code>（霞鶩文楷）等。漢字由Ziano收錄的webfont承接，呈現未經各地標準改寫的<strong>傳承印刷形</strong>。</p>
 
           <h3>③ 系統日文字體：webfont載入失敗時的備援</h3>
           <p>webfont可能因離線、CDN故障等原因<strong>整體</strong>載入失敗，此時應避免回落至系統預設的國字標準字體字型。</p>
@@ -503,8 +521,8 @@
   ;
   --font-cursive:
     Palatino, Cambria,
-    'LXGW Wenkai TC',
-    Klee, 'Klee One',
+    'LXGW WenKai TC',
+    'Klee One', Klee, 'Klee One',
     BiauKai, DFKai-SB, 'Kaiti TC',
     'Hiragino Mincho ProN', 'Yu Mincho',
     cursive, serif

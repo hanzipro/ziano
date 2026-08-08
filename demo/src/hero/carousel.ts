@@ -321,7 +321,7 @@ const runMotion = (items: readonly HTMLElement[], stage: Element): (() => void) 
     seed = makeSeed()
     elapsed = 0
     active.style.fontFamily = seed.font
-    active.style.color = seed.accent ? 'var(--palette-accent)' : ''
+    active.style.color = seed.accent ? 'var(--ui-accent)' : ''
   }
 
   items.forEach(reset)
@@ -385,7 +385,7 @@ const runCrossfade = (items: readonly HTMLElement[]): (() => void) => {
     const leftPlaced = place < 0.15
     const bx = leftPlaced ? rand(-16, -4) : place < 0.35 ? rand(-7, 7) : rand(10, 34)
     el.style.transform = `translateX(${bx.toFixed(2)}vw)`
-    el.style.color = (leftPlaced ? Math.random() < 0.75 : Math.random() < 0.15) ? 'var(--palette-accent)' : ''
+    el.style.color = (leftPlaced ? Math.random() < 0.75 : Math.random() < 0.15) ? 'var(--ui-accent)' : ''
     el.style.opacity = '1'
     timer = window.setTimeout(step, rand(60_000, 90_000))
   }

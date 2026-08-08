@@ -14,7 +14,7 @@
   }
   &::before {
     margin-block-start: -1rem;
-    border-block-start: 1rem solid var(--palette-ink-grey);
+    border-block-start: 1rem solid var(--ui-ink-grey);
   }
   aside {
     & {
@@ -35,12 +35,12 @@
       display: flex;
       font-weight: 500;
       margin-block-end: .5em;
-      background-color: var(--palette-bg-3q);
-      color: var(--palette-supplement-text);
+      background-color: var(--ui-bg-3q);
+      color: var(--ui-supplement-text);
     }
     label output {
       font-weight: 400;
-      color: var(--palette-supplement-text-3q);
+      color: var(--ui-supplement-text-3q);
     }
     select {
       min-block-size: 2rem;
@@ -51,8 +51,8 @@
     }
     input[type="range"] {
       /* theme-aware so the thumb/filled track stay visible in dark mode
-         (--palette-ink stays dark for the code block, so don't use it here) */
-      accent-color: var(--palette-text);
+         (--ui-ink stays dark for the code block, so don't use it here) */
+      accent-color: var(--ui-text);
     }
     fieldset {
       & {
@@ -68,14 +68,14 @@
           justify-content: center;
           align-items: center;
           text-align: center;
-          background-color: var(--palette-panel);
-          border: 1px solid var(--palette-rule);
+          background-color: var(--ui-panel);
+          border: 1px solid var(--ui-rule);
           border-inline-end-width: 0;
           cursor: pointer;
         }
         &:has(:checked) {
-          background-color: var(--palette-text);
-          color: var(--palette-bg);
+          background-color: var(--ui-text);
+          color: var(--ui-bg);
         }
         &:first-of-type {
           border-radius: .25rem 0 0 .25rem;
@@ -123,14 +123,14 @@
           align-items: center;
           font-size: .75rem;
           line-height: 2;
-          background-color: var(--palette-panel);
-          border: 1px solid var(--palette-rule);
+          background-color: var(--ui-panel);
+          border: 1px solid var(--ui-rule);
           border-radius: .25rem;
           cursor: pointer;
         }
         &[aria-pressed='true'] {
-          background-color: var(--palette-text);
-          color: var(--palette-bg);
+          background-color: var(--ui-text);
+          color: var(--ui-bg);
         }
       }
     }
@@ -141,7 +141,7 @@
         margin-block-start: .5em;
         font-size: .625rem;
         line-height: 1.25;
-        color: var(--palette-supplement-text);
+        color: var(--ui-supplement-text);
       }
       output {
         &:not(:empty):not(:last-child)::after {
@@ -169,9 +169,9 @@
       min-block-size: 0;
       padding: 2rem;
       overflow: auto;
-      border: 1px solid var(--palette-grid);
+      border: 1px solid var(--ui-grid);
       border-radius: .5rem;
-      background-color: var(--palette-bg-3q);
+      background-color: var(--ui-bg-3q);
       backdrop-filter: blur(6px) saturate(1.1);
     }
   }
@@ -180,6 +180,13 @@
     & {
       display: flex;
       flex: none;
+      /* wrap the ROW, never a pill (see `label` below). Three pills of Han text
+         fit one line on a 390px phone in Chrome, but the same string is wider in
+         iOS Safari's fallback face and 「彈奏全部120鍵」 broke across two lines
+         inside its own border — a pill that has come apart reads as a bug, two
+         tidy rows don't. Metric-independent by construction: whatever the face,
+         the pills stay whole and the row reflows. */
+      flex-wrap: wrap;
       gap: .25rem;
     }
     legend {
@@ -200,15 +207,17 @@
       & {
         padding-block: .35rem;
         padding-inline: 1rem;
-        border: 1px solid var(--palette-rule);
+        border: 1px solid var(--ui-rule);
         border-radius: .25rem;
-        background-color: var(--palette-panel);
+        background-color: var(--ui-panel);
         font-size: .8125rem;
+        /* one pill, one line — the row above wraps instead */
+        white-space: nowrap;
         cursor: pointer;
       }
       &:has(:checked) {
-        background-color: var(--palette-text);
-        color: var(--palette-bg);
+        background-color: var(--ui-text);
+        color: var(--ui-bg);
       }
     }
   }

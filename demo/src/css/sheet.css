@@ -85,9 +85,9 @@
     margin-inline: calc(-1 * var(--gutter));
     padding: 0 var(--gutter) env(safe-area-inset-bottom);
     /* the header's translucent backplate, mirrored at the bottom edge */
-    background-color: var(--palette-bg-3q);
+    background-color: var(--ui-bg-3q);
     backdrop-filter: blur(6px) saturate(1.1);
-    border-block-start: 1px solid var(--palette-grid);
+    border-block-start: 1px solid var(--ui-grid);
     /* peek = grip + the first controls whole (playground: font picker + weight
        slider — the two you touch mid-reading) */
     max-block-size: var(--sheet-peek, 11.5rem);
@@ -111,6 +111,14 @@
       position: sticky;
       inset-block-start: 0;
       z-index: 1;
+      /* `auto`, and it must be: the rails' `aside > label` rule sets
+         `inline-size: 100%`, which with border-box pins the grip to the CONTENT
+         box's width. The negative margins below then only shifted it left
+         instead of widening it — the box ended up a gutter's width short, and
+         the centred pill sat half a gutter (8px) left of the screen's middle.
+         Auto lets the negative margins do their job: content box ＋ 2 gutters
+         ＝ full bleed, so `place-items: center` centres on the SCREEN. */
+      inline-size: auto;
       margin-inline: calc(-1 * var(--gutter));
       padding-block: .75rem;
       background-color: inherit;
@@ -122,7 +130,7 @@
       inline-size: 2.5rem;
       block-size: .25rem;
       border-radius: .125rem;
-      background-color: var(--palette-supplement-text-2q);
+      background-color: var(--ui-supplement-text-2q);
     }
     input {
       position: absolute;

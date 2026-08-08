@@ -22,17 +22,17 @@ select {
     block-size: 2rem;
     font-size: .875rem;
     text-align: start;
-    background-color: var(--palette-bg);
-    border: 1px solid var(--palette-rule);
+    background-color: var(--ui-bg);
+    border: 1px solid var(--ui-rule);
     border-radius: .25rem;
     cursor: pointer;
     transition: border-color .15s ease-out;
   }
   &:hover {
-    border-color: var(--palette-ink-grey);
+    border-color: var(--ui-ink-grey);
   }
   &:open {
-    border-color: var(--palette-ink);
+    border-color: var(--ui-ink);
   }
   &::picker-icon {
     content: '';
@@ -40,7 +40,7 @@ select {
     transition: rotate .2s ease-out;
     inline-size: 1.5rem;
     block-size: 1.5rem;
-    background-color: var(--palette-supplement-text);
+    background-color: var(--ui-supplement-text);
     clip-path: var(--path-caret);
   }
   &:open::picker-icon {
@@ -57,9 +57,9 @@ selectedcontent {
 /* the drop-down popover */
 select::picker(select) {
   & {
-    border: 1px solid var(--palette-rule);
+    border: 1px solid var(--ui-rule);
     border-radius: .25rem;
-    background-color: var(--palette-bg);
+    background-color: var(--ui-bg);
     box-shadow: 0 .5rem 1.5rem #0003;
     /* enter/exit transition — display + overlay are discrete, so allow-discrete
         keeps the popover around long enough to animate out */
@@ -91,10 +91,10 @@ optgroup {
     padding: .5rem 0 .25rem;
     font-size: .75rem;
     font-weight: 200;
-    color: var(--palette-supplement-text);
+    color: var(--ui-supplement-text);
   }
   &:not(:first-of-type) {
-    border-block-start: 1px solid var(--palette-grid);
+    border-block-start: 1px solid var(--ui-grid);
   }
   legend {
     padding: 0 1rem;
@@ -111,7 +111,7 @@ option {
     padding-inline: 1rem;
     line-height: 2;
     font-size: 1rem;
-    color: var(--palette-text);
+    color: var(--ui-text);
     cursor: pointer;
   }
   &:first-child {
@@ -119,7 +119,7 @@ option {
   }
   &:hover,
   &:focus {
-    background-color: var(--palette-panel);
+    background-color: var(--ui-panel);
   }
   &:checked {
     font-weight: 700;
@@ -131,6 +131,6 @@ option {
     block-size: 1.5rem;
     margin-inline: auto -.5em;
     clip-path: var(--path-check);
-    background-color: var(--palette-supplement-text-3q);
+    background-color: var(--ui-supplement-text-3q);
   }
 }

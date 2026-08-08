@@ -20,7 +20,7 @@
   /* the chunky top divider every screen carries (drawn on the full-bleed container::before) */
   &::before {
     margin-block-start: -1rem;
-    border-block-start: 1rem solid var(--palette-ink-grey);
+    border-block-start: 1rem solid var(--ui-ink-grey);
   }
 
   /* the long-form guide column — capped to a readable measure */
@@ -49,7 +49,7 @@
       margin-block: .75rem;
       font-size: 1rem;
       font-weight: 600;
-      color: var(--palette-supplement-text);
+      color: var(--ui-supplement-text);
     }
     fieldset {
       & {
@@ -71,7 +71,7 @@
         margin-block-end: .125rem;
         padding: 0;
         font-weight: 500;
-        color: var(--palette-supplement-text);
+        color: var(--ui-supplement-text);
       }
       small {
         font-size: .625rem;
@@ -83,10 +83,10 @@
       inline-size: 100%;
       min-block-size: 2rem;
       padding-inline: .5rem;
-      border: 1px solid var(--palette-rule);
+      border: 1px solid var(--ui-rule);
       border-radius: .25rem;
-      background-color: var(--palette-panel);
-      color: var(--palette-text);
+      background-color: var(--ui-panel);
+      color: var(--ui-text);
       font: inherit;
       font-size: .8125rem;
     }
@@ -105,23 +105,23 @@
       .weights-hint {
         inline-size: 100%;
         font-size: .6875rem;
-        color: var(--palette-supplement-text);
+        color: var(--ui-supplement-text);
       }
       button {
         & {
           padding-block: .15rem;
           padding-inline: .5rem;
-          border: 1px solid var(--palette-rule);
+          border: 1px solid var(--ui-rule);
           border-radius: .25rem;
-          background-color: var(--palette-panel);
-          color: var(--palette-text);
+          background-color: var(--ui-panel);
+          color: var(--ui-text);
           font: inherit;
           font-size: .75rem;
           cursor: pointer;
         }
         &[aria-pressed='true'] {
-          background-color: var(--palette-text);
-          color: var(--palette-bg);
+          background-color: var(--ui-text);
+          color: var(--ui-bg);
         }
       }
     }
@@ -143,15 +143,15 @@
         justify-content: center;
         align-items: center;
         block-size: 2rem;
-        background-color: var(--palette-panel);
-        border: 1px solid var(--palette-rule);
+        background-color: var(--ui-panel);
+        border: 1px solid var(--ui-rule);
         border-inline-end-width: 0;
         font-size: .8125rem;
         cursor: pointer;
       }
       &:has(:checked) {
-        background-color: var(--palette-text);
-        color: var(--palette-bg);
+        background-color: var(--ui-text);
+        color: var(--ui-bg);
       }
       &:first-of-type {
         border-radius: .25rem 0 0 .25rem;
@@ -210,13 +210,13 @@
         inset-block-end: .25rem;
         display: block;
         inline-size: 3rem;
-        border-block-end: 3px solid var(--palette-accent);
+        border-block-end: 3px solid var(--ui-accent);
       }
     }
     p {
       margin-block: .75rem 0;
       text-align: justify;
-      color: var(--palette-supplement-text);
+      color: var(--ui-supplement-text);
       font-size: 1.125rem;
     }
   }
@@ -229,7 +229,7 @@
   > .guide > section {
     margin-block-start: 2rem;
     padding-block-start: 1rem;
-    border-block-start: 1px solid var(--palette-grid);
+    border-block-start: 1px solid var(--ui-grid);
   }
   p {
     margin-block: 1em;
@@ -260,9 +260,9 @@
       margin-inline: 0;
       margin-block: 1.5em;
       padding-inline-start: 1rem;
-      border-inline-start: 3px solid var(--palette-grid);
+      border-inline-start: 3px solid var(--ui-grid);
       font-family: var(--font-accent);
-      color: var(--palette-supplement-text);
+      color: var(--ui-supplement-text);
     }
     p {
       margin-block: 0;
@@ -277,7 +277,7 @@
   :where(p, li, td, h2) code {
     padding-inline: .25em;
     border-radius: .25rem;
-    background-color: var(--palette-panel);
+    background-color: var(--ui-panel);
     font-family: ui-monospace, 'SF Mono', Menlo, Courier, monospace;
     font-size: .875em;
   }
@@ -294,10 +294,10 @@
       padding: .625rem .75rem;
       text-align: start;
       vertical-align: top;
-      border-block-end: 1px solid var(--palette-grid);
+      border-block-end: 1px solid var(--ui-grid);
     }
     thead th {
-      color: var(--palette-supplement-text);
+      color: var(--ui-supplement-text);
       font-weight: 600;
     }
     td:first-child {
@@ -311,14 +311,14 @@
     & {
       margin-block: 1em;
       border-radius: .375rem;
-      background-color: var(--palette-ink); /* stays dark in both themes */
+      background-color: var(--ui-ink); /* stays dark in both themes */
       /* the terminal bg is fixed ink, but in dark mode the PAGE bg is ink too → the
          block vanishes with no edge. A fixed faint-light hairline gives it a boundary:
          invisible against the white page in light mode, the needed separation in dark. */
-      border: 1px solid color-mix(in srgb, var(--color-mist) 16%, transparent);
-      /* its light text must ALSO not flip; --palette-text-inverse flips to ink in dark
+      border: 1px solid color-mix(in srgb, var(--palette-mist) 16%, transparent);
+      /* its light text must ALSO not flip; --ui-text-inverse flips to ink in dark
          mode (hero bands), which would hide the code → fix to a light primitive */
-      color: color-mix(in srgb, var(--color-mist) 90%, transparent);
+      color: color-mix(in srgb, var(--palette-mist) 90%, transparent);
       overflow-x: auto;
     }
     code {

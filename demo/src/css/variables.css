@@ -30,8 +30,8 @@
   ;
   --font-accent:
     Palatino, Cambria,
-    'LXGW Wenkai TC',
-    Klee, 'Klee One',
+    'LXGW WenKai TC',
+    'Klee One', Klee, 'Klee One',
     BiauKai, DFKai-SB, 'Kaiti TC',
     'Hiragino Mincho ProN', 'Yu Mincho',
     cursive, serif
@@ -39,69 +39,69 @@
 
   /* ── Colour primitives ──────────────────────────────────────────
    * Raw swatches, named by appearance, theme-INVARIANT. NEVER consume
-   * these from a component — use the semantic --palette-* layer below
+   * these from a component — use the semantic --ui-* layer below
    * (that's the one that flips for dark mode). */
-  --color-white: #fff;
-  --color-snow: #f7f7f7; /* off-white surface */
-  --color-mist: #eeeeee; /* pale grey — faint text / hairlines */
-  --color-cloud: #e6e6e6; /* hairline grey — grid / rule */
-  --color-silver: #b0b1b3;
-  --color-ash: #9b9b9b;
-  --color-slate: #696c6b; /* muted green-grey */
-  --color-graphite: #2a2a2d;
-  --color-onyx: #242427;
-  --color-charcoal: #18181b;
-  --color-black: #111; /* body-text black */
-  --color-ink: #0a0a0a; /* deepest near-black surface */
-  --color-ink: #191515; /* deepest near-black surface */
-  --color-ink-grey: #4e4f51;
-  --color-ink-light: #4e4f519c;
-  --color-red: #b00404;
+  --palette-white: #fff;
+  --palette-snow: #f7f7f7; /* off-white surface */
+  --palette-mist: #eeeeee; /* pale grey — faint text / hairlines */
+  --palette-cloud: #e6e6e6; /* hairline grey — grid / rule */
+  --palette-silver: #b0b1b3;
+  --palette-ash: #9b9b9b;
+  --palette-slate: #696c6b; /* muted green-grey */
+  --palette-graphite: #2a2a2d;
+  --palette-onyx: #242427;
+  --palette-charcoal: #18181b;
+  --palette-black: #111; /* body-text black */
+  --palette-ink: #0a0a0a; /* deepest near-black surface */
+  --palette-ink: #191515; /* deepest near-black surface */
+  --palette-ink-grey: #4e4f51;
+  --palette-ink-light: #4e4f519c;
+  --palette-red: #b00404;
 
   /* ── Semantic palette (palette) ──────────────────────────────────
    * Role names; each REFERENCES a primitive. Components consume ONLY these.
    * Theme via light-dark(): a token that flips carries BOTH values inline —
    * light-dark(light, dark) — picked by the root's color-scheme (the :has() block
    * below flips it to dark). A token with a single value is theme-INVARIANT on
-   * purpose: --palette-ink stays dark (code block / selected pill), --palette-accent
+   * purpose: --ui-ink stays dark (code block / selected pill), --ui-accent
    * constant. The -3q/-2q/-1q alphas (75/50/25 %) are color-mix of their own base,
-   * so a base that flips re-tints them automatically — only --palette-bg-3q carries
+   * so a base that flips re-tints them automatically — only --ui-bg-3q carries
    * its own light-dark (dark wants 82 %, not 75).
    * (light-dark(): Baseline 2024. color-mix(): Baseline 2023.) */
-  --palette-accent: var(--color-red);
-  --palette-text: light-dark(var(--color-black), var(--color-mist));
-  --palette-grid: light-dark(var(--color-cloud), var(--color-onyx));
+  --ui-accent: var(--palette-red);
+  --ui-text: light-dark(var(--palette-black), var(--palette-mist));
+  --ui-grid: light-dark(var(--palette-cloud), var(--palette-onyx));
 
-  --palette-bg: light-dark(var(--color-white), var(--color-ink));
-  --palette-bg-3q:
+  --ui-bg: light-dark(var(--palette-white), var(--palette-ink));
+  --ui-bg-3q:
     light-dark(
-      color-mix(in srgb, var(--color-white) 75%, transparent),
-      color-mix(in srgb, var(--color-ink) 82%, transparent)
+      color-mix(in srgb, var(--palette-white) 75%, transparent),
+      color-mix(in srgb, var(--palette-ink) 82%, transparent)
     )
   ;
-  --palette-bg-2q: color-mix(in srgb, var(--palette-bg) 50%, transparent);
-  --palette-bg-1q: color-mix(in srgb, var(--palette-bg) 25%, transparent);
+  --ui-bg-2q: color-mix(in srgb, var(--ui-bg) 50%, transparent);
+  --ui-bg-1q: color-mix(in srgb, var(--ui-bg) 25%, transparent);
 
-  --palette-bg-inverse: light-dark(var(--color-ink), var(--color-snow));
-  --palette-bg-inverse-3q: color-mix(in srgb, var(--palette-bg-inverse) 75%, transparent);
-  --palette-bg-inverse-2q: color-mix(in srgb, var(--palette-bg-inverse) 50%, transparent);
-  --palette-bg-inverse-1q: color-mix(in srgb, var(--palette-bg-inverse) 25%, transparent);
+  --ui-bg-inverse: light-dark(var(--palette-ink), var(--palette-snow));
+  --ui-bg-inverse-3q: color-mix(in srgb, var(--ui-bg-inverse) 75%, transparent);
+  --ui-bg-inverse-2q: color-mix(in srgb, var(--ui-bg-inverse) 50%, transparent);
+  --ui-bg-inverse-1q: color-mix(in srgb, var(--ui-bg-inverse) 25%, transparent);
 
-  --palette-text-inverse: light-dark(var(--color-mist), var(--color-ink));
-  --palette-text-inverse-3q: color-mix(in srgb, var(--palette-text-inverse) 75%, transparent);
-  --palette-text-inverse-2q: color-mix(in srgb, var(--palette-text-inverse) 50%, transparent);
-  --palette-text-inverse-1q: color-mix(in srgb, var(--palette-text-inverse) 25%, transparent);
+  --ui-text-inverse: light-dark(var(--palette-mist), var(--palette-ink));
+  --ui-text-inverse-3q: color-mix(in srgb, var(--ui-text-inverse) 75%, transparent);
+  --ui-text-inverse-2q: color-mix(in srgb, var(--ui-text-inverse) 50%, transparent);
+  --ui-text-inverse-1q: color-mix(in srgb, var(--ui-text-inverse) 25%, transparent);
 
-  --palette-supplement-text: light-dark(var(--color-slate), var(--color-ash));
-  --palette-supplement-text-3q: color-mix(in srgb, var(--palette-supplement-text) 75%, transparent);
-  --palette-supplement-text-2q: color-mix(in srgb, var(--palette-supplement-text) 50%, transparent);
-  --palette-supplement-text-1q: color-mix(in srgb, var(--palette-supplement-text) 25%, transparent);
+  --ui-supplement-text: light-dark(var(--palette-slate), var(--palette-ash));
+  --ui-supplement-text-3q: color-mix(in srgb, var(--ui-supplement-text) 75%, transparent);
+  --ui-supplement-text-2q: color-mix(in srgb, var(--ui-supplement-text) 50%, transparent);
+  --ui-supplement-text-1q: color-mix(in srgb, var(--ui-supplement-text) 25%, transparent);
 
-  --palette-panel: light-dark(var(--color-snow), var(--color-charcoal));
-  --palette-ink: var(--color-ink);
-  --palette-ink-grey: light-dark(var(--color-ink-grey), var(--color-silver));
-  --palette-ink-light: var(--color-ink-light);
-  --palette-rule: light-dark(var(--color-cloud), var(--color-graphite));
+  --ui-panel: light-dark(var(--palette-snow), var(--palette-charcoal));
+  --ui-ink: var(--palette-ink);
+  --ui-ink-grey: light-dark(var(--palette-ink-grey), var(--palette-silver));
+  --ui-ink-light: var(--palette-ink-light);
+  --ui-rule: light-dark(var(--palette-cloud), var(--palette-graphite));
 }
 
 /* Dark theme — flip ONLY the root's color-scheme; every light-dark() token above

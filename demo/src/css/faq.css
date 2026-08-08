@@ -16,7 +16,7 @@
   /* the chunky top divider every screen carries (drawn on the full-bleed container::before) */
   &::before {
     margin-block-start: -1rem;
-    border-block-start: 1rem solid var(--palette-ink-grey);
+    border-block-start: 1rem solid var(--ui-ink-grey);
   }
 
   /* explainer: down to a single topic — an apple.com-style fine-print note in the
@@ -25,7 +25,7 @@
   .explainer {
     & {
       max-inline-size: 42em;
-      color: var(--palette-supplement-text);
+      color: var(--ui-supplement-text);
       font-size: .875rem;
       line-height: 1.7;
     }
@@ -45,7 +45,7 @@
     & {
       margin-block-start: 3.5rem;
       padding-block-start: 2rem;
-      border-block-start: 1px solid var(--palette-grid);
+      border-block-start: 1px solid var(--ui-grid);
     }
     h2 {
       display: inline;
@@ -58,7 +58,7 @@
       display: inline;
       margin: 0 0 0 1rem;
       font-size: .9375rem;
-      color: var(--palette-supplement-text);
+      color: var(--ui-supplement-text);
     }
     ul {
       display: flex;
@@ -75,16 +75,16 @@
     }
     a {
       align-self: start; /* underline hugs the name */
-      color: var(--palette-text);
+      color: var(--ui-text);
       text-decoration: none;
       font-weight: 600;
-      border-block-end: 2px solid var(--palette-accent);
+      border-block-end: 2px solid var(--ui-accent);
     }
     a:hover, a:focus-visible {
-      color: var(--palette-accent);
+      color: var(--ui-accent);
     }
     span {
-      color: var(--palette-supplement-text);
+      color: var(--ui-supplement-text);
       font-size: .875rem;
     }
   }
@@ -95,7 +95,7 @@
   code {
     padding-inline: .25em;
     border-radius: .25rem;
-    background-color: var(--palette-panel);
+    background-color: var(--ui-panel);
     font-family: ui-monospace, 'SF Mono', Menlo, Courier, monospace;
     font-size: .875rem;
   }

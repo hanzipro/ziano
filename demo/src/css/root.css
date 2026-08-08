@@ -13,7 +13,7 @@
     line-height: 1.25;
     text-autospace: normal;
     text-underline-offset: .125rem;
-    color: var(--palette-text);
+    color: var(--ui-text);
     scroll-behavior: smooth;
     /* reserve the scrollbar's track so 100vw full-bleed elements (dividers, piano)
        don't overflow past the viewport into a phantom horizontal scrollbar
@@ -24,10 +24,10 @@
   /* The body */
   :where(body) {
     margin: 0;
-    background: var(--palette-bg);
+    background: var(--ui-bg);
     /* re-declared (not just inherited from :root) so the dark-mode override on
        body:has(…) in variables.css actually re-resolves the text colour */
-    color: var(--palette-text);
+    color: var(--ui-text);
     /* belt-and-braces against any residual 100vw overflow (clip ≠ hidden: it
        creates no scroll container, so position:sticky keeps working) */
     overflow-x: clip;

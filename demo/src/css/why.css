@@ -14,8 +14,8 @@
   }
   &::before {
     z-index: -10;
-    background-color: var(--palette-bg);
-    border-block-start: 1px solid var(--palette-grid);
+    background-color: var(--ui-bg);
+    border-block-start: 1px solid var(--ui-grid);
   }
 
   hgroup {
@@ -29,7 +29,7 @@
     }
     p {
       margin-block: 0;
-      color: var(--palette-supplement-text);
+      color: var(--ui-supplement-text);
     }
   }
   > section:first-child hgroup {
@@ -74,7 +74,7 @@
         'Noto Sans TC',
         sans-serif
       ;
-      color: var(--palette-supplement-text);
+      color: var(--ui-supplement-text);
     }
     .heritage-hei {
       font-family:
@@ -90,7 +90,7 @@
         'Noto Serif TC',
         serif
       ;
-      color: var(--palette-supplement-text);
+      color: var(--ui-supplement-text);
     }
     /* Songti TC cells where that font does NOT follow the MOE standard (it leans
        heritage for 漢/骨/育/北) — showing them would exonerate the standard. Blanked
@@ -136,13 +136,13 @@
     figcaption {
       margin-block-start: .5rem;
       font-size: .875rem;
-      color: var(--palette-supplement-text);
+      color: var(--ui-supplement-text);
     }
   }
   /* the further-reading line — figcaption-grade fine print */
   .refs {
     font-size: .875rem;
-    color: var(--palette-supplement-text);
+    color: var(--ui-supplement-text);
   }
 
   /* ── the three-step why-fast strip — stacked one-liners, number in the margin
@@ -170,12 +170,12 @@
         inset-block-start: 0;
         inset-inline-start: 0;
         font-weight: 600;
-        color: var(--palette-accent);
+        color: var(--ui-accent);
       }
     }
   }
   .cta a {
-    color: var(--palette-accent);
+    color: var(--ui-accent);
   }
 
   /* ── quickstart: two one-liners in the house code terminal ──
@@ -186,9 +186,9 @@
     & {
       margin-block: .75rem;
       border-radius: .375rem;
-      background-color: var(--palette-ink); /* stays dark in both themes */
-      border: 1px solid color-mix(in srgb, var(--color-mist) 16%, transparent);
-      color: color-mix(in srgb, var(--color-mist) 90%, transparent);
+      background-color: var(--ui-ink); /* stays dark in both themes */
+      border: 1px solid color-mix(in srgb, var(--palette-mist) 16%, transparent);
+      color: color-mix(in srgb, var(--palette-mist) 90%, transparent);
       overflow-x: auto;
     }
     code {

@@ -2,7 +2,7 @@
  * ================================================================================
  * CDN bench — page-specific components (controls, results table, specimen, log).
  * Tokens / reset / header / footer come from the shared partials (see bench.css
- * manifest). Consumes the semantic --palette-* layer only, so dark mode flips for
+ * manifest). Consumes the semantic --ui-* layer only, so dark mode flips for
  * free via :root:has(input[name='dark-mode']:checked).
  * ================================================================================
  */
@@ -34,13 +34,13 @@ body > main {
   hgroup p {
     margin-block: 0;
     font-size: .9rem;
-    color: var(--palette-supplement-text);
+    color: var(--ui-supplement-text);
   }
   code {
     padding-block: .1em;
     padding-inline: .4em;
     border-radius: .25rem;
-    background-color: var(--palette-panel);
+    background-color: var(--ui-panel);
     font-family: ui-monospace, 'SF Mono', Menlo, monospace;
     font-size: .85em;
   }
@@ -76,35 +76,35 @@ main > form {
   }
   legend {
     font-size: .85rem;
-    color: var(--palette-supplement-text);
+    color: var(--ui-supplement-text);
   }
   button {
     & {
       padding-block: .5rem;
       padding-inline: 1rem;
-      border: 1px solid var(--palette-rule);
+      border: 1px solid var(--ui-rule);
       border-radius: .5rem;
-      background-color: var(--palette-panel);
-      color: var(--palette-text);
+      background-color: var(--ui-panel);
+      color: var(--ui-text);
       cursor: pointer;
       transition: background-color .15s, border-color .15s;
     }
     &:hover {
-      background-color: var(--palette-grid);
+      background-color: var(--ui-grid);
     }
     &:disabled {
       opacity: .5;
       cursor: progress;
     }
     /* per-CDN run buttons — filled ink in both themes, like the pre terminal. The bg
-       (--palette-ink) doesn't flip, but in dark mode the PAGE is also ink → fix the text
-       to a light primitive (NOT --palette-text-inverse, which flips to ink in dark and
+       (--ui-ink) doesn't flip, but in dark mode the PAGE is also ink → fix the text
+       to a light primitive (NOT --ui-text-inverse, which flips to ink in dark and
        would vanish) and give a faint hairline edge so the button reads on the dark page.
        The "run all" button (data-run='all') stays the plain panel style. */
     &[data-run]:not([data-run='all']) {
-      border-color: color-mix(in srgb, var(--color-mist) 20%, transparent);
-      background-color: var(--palette-ink);
-      color: color-mix(in srgb, var(--color-mist) 90%, transparent);
+      border-color: color-mix(in srgb, var(--palette-mist) 20%, transparent);
+      background-color: var(--ui-ink);
+      color: color-mix(in srgb, var(--palette-mist) 90%, transparent);
     }
     &[data-run]:not([data-run='all']):hover {
       opacity: .85;
@@ -115,19 +115,19 @@ main > form {
     align-items: center;
     gap: .4rem;
     font-size: .85rem;
-    color: var(--palette-supplement-text);
+    color: var(--ui-supplement-text);
   }
   input[type='number'] {
     inline-size: 3.5rem;
     padding: .3rem;
-    border: 1px solid var(--palette-rule);
+    border: 1px solid var(--ui-rule);
     border-radius: .375rem;
-    background-color: var(--palette-bg);
+    background-color: var(--ui-bg);
     color: inherit;
     font: inherit;
   }
   input[type='checkbox'] {
-    accent-color: var(--palette-ink);
+    accent-color: var(--ui-ink);
   }
 }
 
@@ -141,7 +141,7 @@ main > form {
     overscroll-behavior-x: contain;
   }
   &:focus-visible {
-    outline: 2px solid var(--palette-accent);
+    outline: 2px solid var(--ui-accent);
     outline-offset: 2px;
   }
 }
@@ -153,7 +153,7 @@ main > form {
   th, td {
     padding-block: .55rem;
     padding-inline: .7rem;
-    border-block-end: 1px solid var(--palette-rule);
+    border-block-end: 1px solid var(--ui-rule);
     text-align: end;
     white-space: nowrap;
   }
@@ -165,10 +165,10 @@ main > form {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: .03em;
-    color: var(--palette-supplement-text-2q);
+    color: var(--ui-supplement-text-2q);
   }
   tbody tr.winner td {
-    background-color: var(--palette-panel);
+    background-color: var(--ui-panel);
   }
   .cdn {
     font-weight: 700;
@@ -178,15 +178,15 @@ main > form {
     padding-block: .1em;
     padding-inline: .5em;
     border-radius: 999px;
-    background-color: var(--palette-ink);
-    /* fixed light text — --palette-text-inverse flips to ink in dark mode and would
+    background-color: var(--ui-ink);
+    /* fixed light text — --ui-text-inverse flips to ink in dark mode and would
        disappear on the ink badge (same reasoning as the run buttons / pre terminal) */
-    color: color-mix(in srgb, var(--color-mist) 90%, transparent);
+    color: color-mix(in srgb, var(--palette-mist) 90%, transparent);
     font-size: .68rem;
     vertical-align: .05em;
   }
   .muted {
-    color: var(--palette-supplement-text-2q);
+    color: var(--ui-supplement-text-2q);
     font-weight: 400;
   }
   .n {
@@ -203,9 +203,9 @@ main > form {
     margin-block-start: .5rem;
     padding: 1.5rem;
     min-block-size: 7rem;
-    border: 1px solid var(--palette-rule);
+    border: 1px solid var(--ui-rule);
     border-radius: .625rem;
-    background-color: var(--palette-bg);
+    background-color: var(--ui-bg);
   }
   p:first-of-type {
     margin-block: 0;
@@ -222,7 +222,7 @@ main > form {
   figcaption {
     margin-block-start: .8rem;
     font-size: .75rem;
-    color: var(--palette-supplement-text);
+    color: var(--ui-supplement-text);
   }
 }
 
@@ -233,10 +233,10 @@ main > form {
   padding-inline: 1rem;
   max-block-size: 14rem;
   overflow: auto;
-  border: 1px solid var(--palette-rule);
+  border: 1px solid var(--ui-rule);
   border-radius: .5rem;
-  background-color: var(--palette-panel);
-  color: var(--palette-supplement-text);
+  background-color: var(--ui-panel);
+  color: var(--ui-supplement-text);
   font: 12px/1.5 ui-monospace, 'SF Mono', Menlo, monospace;
   white-space: pre-wrap;
 }

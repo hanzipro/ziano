@@ -22,7 +22,7 @@
     margin: auto;
     inline-size: 1.5rem;
     block-size: 5rem;
-    background: var(--palette-accent);
+    background: var(--ui-accent);
     animation: gate-pulse .8s ease-in-out .15s infinite alternate backwards;
   }
 }

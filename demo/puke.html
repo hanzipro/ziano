@@ -15,29 +15,29 @@
 
   <style>
     /* ── tokens ─────────────────────────────────────────────────────────────
-       Two tiers: primitive --color-* (raw swatches, theme-invariant) → semantic
-       --palatte-* (roles). Components consume --palatte-* ONLY; each column
+       Two tiers: primitive --palette-* (raw swatches, theme-invariant) → semantic
+       --ui-* (roles). Components consume --ui-* ONLY; each column
        re-points the semantic layer per [data-side] — the same flip-by-state idea
        as dark mode, scoped to a side instead of the whole page. */
     :root {
       /* primitives */
-      --color-bile: #5f6e23;
-      --color-bile-deep: #44511a;
-      --color-bile-acid: #97aa3c;
-      --color-bile-fg: #eef3cf;
-      --color-error: #e0473a;
-      --color-paper: #f7f3ea;
-      --color-paper-edge: #e7dfcc;
-      --color-ink: #1b1813;
-      --color-zhu: #a32b22; /* 朱紅 */
-      --color-gold: #b3893f;
-      --color-white: #fff;
+      --palette-bile: #5f6e23;
+      --palette-bile-deep: #44511a;
+      --palette-bile-acid: #97aa3c;
+      --palette-bile-fg: #eef3cf;
+      --palette-error: #e0473a;
+      --palette-paper: #f7f3ea;
+      --palette-paper-edge: #e7dfcc;
+      --palette-ink: #1b1813;
+      --palette-zhu: #a32b22; /* 朱紅 */
+      --palette-gold: #b3893f;
+      --palette-white: #fff;
 
       /* semantic (default = the elegant 傳承/paper context) */
-      --palatte-bg: var(--color-paper);
-      --palatte-text: var(--color-ink);
-      --palatte-accent: var(--color-zhu);
-      --palatte-edge: var(--color-paper-edge);
+      --ui-bg: var(--palette-paper);
+      --ui-text: var(--palette-ink);
+      --ui-accent: var(--palette-zhu);
+      --ui-edge: var(--palette-paper-edge);
 
       --measure: 38rem;
       /* copy-style.md rule 4: web-safe Western for Latin → heritage for Han → JP system
@@ -60,8 +60,8 @@
       margin: 0;
       padding-block: clamp(2rem, 6vw, 5rem) 5rem;
       padding-inline: clamp(1rem, 4vw, 3rem);
-      background: var(--color-paper);
-      color: var(--color-ink);
+      background: var(--palette-paper);
+      color: var(--palette-ink);
       font-family: var(--font-ming);
       line-height: 1.7;
       /* Han↔Latin spacing comes from CSS, not space characters (copy-style.md rule 3).
@@ -85,12 +85,12 @@
           line-height: 1.25;
           text-wrap: balance; /* Baseline 2024 — even ragging on the headline */
         }
-        [data-tone='bile'] { color: var(--color-bile); }
-        [data-tone='accent'] { color: var(--color-zhu); }
+        [data-tone='bile'] { color: var(--palette-bile); }
+        [data-tone='accent'] { color: var(--palette-zhu); }
       }
       p {
         margin-block-start: 1rem;
-        color: color-mix(in srgb, var(--color-ink) 64%, transparent);
+        color: color-mix(in srgb, var(--palette-ink) 64%, transparent);
         font-size: clamp(1rem, 2.2vw, 1.15rem);
       }
       /* the 標記病灶 toggle — native control in a label; state drives CSS via :has() */
@@ -100,7 +100,7 @@
         align-items: center;
         margin-block-start: 1.5rem;
         padding: .5rem .9rem;
-        border: 1px solid var(--palatte-edge);
+        border: 1px solid var(--ui-edge);
         border-radius: 2rem;
         font-family: var(--font-hei);
         font-size: .9rem;
@@ -126,7 +126,7 @@
         font-size: .95rem;
         font-weight: 600;
         letter-spacing: .06em;
-        color: color-mix(in srgb, var(--color-ink) 55%, transparent);
+        color: color-mix(in srgb, var(--palette-ink) 55%, transparent);
       }
       @media (width < 48rem) {
         & { grid-template-columns: 1fr; }
@@ -142,8 +142,8 @@
         padding: clamp(1.25rem, 3vw, 2.25rem);
         border-radius: 1rem;
         overflow: clip;
-        background: var(--palatte-bg);
-        color: var(--palatte-text);
+        background: var(--ui-bg);
+        color: var(--ui-text);
       }
       h3 {
         & {
@@ -154,7 +154,7 @@
           font-family: var(--font-hei);
           font-size: 1rem;
           font-weight: 600;
-          color: var(--palatte-accent);
+          color: var(--ui-accent);
         }
         small { font-weight: 400; opacity: .72; }
       }
@@ -169,9 +169,9 @@
     /* 國標欄 — 病態膽汁綠 + 反胃；semantic layer re-pointed, plus a system font */
     article[data-side='moe'] {
       & {
-        --palatte-bg: radial-gradient(120% 140% at 30% 0%, var(--color-bile-acid) 0%, var(--color-bile) 45%, var(--color-bile-deep) 100%);
-        --palatte-text: var(--color-bile-fg);
-        --palatte-accent: var(--color-white);
+        --ui-bg: radial-gradient(120% 140% at 30% 0%, var(--palette-bile-acid) 0%, var(--palette-bile) 45%, var(--palette-bile-deep) 100%);
+        --ui-text: var(--palette-bile-fg);
+        --ui-accent: var(--palette-white);
         position: relative;
       }
       /* scattered nausea behind the text — pseudo-element, no extra DOM */
@@ -194,9 +194,9 @@
     /* 傳承欄 — 雅緻紙本 (default semantic tokens already fit) */
     article[data-side='sg'] {
       & {
-        border: 1px solid var(--palatte-edge);
-        box-shadow: 0 1px 0 var(--color-white) inset,
-          0 18px 40px -28px color-mix(in srgb, var(--color-ink) 60%, transparent);
+        border: 1px solid var(--ui-edge);
+        box-shadow: 0 1px 0 var(--palette-white) inset,
+          0 18px 40px -28px color-mix(in srgb, var(--palette-ink) 60%, transparent);
       }
       /* 朱紅印章 before the label — pseudo-element */
       h3::before {
@@ -206,7 +206,7 @@
         block-size: .8em;
         align-self: center;
         border-radius: .15em;
-        background: var(--palatte-accent);
+        background: var(--ui-accent);
       }
       &[data-face='sans'] p { font-family: var(--font-hei); }
       &[data-face='serif'] p { font-family: var(--font-ming); }
@@ -221,12 +221,12 @@
     }
     body:has(input[name='mark']:checked) {
       article[data-side='moe'] mark {
-        text-decoration: underline wavy var(--color-error);
+        text-decoration: underline wavy var(--palette-error);
         text-decoration-thickness: 2px;
         text-underline-offset: .18em;
       }
       article[data-side='sg'] mark {
-        background: color-mix(in srgb, var(--color-gold) 30%, transparent);
+        background: color-mix(in srgb, var(--palette-gold) 30%, transparent);
         border-radius: .12em;
       }
     }
@@ -240,7 +240,7 @@
       h2 {
         font-size: clamp(1.4rem, 3.5vw, 2rem);
         font-weight: 600;
-        color: var(--color-zhu);
+        color: var(--palette-zhu);
         margin-block-end: 1.25rem;
         text-wrap: balance;
       }
@@ -251,7 +251,7 @@
           font-size: 3.4em;
           line-height: .82;
           padding-inline-end: .12em;
-          color: var(--color-zhu);
+          color: var(--palette-zhu);
         }
       }
       p[data-tone='bye'] {
@@ -260,9 +260,9 @@
           font-size: clamp(1.6rem, 5vw, 2.6rem);
           font-weight: 600;
           text-align: center;
-          color: var(--color-bile);
+          color: var(--palette-bile);
         }
-        [data-tone='accent'] { color: var(--color-zhu); }
+        [data-tone='accent'] { color: var(--palette-zhu); }
       }
     }
 

@@ -27,8 +27,8 @@ body > header {
   }
   &::after {
     z-index: -10;
-    background-color: var(--palette-bg-3q);
-    border-block-end: 1px solid var(--palette-grid);
+    background-color: var(--ui-bg-3q);
+    border-block-end: 1px solid var(--ui-grid);
     backdrop-filter: blur(6px) saturate(1.1);
   }
   h1 {
@@ -48,7 +48,7 @@ body > header {
       inset-block-start: 1.0625em;
       display: block;
       inline-size: 5rem;
-      border-block-end: 2px solid var(--palette-accent);
+      border-block-end: 2px solid var(--ui-accent);
     }
   }
   menu {
@@ -67,7 +67,7 @@ body > header {
     }
     a {
       font-size: .875rem;
-      color: var(--palette-ink-grey);
+      color: var(--ui-ink-grey);
     }
   }
   li:has(input[type='checkbox']) {
@@ -136,10 +136,10 @@ body > footer {
     block-size: var(--h-footer);
     font-size: .75rem;
     font-weight: 250;
-    color: var(--palette-supplement-text);
+    color: var(--ui-supplement-text);
   }
   &::before {
-    border-block-start: 1px solid var(--palette-grid);
+    border-block-start: 1px solid var(--ui-grid);
   }
   p {
     inline-size: 100%;

@@ -36,7 +36,7 @@
     flex: 1;
     block-size: 100%;
     background: linear-gradient(to bottom, #efefef, #fff);
-    border-inline-end: 1px solid var(--palette-rule);
+    border-inline-end: 1px solid var(--ui-rule);
     border-radius: 0 0 5px 5px;
     box-shadow:
       -1px 0 0 #ffffff8c inset,
@@ -64,10 +64,10 @@
     box-shadow: 0 0 26px 1px var(--glow);
   }
   kbd.white.on {
-    background: var(--palette-ink);
+    background: var(--ui-ink);
   }
   kbd.black.on {
-    background: var(--palette-supplement-text);
+    background: var(--ui-supplement-text);
   }
 
   /* Phones (<34rem): 120 horizontal keys ÷ 360px ≈ 3px each — too thin to read. Turn

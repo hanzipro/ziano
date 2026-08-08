@@ -127,18 +127,18 @@ body > main > article {
       --hero-accent-rect-w: 2em;
       --hero-accent-rect-h: 6.25em;
       --hero-accent-rect:
-        linear-gradient(var(--palette-accent), var(--palette-accent))
+        linear-gradient(var(--ui-accent), var(--ui-accent))
         var(--hero-accent-rect-x) var(--hero-accent-rect-y) / var(--hero-accent-rect-w) var(--hero-accent-rect-h) no-repeat
       ;
       --hero-accent-rect-fore:
         /* The text inside the rect */
-        linear-gradient(var(--palette-text-inverse), var(--palette-text-inverse))
+        linear-gradient(var(--ui-text-inverse), var(--ui-text-inverse))
         var(--hero-accent-rect-x) var(--hero-accent-rect-y) / var(--hero-accent-rect-w) var(--hero-accent-rect-h) no-repeat,
         /* The text in the first paragraph */
-        linear-gradient(var(--palette-text), var(--palette-text))
+        linear-gradient(var(--ui-text), var(--ui-text))
         9rem var(--hero-accent-rect-y) / 10rem 30rem no-repeat,
         /* The text outside the rect */
-        linear-gradient(var(--palette-accent), var(--palette-accent))
+        linear-gradient(var(--ui-accent), var(--ui-accent))
         0 0 / 100% 100% no-repeat
       ;
 
@@ -173,7 +173,7 @@ body > main > article {
       font-family: var(--font-alternative);
       font-size: min(64vh, 32rem); /* fills the stage height; carousel.ts slides it left/right past the edges */
       line-height: 1;
-      color: var(--palette-text);
+      color: var(--ui-text);
       opacity: 0; /* carousel.ts reveals the active glyph; :first-child is the no-JS fallback */
       will-change: transform, filter, opacity;
       /* the glyph is a layered wash — it multiplies with the figure's red block + page
@@ -208,8 +208,8 @@ body > main > article {
         text-indent: 1em;
       }
       &:first-child::first-line {
-        color: var(--palette-text);
-        text-shadow: 0 0 1px var(--palette-bg);
+        color: var(--ui-text);
+        text-shadow: 0 0 1px var(--ui-bg);
       }
     }
     .google-fonts {
@@ -221,8 +221,8 @@ body > main > article {
       line-height: 1.05;
       text-shadow: none;
       vertical-align: text-bottom;
-      background: var(--color-ink) linear-gradient(var(--palette-accent), var(--palette-accent)) 0 0 / 3.5em .95em no-repeat;
-      color: var(--color-snow);
+      background: var(--palette-ink) linear-gradient(var(--ui-accent), var(--ui-accent)) 0 0 / 3.5em .95em no-repeat;
+      color: var(--palette-snow);
     }
     abbr {
       writing-mode: horizontal-tb;
@@ -248,7 +248,7 @@ body > main > article {
       margin-block-end: 3rem;
     }
     &:nth-child(odd) {
-      color: var(--palette-bg-3q);
+      color: var(--ui-bg-3q);
     }
     &::after {
       z-index: -10;
@@ -258,27 +258,27 @@ body > main > article {
     }
     &:nth-child(odd) {
       dt {
-        color: var(--palette-bg);
+        color: var(--ui-bg);
       }
       &::after {
-        background: var(--palette-bg-inverse);
+        background: var(--ui-bg-inverse);
       }
     }
     &:hover, &:focus-within {
       &:nth-child(odd) {
         &, dt {
-          color: var(--palette-text);
+          color: var(--ui-text);
         }
         &::after {
-          background-color: var(--palette-bg-inverse-1q);
+          background-color: var(--ui-bg-inverse-1q);
         }
       }
       &:nth-child(even) {
         & {
-          color: var(--palette-bg);
+          color: var(--ui-bg);
         }
         &::after {
-          background-color: var(--palette-bg-inverse-3q);
+          background-color: var(--ui-bg-inverse-3q);
         }
       }
     }
@@ -291,15 +291,25 @@ body > main > article {
       display: block;
     }
   }
-  /* the active-variant map — pure CSS, radio value ↔ data-font-name */
+  /* The active-variant map — pure CSS, radio value ↔ data-font-name. CSS cannot
+     compare one element's attribute against another's, so the pairing has to be
+     spelled out once per variant; there is no shorter honest way to write it.
+     That makes it the one place in this file that goes stale SILENTLY: a name
+     that is no longer in the map simply never matches, and the card renders its
+     variant chips with an empty body — no error, nothing in the console. It did
+     exactly that between 0.2.0's family rename (ead7d42: `genki-min` →
+     `genki-serif`, `genki-gothic` → `genki-sans`, `*-tc` → `*-yue`) and
+     2026-08-08: 源起's four variants and 尚古's two 月 variants all showed a
+     blank card. `tests/test_demo_variant_map.py` now fails if the three lists
+     (radio values, `dl[data-font-name]`, this map) ever disagree again. */
   .family:has(input[value='shanggu-serif']:checked) dl[data-font-name='shanggu-serif'],
-  .family:has(input[value='shanggu-serif-tc']:checked) dl[data-font-name='shanggu-serif-tc'],
+  .family:has(input[value='shanggu-serif-yue']:checked) dl[data-font-name='shanggu-serif-yue'],
   .family:has(input[value='shanggu-sans']:checked) dl[data-font-name='shanggu-sans'],
-  .family:has(input[value='shanggu-sans-tc']:checked) dl[data-font-name='shanggu-sans-tc'],
-  .family:has(input[value='genki-min']:checked) dl[data-font-name='genki-min'],
-  .family:has(input[value='genki-min-tc']:checked) dl[data-font-name='genki-min-tc'],
-  .family:has(input[value='genki-gothic']:checked) dl[data-font-name='genki-gothic'],
-  .family:has(input[value='genki-gothic-tc']:checked) dl[data-font-name='genki-gothic-tc'],
+  .family:has(input[value='shanggu-sans-yue']:checked) dl[data-font-name='shanggu-sans-yue'],
+  .family:has(input[value='genki-serif']:checked) dl[data-font-name='genki-serif'],
+  .family:has(input[value='genki-serif-yue']:checked) dl[data-font-name='genki-serif-yue'],
+  .family:has(input[value='genki-sans']:checked) dl[data-font-name='genki-sans'],
+  .family:has(input[value='genki-sans-yue']:checked) dl[data-font-name='genki-sans-yue'],
   .family:has(input[value='lxgw-wenkai-tc']:checked) dl[data-font-name='lxgw-wenkai-tc'],
   .family:has(input[value='lxgw-wenkai']:checked) dl[data-font-name='lxgw-wenkai'] {
     display: block;
@@ -335,7 +345,7 @@ body > main > article {
     }
     label:has(input:checked) {
       opacity: 1;
-      border-block-end-color: var(--palette-accent);
+      border-block-end-color: var(--ui-accent);
     }
     input {
       position: absolute;
@@ -353,7 +363,7 @@ body > main > article {
     }
     /* :focus-visible: Baseline 2022 — keyboard focus ring without a mouse halo */
     &:focus-visible {
-      outline: 2px solid var(--palette-accent);
+      outline: 2px solid var(--ui-accent);
       outline-offset: -.5rem;
     }
     dt {
@@ -375,29 +385,29 @@ body > main > article {
     font-family: 'Shanggu Sans', sans-serif;
   }
   [data-font-name='shanggu-serif-tc'] dt {
-    font-family: 'Shanggu Serif TC', serif;
+    font-family: 'Shanggu Serif Yue', serif;
   }
   [data-font-name='shanggu-sans-tc'] dt {
-    font-family: 'Shanggu Sans TC', sans-serif;
+    font-family: 'Shanggu Sans Yue', sans-serif;
   }
   [data-font-name='genki-min'] dt {
-    font-family: 'Genki Min', serif;
+    font-family: 'Genki Serif Yue', serif;
   }
   [data-font-name='genki-min-tc'] dt {
-    font-family: 'Genki Min TC', serif;
+    font-family: 'Genki Serif', serif;
   }
   [data-font-name='genki-gothic'] dt {
-    font-family: 'Genki Gothic', sans-serif;
+    font-family: 'Genki Sans Yue', sans-serif;
   }
   [data-font-name='genki-gothic-tc'] dt {
-    font-family: 'Genki Gothic TC', sans-serif;
+    font-family: 'Genki Sans', sans-serif;
   }
   [data-font-name='lxgw-wenkai-tc'] dt {
-    font-family: 'LXGW Wenkai TC', cursive, serif;
+    font-family: 'LXGW WenKai TC', cursive, serif;
     font-weight: normal;
   }
   [data-font-name='lxgw-wenkai'] dt {
-    font-family: 'LXGW Wenkai', cursive, serif;
+    font-family: 'LXGW WenKai', cursive, serif;
     font-weight: normal;
   }
   [data-font-name='iansui'] dt {
@@ -438,6 +448,17 @@ body > main > article {
     }
     dl {
       padding: 2.5rem 0 1.5rem;
+    }
+    /* the band goes edge-to-edge, and main's gutter becomes the card's inner
+       padding. Desktop insets it (`calc(100vw - 2rem)`) so it reads as a card,
+       but that inset is a FIXED 1rem while `--gutter` shrinks to 1rem too — so
+       below ~25rem the band edge and the text edge met exactly and the copy sat
+       flush against the black (this `dl` has no inline padding here, and
+       `.variants` is in flow at inset-inline-start 0). Full bleed is the phone
+       idiom anyway; body's `overflow-x: clip` + reserved scrollbar gutter
+       (root.css) make 100vw safe, same as the dividers and the piano. */
+    .family::after {
+      inline-size: 100vw;
     }
     /* chips flow above the stacked card here — absolute would sit on the dt */
     .variants {
