@@ -26,7 +26,10 @@
 
 [[family]]
 id              = "shanggu-serif"
-font_family     = "Shanggu Serif"          # keep name (spec §7); RFN gate passed
+font_family     = "Shanggu Serif"            # no suffix ＝ 丹, always
+cut             = "Dan"                      # → dan/ stylesheets ＋ the name table
+font_family_zh  = "尙古明體丹"
+font_family_zh_hans = "尙古明体丹"
 style           = "serif"
 format          = "vf"
 weight_min      = 250
@@ -41,6 +44,9 @@ asset_sha256    = "36c26a19f159d4e388de115e222fd663dd7d0629d0dba48b289f85a7cd85c
 [[family]]
 id              = "shanggu-sans"
 font_family     = "Shanggu Sans"
+cut             = "Dan"
+font_family_zh  = "尙古黑體丹"
+font_family_zh_hans = "尙古黑体丹"
 style           = "sans"
 format          = "vf"
 weight_min      = 250
@@ -55,11 +61,12 @@ asset_sha256    = "31b207a05332196ff444114d66de1c7b622d3a7244ec15a2485e8d0844cb1
 # --- Plan 2: neutral-alt families (static per-weight, all ~7 Source Han weights) ---
 # GenYo 月版/TW (milder cut). Series = 源樣 GenYo (original strokes), not 源起 Genki.
 # Weights use the fonts' real usWeightClass. Serif has SB(600), sans has N(350)
-# — authentic Source Han weight sets (they differ). RFN gate passed → names kept.
+# — authentic Source Han weight sets (they differ).
 
 [[family]]
 id              = "genyo-min"
 font_family     = "GenYo Min"
+font_family_zh  = "源樣明體月"
 style           = "serif"
 format          = "static"
 repo            = "ButTaiwan/genyo-font"
@@ -93,6 +100,7 @@ asset_sha256    = "64ed21a2ef3b42171bdded55a705b32cc105740436c9f61c3d6efec95a769
 [[family]]
 id              = "genyo-gothic"
 font_family     = "GenYo Gothic"
+font_family_zh  = "源樣黑體月"
 style           = "sans"
 format          = "static"
 repo            = "ButTaiwan/genyog-font"
@@ -129,6 +137,7 @@ asset_sha256    = "616be26e3448b1396b342533d046d8bb0d5b1801d80b5a8ee882811bdc625
 [[family]]
 id              = "genyo-min-tc"
 font_family     = "GenYo Min TC"
+font_family_zh  = "源樣明體丹"
 style           = "serif"
 format          = "static"
 repo            = "ButTaiwan/genyo-font"
@@ -162,6 +171,7 @@ asset_sha256    = "45cbaca2e813810e84b4ddef1a4cf9cf6bb8d5ee75c1c68f0e1cdfb9afc85
 [[family]]
 id              = "genyo-gothic-tc"
 font_family     = "GenYo Gothic TC"
+font_family_zh  = "源樣黑體丹"
 style           = "sans"
 format          = "static"
 repo            = "ButTaiwan/genyog-font"
@@ -200,6 +210,8 @@ asset_sha256    = "e87a63854a4f378e03684377c6d8d491099737233179961bde70cd0d83b0e
 [[family]]
 id              = "lxgw-wenkai-tc"
 font_family     = "LXGW WenKai TC"
+font_family_zh  = "霞鶩文楷 TC"
+font_family_zh_hans = "霞鹜文楷 TC"
 style           = "cursive"
 format          = "static"
 repo            = "lxgw/LxgwWenkaiTC"
@@ -221,6 +233,7 @@ asset_sha256    = "1c3021d72c2000fdbad219bbf093a7a20fe1f8de7699ca4b4017192afe2b5
 [[family]]
 id              = "iansui"
 font_family     = "Iansui"
+font_family_zh  = "芫荽"
 style           = "cursive"
 format          = "static"
 repo            = "ButTaiwan/iansui"
@@ -240,6 +253,8 @@ heritage        = false  # 國字標準字體 (MOE standard form), not 傳承字
 [[family]]
 id              = "lxgw-wenkai"
 font_family     = "LXGW WenKai"
+font_family_zh  = "霞鶩文楷"
+font_family_zh_hans = "霞鹜文楷"
 style           = "cursive"
 format          = "static"
 slice_table     = "simplified-chinese"     # SC-default font → SC partition (鹜 etc.)
@@ -286,11 +301,13 @@ local_names     = ["Klee One", "Klee"]
 # codepoint, no 新→舊 merge (the base/無附加名 does merge 青→靑 etc.). SAME OTF
 # archive as base, just the TC member → reuse asset + asset_sha256. `-tc` denotes
 # the upstream variant name (NOTE: for Shanggu, -tc is the *milder* cut; for GenYo
-# -tc/丹 is the *more*-heritage cut — see README). RFN gate passed → names kept. ---
+# -tc/丹 is the *more*-heritage cut — see README). ---
 
 [[family]]
-id              = "shanggu-serif-tc"
-font_family     = "Shanggu Serif TC"
+id              = "shanggu-serif-yue"
+font_family     = "Shanggu Serif Yue"
+font_family_zh  = "尙古明體月"
+font_family_zh_hans = "尙古明体月"
 style           = "serif"
 format          = "vf"
 weight_min      = 250
@@ -303,8 +320,10 @@ license_member  = "LICENSE.txt"
 asset_sha256    = "36c26a19f159d4e388de115e222fd663dd7d0629d0dba48b289f85a7cd85c399"
 
 [[family]]
-id              = "shanggu-sans-tc"
-font_family     = "Shanggu Sans TC"
+id              = "shanggu-sans-yue"
+font_family     = "Shanggu Sans Yue"
+font_family_zh  = "尙古黑體月"
+font_family_zh_hans = "尙古黑体月"
 style           = "sans"
 format          = "vf"
 weight_min      = 250
@@ -320,11 +339,13 @@ asset_sha256    = "31b207a05332196ff444114d66de1c7b622d3a7244ec15a2485e8d0844cb1
 # GenYo but woff2 17–24% smaller (consistent stroke construction → better brotli).
 # ziano's DEFAULT neutral-alt family; GenYo kept (already published) but not promoted
 # in the demo. NOTE: Genki Gothic has NO N(350) weight (GenYo Gothic did).
-# Same repos/tag as GenYo; RFN gate passed → upstream-derived names kept. ---
+# Same repos/tag as GenYo; no upstream RFN covers these names, but the shipped
+# name table is still rewritten to `Ziano …` — see naming.py. ---
 
 [[family]]
-id              = "genki-min"
-font_family     = "Genki Min"
+id              = "genki-serif-yue"
+font_family     = "Genki Serif Yue"
+font_family_zh  = "源起明體月"
 style           = "serif"
 format          = "static"
 repo            = "ButTaiwan/genyo-font"
@@ -356,8 +377,9 @@ asset_sha256    = "429b715989a6ebe49918cff12b4890905ddd5f6f760238694c2734eb5e2f6
   member = "GenKiMin2TW-H.otf"
 
 [[family]]
-id              = "genki-gothic"
-font_family     = "Genki Gothic"
+id              = "genki-sans-yue"
+font_family     = "Genki Sans Yue"
+font_family_zh  = "源起黑體月"
 style           = "sans"
 format          = "static"
 repo            = "ButTaiwan/genyog-font"
@@ -386,8 +408,10 @@ asset_sha256    = "14ce76a4940a393830199cdfc9fa9f1fda1e5f0c8225dbfae80381b51be07
   member = "GenKiGothic2TW-H.otf"
 
 [[family]]
-id              = "genki-min-tc"
-font_family     = "Genki Min TC"
+id              = "genki-serif"
+font_family     = "Genki Serif"
+cut             = "Dan"
+font_family_zh  = "源起明體丹"
 style           = "serif"
 format          = "static"
 repo            = "ButTaiwan/genyo-font"
@@ -419,8 +443,10 @@ asset_sha256    = "0bc06bf44954962e3c29c3f33bc7afc557b408d7d3295191410f14202f64a
   member = "GenKiMin2TC-H.otf"
 
 [[family]]
-id              = "genki-gothic-tc"
-font_family     = "Genki Gothic TC"
+id              = "genki-sans"
+font_family     = "Genki Sans"
+cut             = "Dan"
+font_family_zh  = "源起黑體丹"
 style           = "sans"
 format          = "static"
 repo            = "ButTaiwan/genyog-font"

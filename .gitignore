@@ -11,3 +11,7 @@ dist/
 __pycache__/
 *.pyc
 .pytest_cache/
+
+# Scratch: task plans, todos, session notes, throwaway probes.
+# Durable findings get rewritten into docs/notes/ and committed.
+.ideas/

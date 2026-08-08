@@ -30,6 +30,11 @@ def subset_to_woff2(src_path: str, sl: Slice, out_path: str, *, keep_variations:
     opts.notdef_outline = True  # keep .notdef shape
     opts.name_IDs = ["*"]  # keep name table (family/RFN notices)
     opts.name_legacy = True
+    # Default is English-only, which would drop `尙古明體丹` — the name these
+    # fonts are actually known by, and the one `naming.py` writes into the zh
+    # slots. Costs ~96 bytes/slice (0.9%) on Shanggu; worth it for a file that
+    # is supposed to identify itself correctly.
+    opts.name_languages = ["*"]
     opts.layout_features = ["*"]  # keep GSUB/GPOS (ligatures, locl, kerning)
     if not keep_variations:
         opts.drop_tables += ["fvar", "gvar", "avar", "STAT"]

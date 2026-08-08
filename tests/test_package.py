@@ -46,7 +46,11 @@ def test_write_package_skeleton_creates_layout(tmp_path):
     )
     assert (root / "package.json").exists()
     assert (root / "swap.css").read_text() == "@font-face{}"
-    assert (root / "LICENSE").read_text() == "OFL TEXT"
+    # the upstream text verbatim, plus ziano's OFL derived-work disclosure
+    license_text = (root / "LICENSE").read_text()
+    assert license_text.startswith("OFL TEXT")
+    assert "MODIFICATIONS MADE BY ziano" in license_text
+    assert "1100 / -340" in license_text and "U+FF1A" in license_text
     assert (root / "README.md").read_text() == "# hi"
     assert (root / "files").is_dir()
     assert json.loads((root / "package.json").read_text())["name"] == "@hanzi.pro/webfonts-shanggu-serif"

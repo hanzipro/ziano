@@ -43,6 +43,19 @@ class FamilyConfig:
     format: str
     repo: str
     release_tag: str  # release tag (source=release) or git ref/tag (source=raw)
+    # Chinese family name for the zh-* name-table slots; the English one fills
+    # every other slot. Empty for JP-only faces that never had one.
+    font_family_zh: str = ""
+    # Simplified form for the zh-CN / zh-SG slots, when it differs (體→体,
+    # 鶩→鹜). Empty means "same as font_family_zh".
+    font_family_zh_hans: str = ""
+    # Which cut this family is, when its own name doesn't say. Only the
+    # unsuffixed families carry it: on npm, no suffix always means 丹 (Dan), so
+    # `Shanggu Serif` IS the 丹 cut and never says so. The value gives them a
+    # second, qualified CSS name (`Shanggu Serif Dan`) shipped as its own
+    # stylesheet under `dan/`, and it is the name written into the font files.
+    # One font, two labels; `-yue` families need none, their name carries it.
+    cut: str = ""
     asset: str = ""  # release: the downloadable archive; unused for raw
     asset_sha256: str = ""
     source: str = "release"  # "release" (GitHub release asset) | "raw" (repo file)
@@ -61,6 +74,17 @@ class FamilyConfig:
     # local() names tried before the webfont url in @font-face src, so a browser
     # with the system font (e.g. macOS "Klee One") downloads nothing.
     local_names: tuple[str, ...] = ()
+
+    @property
+    def qualified_family(self) -> str:
+        """The family name that states the cut — `Shanggu Serif Dan`. Falls back
+        to the plain name for families whose own name already says it."""
+        return f"{self.font_family} {self.cut}" if self.cut else self.font_family
+
+    @property
+    def cut_dir(self) -> str:
+        """Subfolder holding the qualified-name stylesheets, e.g. `dan`."""
+        return self.cut.lower()
 
 
 def load_roster(path: str) -> list[FamilyConfig]:

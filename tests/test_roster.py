@@ -157,3 +157,29 @@ def test_load_roster_rejects_unknown_format(tmp_path):
     )
     with pytest.raises(ValueError, match="format"):
         load_roster(str(bad))
+
+
+# --- 丹／月 naming ------------------------------------------------------------
+
+
+def test_cut_suffix_matches_family_name():
+    """The npm id and the CSS family name must agree about which cut you get —
+    `-dan`/`-yue` in the id, `Dan`/`Yue` in the family. `-tc` now means one
+    thing only (a region variant) and is left to LXGW WenKai."""
+    for fam in load_roster("roster.toml"):
+        for suffix, word in (("-dan", "Dan"), ("-yue", "Yue")):
+            if fam.id.endswith(suffix):
+                assert fam.font_family.endswith(word), fam.id
+            if fam.font_family.endswith(word):
+                assert fam.id.endswith(suffix), fam.id
+
+
+def test_no_min_or_gothic_left_in_shipped_names():
+    """Serif/Sans across the whole roster — Source Han's own Latin naming, and
+    what `--font-serif` / `--font-sans-serif` are called in CSS. GenYo is the
+    exception: it is a wind-down package and keeps its published name."""
+    for fam in load_roster("roster.toml"):
+        if fam.id.startswith("genyo-"):
+            continue
+        assert " Min" not in fam.font_family, fam.id
+        assert " Gothic" not in fam.font_family, fam.id

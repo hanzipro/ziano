@@ -63,6 +63,12 @@ def package_json(fam: FamilyConfig, *, version: str) -> dict:
     if fam.format == "static":
         for mode in DISPLAY_MODES:
             exports[f"./{mode}/*"] = f"./{mode}/*"
+    # Same faces, same woff2, the name that states the cut:
+    # `@hanzi.pro/webfonts-shanggu-serif/dan` gets you `'Shanggu Serif Dan'`.
+    if fam.cut:
+        exports[f"./{fam.cut_dir}"] = f"./{fam.cut_dir}/{mode_css_name(DEFAULT_MODE)}"
+        exports[f"./{fam.cut_dir}/*"] = f"./{fam.cut_dir}/*"
+        mode_dirs = [*mode_dirs, f"{fam.cut_dir}/"]
     return {
         "name": package_name(fam),
         "version": version,
@@ -156,6 +162,40 @@ def render_readme(fam: FamilyConfig, *, version: str) -> str:
     )
 
 
+def modification_notice(fam: FamilyConfig) -> str:
+    """OFL derived-work disclosure, appended to every shipped LICENSE.
+
+    The OFL asks a derivative to say what it changed; two of ziano's edits are
+    invisible in a diff of the glyphs and easy to mistake for the upstream
+    design, so they are named explicitly.
+    """
+    return (
+        "\n\n"
+        "-----------------------------------------------------------\n"
+        "MODIFICATIONS MADE BY ziano\n"
+        "-----------------------------------------------------------\n"
+        "\n"
+        f"The woff2 files in this package are derived from {fam.repo}:\n"
+        "\n"
+        "1. Subset and split into `unicode-range` slices for web delivery.\n"
+        "2. Line metrics normalised — `hhea.ascent/descent/lineGap` and\n"
+        "   `OS/2.usWinAscent/usWinDescent` set to 1100 / -340 / 0 (per 1000\n"
+        "   upem), so that every family in the collection shares one vertical\n"
+        "   central baseline (0.380em) and one `line-height: normal`.\n"
+        "3. An identity `vert`/`vrt2` substitution added for U+FF1A and U+FF1B,\n"
+        "   so those keep their upright form in vertical writing. Families that\n"
+        "   already map them are left untouched.\n"
+        f"4. `name` table rewritten to `Ziano {fam.font_family}`, so these files\n"
+        "   do not present themselves as the unmodified upstream release.\n"
+        "   Weight names, copyright and licence records are upstream's,\n"
+        "   untouched. The prefix is internal only — the stylesheets in this\n"
+        f"   package declare `{fam.font_family}`.\n"
+        "\n"
+        "Glyph outlines are unchanged. The copyright and any Reserved Font Name\n"
+        "notices above are the upstream authors'.\n"
+    )
+
+
 def write_package_skeleton(
     fam: FamilyConfig, *, dest: str, version: str,
     css_files: dict[str, str], license_text: str, readme: str | None = None,
@@ -167,7 +207,7 @@ def write_package_skeleton(
         path = root / rel
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(text)
-    (root / "LICENSE").write_text(license_text)
+    (root / "LICENSE").write_text(license_text + modification_notice(fam))
     (root / "README.md").write_text(readme if readme is not None else render_readme(fam, version=version))
     (root / "package.json").write_text(
         json.dumps(package_json(fam, version=version), indent=2, ensure_ascii=False)

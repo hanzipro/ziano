@@ -37,7 +37,7 @@ def _range_covers(rng: str, cp: int) -> bool:
 
 
 @pytest.mark.integration
-def test_build_shanggu_serif_produces_installable_package(tmp_path):
+def test_build_shanggu_serif_dan_produces_installable_package(tmp_path):
     root = build_family(
         "shanggu-serif", roster_path="roster.toml", dest=str(tmp_path), version="0.1.0"
     )

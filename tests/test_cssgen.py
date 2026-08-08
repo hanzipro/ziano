@@ -1,4 +1,5 @@
 from ziano.cssgen import (
+    METRICS_OVERRIDE,
     generate_aggregate_css,
     generate_css,
     mode_css_name,
@@ -88,3 +89,62 @@ def test_per_weight_file_climbs_to_files_dir():
 def test_path_helpers():
     assert mode_css_name("swap") == "swap.css"
     assert weight_css_path("optional", 700) == "optional/700.css"
+
+
+# --- normalised line metrics ------------------------------------------------
+#
+# Every family must carry the SAME ascent/descent, or Chromium lands them on
+# different central baselines in vertical text (up to 0.0965em apart between
+# Shanggu and LXGW WenKai). See docs/vertical-baseline-offset.md.
+
+
+def test_every_face_carries_the_metrics_override():
+    css = generate_css(VF, [Slice(0, "U+4e00"), Slice(1, "U+20")])
+    for line in METRICS_OVERRIDE:
+        assert css.count(line) == 2, f"{line} missing from a face"
+
+
+def test_metrics_override_difference_is_the_em_box():
+    """asc − desc = 0.76em is the number that fixes the offset: it is the em box
+    centre (sTypo 880/−120), shared with Hiragino / YuMincho / 源起 / 芫荽."""
+    values = {k: float(v.rstrip("%;")) for k, v in
+              (line.split(": ") for line in METRICS_OVERRIDE)}
+    assert values["ascent-override"] - values["descent-override"] == 76.0
+    assert values["line-gap-override"] == 0.0
+
+
+def test_cut_stylesheet_declares_the_qualified_name_against_the_same_files():
+    """One font, two labels. `dan/swap.css` names the cut out loud and points at
+    the very same woff2 — one directory up, since it sits in dan/."""
+    fam = FamilyConfig(
+        id="shanggu-serif", font_family="Shanggu Serif", cut="Dan",
+        style="serif", format="vf",
+        repo="GuiWonder/Shanggu", release_tag="1.028", asset="x.7z",
+        member="x.ttf", asset_sha256="0", weight_min=250, weight_max=900,
+    )
+    assert fam.qualified_family == "Shanggu Serif Dan" and fam.cut_dir == "dan"
+    slices = [Slice(0, "U+4E00-9FFF")]
+    plain = generate_css(fam, slices)
+    qualified = generate_css(
+        fam, slices, files_base="../files", family=fam.qualified_family)
+
+    assert "font-family: 'Shanggu Serif';" in plain
+    assert "font-family: 'Shanggu Serif Dan';" in qualified
+    assert "font-family: 'Shanggu Serif';" not in qualified
+    # same file, one level deeper
+    assert "url(./files/shanggu-serif.0.woff2)" in plain
+    assert "url(../files/shanggu-serif.0.woff2)" in qualified
+    # nothing else differs — a label, not a different build
+    assert qualified.replace("'Shanggu Serif Dan'", "'Shanggu Serif'").replace(
+        "url(../files/", "url(./files/") == plain
+
+
+def test_families_whose_name_states_the_cut_ship_no_extra_stylesheet():
+    from ziano.build import _css_files
+    plain = FamilyConfig(
+        id="iansui", font_family="Iansui", style="cursive", format="static",
+        repo="ButTaiwan/iansui", release_tag="v1", asset="x.zip", asset_sha256="0",
+        weights=(Weight(400, "R.ttf"),),
+    )
+    paths = _css_files(plain, [Slice(0, "U+4E00")])
+    assert plain.cut == "" and not any(p.startswith(("dan/", "yue/")) for p in paths)
