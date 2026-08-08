@@ -160,9 +160,54 @@ blockquote   { font-family: var(--font-cursive); }     /* 楷體：引文、詩�
 靜態字體（源起、霞鶩文楷等）還能**只取單一字重**：用`swap/<字重>.css`取代整族的`swap.css`，
 下載更小。可變字體（尙古）單檔即涵蓋整段字重軸，不必分檔。
 
+### 說出刻別：`dan/`
+
+npm上**無後綴一律指丹**：`webfonts-shanggu-serif`就是丹（0.1.0起沒變過），
+`webfonts-shanggu-serif-yue`是月。所以預設樣式表宣告的是不帶後綴的名字，
+0.1.0的使用者升上來一行都不用改。
+
+想在字體堆疊裡把刻別寫明的，每個無後綴套件都另附一份同樣的face，掛在帶刻別的名字下：
+
+```css
+/* 同一個字體，兩個名字——擇一引入 */
+@import url(".../webfonts-shanggu-serif/swap.css");      /* 'Shanggu Serif'     */
+@import url(".../webfonts-shanggu-serif/dan/swap.css");  /* 'Shanggu Serif Dan' */
+```
+
+`block`／`optional`同樣有`dan/`版本（靜態字體另有`dan/swap/<字重>.css`），套件出口是
+`@hanzi.pro/webfonts-shanggu-serif/dan`。兩份同時引入無害但沒有意義：URL相同、
+只是把每個face用兩個名字各宣告一次。
+
+字體檔內部一律用帶刻別的全名——name表沒有含糊的餘地。
+
 ---
 
-## 五、延伸：字本身也要講究
+## 五、直排重心：ziano已經幫你對齊了
+
+直排（`writing-mode: vertical-rl`）混用兩個家族時⸺正文明體配楷體引文、或正文配
+diantenjeom標點⸺常見一段字整條**左右錯開**。根因不在你的CSS：Chromium與Safari
+都把字的中央基線合成成`(hhea.ascent − |hhea.descent|) / 2`，取自實際畫出那個字的
+font；而帶`unicode-range`的分片`@font-face`永遠當不上一行的第一順位字體，所以
+**永遠**走這條合成路徑。上游各家的`hhea`差很多（思源系0.4325em、ButTaiwan系
+0.380em、霞鶩0.336em），兩家族最多差到0.0965em，肉眼一看就是歪的。
+
+ziano自0.2.0起**在切片前就把每個家族的`hhea`／`usWin*`統一寫成`1100/−340`**，
+中央基線一律落在0.380em⸺也就是字身框中心，Hiragino／YuMincho／源起／芫荽本來
+就在這個位置，所以webfont沒載入、退回系統日文字時位置也不跳。你**不必**加任何
+`ascent-override`：CSS那條路Safari根本不吃，度量必須寫進字檔裡才有效（樣式表仍會
+把同樣的數字宣告一次，純屬對齊保險）。
+
+要跟ziano併排的第三方字體，把它的`hhea`也正規化成同一組值即可；
+diantenjeom的標點字用`880/−120`（同樣0.380em中心，但總高只有1.0em，才不會撐大
+別人的行高）。完整推導與量測見`vertical-baseline-offset.md`。
+
+同版另修：`：`（U+FF1A）與`；`（U+FF1B）在UTR50屬**Tr**類⸺沒有`vert`規則的字體，
+Firefox會照標準把它們**轉倒**。ziano替所有家族補了一條「自己換成自己」的`vert`
+規則，Firefox直排下的冒號、分號因此保持直立。
+
+---
+
+## 六、延伸：字本身也要講究
 
 字選對了，文字內容的排版細節也別放過⸺全形標點、中西文之間不打空格（間距交給CSS
 `text-autospace`）等，能讓整體再上一個檔次。這部分屬於文案／排版規範，見工作區的

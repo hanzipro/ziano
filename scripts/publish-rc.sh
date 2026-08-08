@@ -1,67 +1,104 @@
 #!/usr/bin/env bash
 # Build + publish an RC round to npm under the `rc` dist-tag (does NOT move `latest`).
 #
-# THIS ROUND = emoji/PUA unicode-range prune. The slice tables (Google nam-files) put
-# emoji, PUA and some foreign scripts in slices the CJK fonts have ZERO glyphs for, but
-# the @font-face still advertised those ranges. Safari honours a bare unicode-range even
-# when the woff2 lacks the glyph → it renders .notdef instead of falling through to the
-# system emoji font (that's why 🌞 U+1F31E broke in Safari but not Chrome). build_family
-# now prunes every slice's unicode-range to the font's real cmap and drops empty slices
-# (see ziano/slices.py::prune_slices). So all the demo families need a rebuild + republish.
+# THIS ROUND = 0.2.0. Three changes, all of them inside the font files:
 #
-# This is a CSS-ONLY fix: the woff2 already contain exactly the covered glyphs (the
-# subsetter dropped the rest at build time), so we DON'T re-slice. recss_dist() reads each
-# @font-face's unicode-range back from the existing woff2's cmap, drops the now-empty
-# slices' woff2, and bumps the version — kept woff2 stay byte-identical. (Needs a prior
-# full build in dist/; for a from-scratch build use build_family instead.)
+#   1. Line metrics normalised to hhea/usWin 1100/-340 (per 1000 upem), so every
+#      family shares one vertical central baseline (0.380em). Fixes the sideways
+#      jog when two families meet in a vertical column. CSS `ascent-override`
+#      cannot do this — Safari ignores it on that path.
+#   2. Identity `vert`/`vrt2` substitution for U+FF1A / U+FF1B, so Firefox stops
+#      rotating `：；` in vertical text (UTR50 class Tr).
+#   3. `name` table rewritten to `Ziano <family>`, so the files stop presenting
+#      themselves as an unmodified upstream release. INTERNAL ONLY — the CSS
+#      family names are unchanged from the roster (`Shanggu Serif`, …).
 #
-# Versioning: each package bumps to one past its highest published rc (no version burning,
-# see memory/publish-workflow).
+# Plus the family rename: `-tc` (which pointed opposite ways between Shanggu and
+# Genki) is gone, both cuts now carry `-dan` / `-yue`, and Genki's Min/Gothic
+# became Serif/Sans. Eight package names changed; the old ones are NOT
+# deprecated here (0.1.0 stays where it is).
 #
-# Auth (hard-won, see memory/publish-workflow): account ethantw enforces 2FA on writes.
-# A plain token hits EOTP. Use a classic *Automation* token, or set 2FA to "Authorization
-# only" while publishing. `npm publish` will also prompt for an OTP interactively.
+# ⚠️ NOT a CSS-only round. Every woff2 is re-sliced, so `recss_dist` (which keeps
+# the woff2 byte-identical) is the wrong tool — that was the 0.1.0 emoji-prune
+# round. Run the full build first:
 #
-# Run from repo root:   bash scripts/publish-rc.sh            # the full 12-family round
-#                       bash scripts/publish-rc.sh shanggu-serif genki-min   # a subset
+#     uv run python -c 'from ziano.build import build_family; from ziano.roster \
+#       import load_roster; [build_family(f.id, roster_path="roster.toml", \
+#       dest="dist", version="0.2.0") for f in load_roster("roster.toml")]'
+#
+#   …then this script, which only bumps the version and publishes what is in
+#   dist/. It refuses to publish a package whose woff2 predate the last roster
+#   change, so a forgotten rebuild fails loudly instead of shipping stale files.
+#
+# Versioning: each package bumps to one past its highest published 0.2.0 rc (no
+# version burning, see memory/publish-workflow).
+#
+# Auth (hard-won, see memory/publish-workflow): account ethantw enforces 2FA on
+# writes. A plain token hits EOTP. Use a classic *Automation* token, or set 2FA
+# to "Authorization only" while publishing. `npm publish` will also prompt for an
+# OTP interactively.
+#
+# Run from repo root:   bash scripts/publish-rc.sh                    # every family
+#                       bash scripts/publish-rc.sh shanggu-serif  # a subset
 set -uo pipefail
 cd "$(dirname "$0")/.."
 export PYTHONPATH="src${PYTHONPATH:+:$PYTHONPATH}"
+PY=${PYTHON:-python3}
 
-# the round: every family the demo ships. TC families break for 🌞; SC/JP families break
-# for OTHER emoji that land in their own empty slices — so all of them get the prune.
-ids=(
-  shanggu-serif shanggu-sans shanggu-serif-tc shanggu-sans-tc
-  genki-min genki-gothic genki-min-tc genki-gothic-tc
-  lxgw-wenkai-tc lxgw-wenkai iansui klee-one
-)
+# The round is whatever the roster says — hardcoding ids is how the last round's
+# list ended up naming eight directories that no longer exist.
+# (`mapfile` is bash 4; macOS ships 3.2, so read the list the portable way.)
+ids=()
+while IFS= read -r line; do ids+=("$line"); done < <("$PY" -c "
+from ziano.roster import load_roster
+for f in load_roster('roster.toml'):
+    print(f.id)
+")
 [ "$#" -gt 0 ] && ids=("$@")   # allow an explicit subset
 
 who=$(npm whoami 2>/dev/null) || { echo "✗ not logged in to npm"; exit 1; }
 [ "$who" = "ethantw" ] || { echo "✗ npm whoami=$who (expected ethantw)"; exit 1; }
 echo "✓ npm whoami=$who · round: ${ids[*]}"
 
-# next 0.1.0-rc.N for a package = one past the highest rc already on the registry.
+# next 0.2.0-rc.N for a package = one past the highest rc already on the registry.
 next_rc() {
   local pkg=$1 cur
   cur=$(npm view "$pkg" versions --json 2>/dev/null \
-        | grep -oE '0\.1\.0-rc\.[0-9]+' | sed 's/.*rc\.//' | sort -n | tail -1)
-  echo "0.1.0-rc.$(( ${cur:--1} + 1 ))"
+        | grep -oE '0\.2\.0-rc\.[0-9]+' | sed 's/.*rc\.//' | sort -n | tail -1)
+  echo "0.2.0-rc.$(( ${cur:--1} + 1 ))"
 }
 
+# A woff2 older than roster.toml means the rebuild never ran (or ran before the
+# last roster edit) — the name table and metrics live in those files, so
+# publishing them would ship the previous round's fonts under a new version.
+stale() {
+  local dir=$1 newest
+  newest=$(find "$dir/files" -name '*.woff2' -newer roster.toml -print -quit 2>/dev/null)
+  [ -z "$newest" ]
+}
+
+fail=0
 for id in "${ids[@]}"; do
   pkg="@hanzi.pro/webfonts-$id"
+  dir="dist/$id"
+  [ -d "$dir/files" ] || { echo "✗ $pkg — no $dir/files (run the full build)"; fail=1; continue; }
+  stale "$dir" && { echo "✗ $pkg — woff2 older than roster.toml (rebuild first)"; fail=1; continue; }
   ver=$(next_rc "$pkg")
-  echo "→ regen CSS $pkg@$ver"
-  python -c "from ziano.build import recss_dist; recss_dist('$id', roster_path='roster.toml', dest='dist', version='$ver')" \
-    || { echo "  ✗ recss failed — skip"; continue; }
-  echo "  publishing…"
-  ( cd "dist/$id" && npm publish --tag rc --access public ) \
+  echo "→ $pkg@$ver"
+  "$PY" -c "
+import json, pathlib
+p = pathlib.Path('$dir/package.json')
+pkg = json.loads(p.read_text())
+pkg['version'] = '$ver'
+p.write_text(json.dumps(pkg, indent=2, ensure_ascii=False) + '\n')
+" || { echo "  ✗ version bump failed — skip"; fail=1; continue; }
+  ( cd "$dir" && npm publish --tag rc --access public ) \
     && echo "  ✓ $pkg@$ver" \
-    || echo "  ✗ $pkg@$ver (a 403 may still have succeeded — verify the version-doc)"
+    || { echo "  ✗ $pkg@$ver (a 403 may still have succeeded — verify the version-doc)"; fail=1; }
 done
 
 echo
+[ "$fail" = 0 ] || echo "⚠️  some packages did not publish — see above"
 echo "Verify:  npm view @hanzi.pro/webfonts-shanggu-serif dist-tags"
 echo "Purge jsDelivr @rc (the mutable tag caches ~7d — see memory/shanggu-variant):"
 for id in "${ids[@]}"; do
